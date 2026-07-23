@@ -1,3 +1,0 @@
-# Apresentação da loja
-
-## Nome
