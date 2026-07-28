@@ -1,0 +1,1 @@
+Aqui página home dentro da views/site/home.php

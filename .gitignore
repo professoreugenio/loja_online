@@ -21,3 +21,18 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+/vendor/
+
+# Bibliotecas instaladas pelo Composer
+/vendor/
+
+# Variáveis de ambiente
+.env
+.env.local
+
+# Logs
+/storage/logs/*.log
+
+# Arquivos do sistema
+.DS_Store
+Thumbs.db
