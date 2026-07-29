@@ -15,7 +15,8 @@ $raizProjeto = dirname(__DIR__);
 $rotas = array_merge(
     require $raizProjeto . '/routes/web.php',
     require $raizProjeto . '/routes/cliente.php',
-    require $raizProjeto . '/routes/admin.php'
+    require $raizProjeto . '/routes/admin.php',
+    require $raizProjeto . '/routes/logadm.php'
 );
 
 /*

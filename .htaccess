@@ -1,0 +1,18 @@
+# Impede a listagem de pastas
+Options -Indexes
+
+# Bloqueia arquivos ocultos:
+# .env, .env.example, .gitignore, .htaccess etc.
+<FilesMatch "^\.">
+    Require all denied
+</FilesMatch>
+
+# Bloqueia outros arquivos internos do projeto
+<FilesMatch "^(composer\.(json|lock)|README\.md)$">
+    Require all denied
+</FilesMatch>
+
+# Bloqueia acesso direto às pastas internas
+RewriteEngine On
+
+RewriteRule ^(?:config|database|documentacao|routes|src|storage|vendor|views)(?:/|$) - [F,L,NC]
