@@ -4,19 +4,47 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
-class DashboardController
+use App\Controllers\Controller;
+use App\Helpers\Csrf;
+
+final class DashboardController
+    extends Controller
 {
     public function index(): void
     {
-        $arquivoView = dirname(__DIR__, 3)
-            . '/views/admin/dashboard.php';
-
-        if (!is_file($arquivoView)) {
-            throw new \RuntimeException(
-                'O dashboard administrativo não foi encontrado.'
+        if (
+            empty(
+                $_SESSION[
+                    'usuario_admin'
+                ]['id']
+            )
+        ) {
+            $this->redirecionar(
+                '/login-admin'
             );
         }
 
-        require $arquivoView;
+        $this->view(
+            'admin/dashboard',
+            [
+                'tituloPagina' =>
+                    'Dashboard administrativo',
+
+                'usuarioAdmin' =>
+                    $_SESSION[
+                        'usuario_admin'
+                    ],
+
+                'csrfToken' =>
+                    Csrf::gerar(),
+
+                'indicadores' => [
+                    'produtos' => 0,
+                    'clientes' => 0,
+                    'pedidos' => 0,
+                    'categorias' => 0,
+                ],
+            ]
+        );
     }
 }

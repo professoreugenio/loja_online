@@ -6,12 +6,11 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $raizProjeto = dirname(__DIR__);
 
-$pagina = $_GET['p'] ?? 'home';
+$pagina = $_GET['pg'] ?? 'home';
 
 $rotas = [
     'home' => $raizProjeto . '/views/site/home.php',
     'admin' => $raizProjeto . '/views/admin/dashboard.php',
-    'log' => $raizProjeto . '/views/site/loginadmin.php',
 ];
 
 if (!array_key_exists($pagina, $rotas)) {

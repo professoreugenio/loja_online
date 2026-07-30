@@ -6,9 +6,24 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 
 $raizProjeto = dirname(__DIR__);
 
+/*
+|--------------------------------------------------------------------------
+| Carregamento dos arquivos de rotas
+|--------------------------------------------------------------------------
+*/
+
 $rotas = array_merge(
-    require $raizProjeto . '/routes/web.php'
+    require $raizProjeto . '/routes/web.php',
+    require $raizProjeto . '/routes/cliente.php',
+    require $raizProjeto . '/routes/admin.php',
+    require $raizProjeto . '/routes/logadm.php'
 );
+
+/*
+|--------------------------------------------------------------------------
+| Identificação da requisição
+|--------------------------------------------------------------------------
+*/
 
 $metodoHttp = $_SERVER['REQUEST_METHOD'] ?? 'GET';
 
@@ -18,6 +33,12 @@ $caminho = parse_url(
 );
 
 $caminho = $caminho ?: '/';
+
+/*
+|--------------------------------------------------------------------------
+| Remoção do caminho-base no XAMPP
+|--------------------------------------------------------------------------
+*/
 
 $caminhoBase = str_replace(
     '\\',
@@ -32,6 +53,16 @@ if (str_starts_with($caminho, $caminhoBase)) {
 }
 
 $caminho = '/' . trim($caminho, '/');
+
+if ($caminho === '/') {
+    $caminho = '/';
+}
+
+/*
+|--------------------------------------------------------------------------
+| Localização da rota
+|--------------------------------------------------------------------------
+*/
 
 foreach ($rotas as $rota) {
     $mesmoMetodo = $rota['method'] === $metodoHttp;
@@ -61,6 +92,12 @@ foreach ($rotas as $rota) {
 
     exit;
 }
+
+/*
+|--------------------------------------------------------------------------
+| Página não encontrada
+|--------------------------------------------------------------------------
+*/
 
 http_response_code(404);
 

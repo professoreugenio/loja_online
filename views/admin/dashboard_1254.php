@@ -1,8 +1,3 @@
-<?php
-
-declare(strict_types=1);
-
-?>
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
@@ -193,39 +188,7 @@ declare(strict_types=1);
             <li><i class="fas fa-users"></i> Clientes</li>
             <li><i class="fas fa-shopping-cart"></i> Pedidos</li>
             <li><i class="fas fa-cog"></i> Configurações</li>
-            <li class="nav-item">
-    <form
-        action="<?= htmlspecialchars(
-            BASE_URL . '/logout-admin',
-            ENT_QUOTES,
-            'UTF-8'
-        ) ?>"
-        method="post"
-        class="m-0"
-    >
-        <input
-            type="hidden"
-            name="_token"
-            value="<?= htmlspecialchars(
-                $csrfToken,
-                ENT_QUOTES,
-                'UTF-8'
-            ) ?>"
-        >
-
-        <button
-            type="submit"
-            class="nav-link btn btn-link text-start w-100 border-0"
-        >
-            <i
-                class="fas fa-sign-out-alt me-2"
-                aria-hidden="true"
-            ></i>
-
-            Sair
-        </button>
-    </form>
-</li>
+            <li><i class="fas fa-sign-out-alt"></i> Sair</li>
         </ul>
     </aside>
 

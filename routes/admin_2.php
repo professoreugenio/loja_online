@@ -8,9 +8,6 @@ return [
     [
         'method' => 'GET',
         'path' => '/admin',
-        'action' => [
-            DashboardController::class,
-            'index',
-        ],
+        'action' => [DashboardController::class, 'index'],
     ],
 ];

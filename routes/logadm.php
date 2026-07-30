@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Controllers\LoginAdminController;
+use App\Controllers\Admin\LoginAdminController;
 
 return [
     [
@@ -10,7 +10,23 @@ return [
         'path' => '/loginadmin',
         'action' => [
             LoginAdminController::class,
-            'index'
+            'formulario',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/loginadmin',
+        'action' => [
+            LoginAdminController::class,
+            'autenticar',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/logoutadmin',
+        'action' => [
+            LoginAdminController::class,
+            'sair',
         ],
     ],
 ];
