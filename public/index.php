@@ -7,7 +7,8 @@ require_once dirname(__DIR__) . '/vendor/autoload.php';
 $raizProjeto = dirname(__DIR__);
 
 $rotas = array_merge(
-    require $raizProjeto . '/routes/web.php'
+    require $raizProjeto . '/routes/web.php',
+    require $raizProjeto . '/routes/loginadm.php'
 );
 
 $metodoHttp = $_SERVER['REQUEST_METHOD'] ?? 'GET';

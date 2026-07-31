@@ -7,8 +7,6 @@ require_once dirname(__DIR__)
 
 $raizProjeto = dirname(__DIR__);
 
-
-
 define(
     'APP_ROOT',
     $raizProjeto
@@ -61,10 +59,7 @@ if (
 */
 
 $rotas = array_merge(
-    require $raizProjeto . '/routes/web.php',
-    require $raizProjeto . '/routes/cliente.php',
-    require $raizProjeto . '/routes/admin.php',
-    require $raizProjeto . '/routes/logadm.php'
+    require $raizProjeto . '/routes/web.php'
 );
 
 /*

@@ -1,7 +1,69 @@
 <?php
-
 declare(strict_types=1);
-
+ini_set('display_errors', '1');
+ini_set('display_startup_errors', '1');
+error_reporting(E_ALL);
+/*
+|--------------------------------------------------------------------------
+| Inicialização da sessão
+|--------------------------------------------------------------------------
+*/
+if (session_status() !== PHP_SESSION_ACTIVE) {
+    session_start();
+}
+/*
+|--------------------------------------------------------------------------
+| Verificação da constante BASE_URL
+|--------------------------------------------------------------------------
+|
+| Recomenda-se definir BASE_URL no arquivo principal da aplicação,
+| como public/index.php ou config/app.php.
+|
+*/
+if (!defined('BASE_URL')) {
+    throw new RuntimeException(
+        'A constante BASE_URL não foi definida.'
+    );
+}
+/*
+|--------------------------------------------------------------------------
+| Criação do token CSRF
+|--------------------------------------------------------------------------
+*/
+if (
+    !isset($_SESSION['csrf_token']) ||
+    !is_string($_SESSION['csrf_token']) ||
+    strlen($_SESSION['csrf_token']) < 32
+) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+$csrfToken = $_SESSION['csrf_token'];
+/*
+|--------------------------------------------------------------------------
+| Dados utilizados na página
+|--------------------------------------------------------------------------
+*/
+$baseUrl = rtrim((string) BASE_URL, '/');
+$nomeUsuario = (string) (
+    $_SESSION['admin_nome'] ??
+    $_SESSION['usuario_nome'] ??
+    'Admin'
+);
+/*
+|--------------------------------------------------------------------------
+| Função para escapar dados HTML
+|--------------------------------------------------------------------------
+*/
+if (!function_exists('e')) {
+    function e(string $valor): string
+    {
+        return htmlspecialchars(
+            $valor,
+            ENT_QUOTES | ENT_SUBSTITUTE,
+            'UTF-8'
+        );
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-BR">
@@ -19,13 +81,11 @@ declare(strict_types=1);
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
             display: flex;
             min-height: 100vh;
             background-color: #f0f2f5;
         }
-
         /* Menu Lateral (Sidebar) */
         .sidebar {
             width: 250px;
@@ -35,7 +95,6 @@ declare(strict_types=1);
             flex-direction: column;
             transition: all 0.3s ease;
         }
-
         .sidebar-header {
             padding: 24px;
             text-align: center;
@@ -44,13 +103,11 @@ declare(strict_types=1);
             border-bottom: 1px solid #334155;
             letter-spacing: 1px;
         }
-
         .sidebar-menu {
             list-style: none;
             padding: 20px 0;
             flex-grow: 1;
         }
-
         .sidebar-menu li {
             padding: 15px 24px;
             cursor: pointer;
@@ -60,20 +117,18 @@ declare(strict_types=1);
             color: #cbd5e1;
             transition: 0.2s;
         }
-
-        .sidebar-menu li:hover, .sidebar-menu li.active {
+        .sidebar-menu li:hover,
+        .sidebar-menu li.active {
             background-color: #334155;
             color: #fff;
             border-left: 4px solid #3b82f6;
         }
-
         /* Área de Conteúdo Principal */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
         }
-
         /* Cabeçalho Superior */
         .top-header {
             background-color: #fff;
@@ -81,13 +136,11 @@ declare(strict_types=1);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
         }
-
         .top-header h2 {
             color: #333;
         }
-
         .user-info {
             display: flex;
             align-items: center;
@@ -95,7 +148,6 @@ declare(strict_types=1);
             color: #475569;
             font-weight: 500;
         }
-
         /* Grid de Cartões (Dashboard) */
         .dashboard-cards {
             padding: 30px;
@@ -103,37 +155,32 @@ declare(strict_types=1);
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
         }
-
         /* Estilo Individual de cada Cartão */
         .card {
             background-color: #fff;
             padding: 24px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
             display: flex;
             align-items: center;
             justify-content: space-between;
             transition: transform 0.2s, box-shadow 0.2s;
         }
-
         .card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
         }
-
         .card-info h3 {
             font-size: 14px;
             color: #64748b;
             text-transform: uppercase;
             margin-bottom: 8px;
         }
-
         .card-info p {
             font-size: 28px;
             font-weight: bold;
             color: #1e293b;
         }
-
         .card-icon {
             width: 50px;
             height: 50px;
@@ -144,17 +191,31 @@ declare(strict_types=1);
             font-size: 22px;
             color: #fff;
         }
-
         /* Cores específicas para cada ícone */
-        .bg-blue { background-color: #3b82f6; }
-        .bg-green { background-color: #10b981; }
-        .bg-purple { background-color: #8b5cf6; }
-        .bg-orange { background-color: #f59e0b; }
-        .bg-red { background-color: #ef4444; }
-        .bg-teal { background-color: #14b8a6; }
-        .bg-indigo { background-color: #6366f1; }
-        .bg-pink { background-color: #ec4899; }
-
+        .bg-blue {
+            background-color: #3b82f6;
+        }
+        .bg-green {
+            background-color: #10b981;
+        }
+        .bg-purple {
+            background-color: #8b5cf6;
+        }
+        .bg-orange {
+            background-color: #f59e0b;
+        }
+        .bg-red {
+            background-color: #ef4444;
+        }
+        .bg-teal {
+            background-color: #14b8a6;
+        }
+        .bg-indigo {
+            background-color: #6366f1;
+        }
+        .bg-pink {
+            background-color: #ec4899;
+        }
         /* Responsividade para telas menores */
         @media (max-width: 768px) {
             body {
@@ -178,10 +239,35 @@ declare(strict_types=1);
                 border-bottom: 4px solid #3b82f6;
             }
         }
+        /* Item de logout */
+        .sidebar-menu .logout-item {
+            padding: 0;
+        }
+        .logout-form {
+            width: 100%;
+        }
+        .logout-button {
+            width: 100%;
+            padding: 15px 24px;
+            border: none;
+            background: transparent;
+            color: #cbd5e1;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            font-size: 16px;
+            text-align: left;
+            transition: 0.2s;
+        }
+        .logout-button:hover {
+            background-color: #334155;
+            color: #fff;
+            border-left: 4px solid #ef4444;
+        }
     </style>
 </head>
 <body>
-
     <!-- Menu Lateral -->
     <aside class="sidebar">
         <div class="sidebar-header">
@@ -193,42 +279,35 @@ declare(strict_types=1);
             <li><i class="fas fa-users"></i> Clientes</li>
             <li><i class="fas fa-shopping-cart"></i> Pedidos</li>
             <li><i class="fas fa-cog"></i> Configurações</li>
-            <li class="nav-item">
-    <form
-        action="<?= htmlspecialchars(
-            BASE_URL . '/logout-admin',
-            ENT_QUOTES,
-            'UTF-8'
-        ) ?>"
-        method="post"
-        class="m-0"
-    >
-        <input
-            type="hidden"
-            name="_token"
-            value="<?= htmlspecialchars(
-                $csrfToken,
-                ENT_QUOTES,
-                'UTF-8'
-            ) ?>"
-        >
-
-        <button
-            type="submit"
-            class="nav-link btn btn-link text-start w-100 border-0"
-        >
-            <i
-                class="fas fa-sign-out-alt me-2"
-                aria-hidden="true"
-            ></i>
-
-            Sair
-        </button>
-    </form>
-</li>
+            <li class="logout-item">
+                <form
+                    class="logout-form"
+                    action="<?= htmlspecialchars(
+                                BASE_URL . '/logout-admin',
+                                ENT_QUOTES,
+                                'UTF-8'
+                            ) ?>"
+                    method="post">
+                    <input
+                        type="hidden"
+                        name="_token"
+                        value="<?= htmlspecialchars(
+                                    $csrfToken,
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ) ?>">
+                    <button
+                        class="logout-button"
+                        type="submit">
+                        <i
+                            class="fas fa-sign-out-alt"
+                            aria-hidden="true"></i>
+                        <span>Sair</span>
+                    </button>
+                </form>
+            </li>
         </ul>
     </aside>
-
     <!-- Conteúdo Principal -->
     <main class="main-content">
         <!-- Cabeçalho -->
@@ -239,10 +318,8 @@ declare(strict_types=1);
                 <i class="fas fa-user-circle fa-2x"></i>
             </div>
         </header>
-
         <!-- Grade de Cartões -->
         <div class="dashboard-cards">
-            
             <!-- Produtos -->
             <div class="card">
                 <div class="card-info">
@@ -253,7 +330,6 @@ declare(strict_types=1);
                     <i class="fas fa-box"></i>
                 </div>
             </div>
-
             <!-- Clientes -->
             <div class="card">
                 <div class="card-info">
@@ -264,7 +340,6 @@ declare(strict_types=1);
                     <i class="fas fa-users"></i>
                 </div>
             </div>
-
             <!-- Endereços -->
             <div class="card">
                 <div class="card-info">
@@ -275,7 +350,6 @@ declare(strict_types=1);
                     <i class="fas fa-map-marker-alt"></i>
                 </div>
             </div>
-
             <!-- Carrinhos -->
             <div class="card">
                 <div class="card-info">
@@ -286,7 +360,6 @@ declare(strict_types=1);
                     <i class="fas fa-shopping-basket"></i>
                 </div>
             </div>
-
             <!-- Pedidos -->
             <div class="card">
                 <div class="card-info">
@@ -297,7 +370,6 @@ declare(strict_types=1);
                     <i class="fas fa-shopping-cart"></i>
                 </div>
             </div>
-
             <!-- Pagamentos -->
             <div class="card">
                 <div class="card-info">
@@ -308,7 +380,6 @@ declare(strict_types=1);
                     <i class="fas fa-credit-card"></i>
                 </div>
             </div>
-
             <!-- Estoque -->
             <div class="card">
                 <div class="card-info">
@@ -319,7 +390,6 @@ declare(strict_types=1);
                     <i class="fas fa-warehouse"></i>
                 </div>
             </div>
-
             <!-- Notificações -->
             <div class="card">
                 <div class="card-info">
@@ -330,15 +400,12 @@ declare(strict_types=1);
                     <i class="fas fa-bell"></i>
                 </div>
             </div>
-
         </div>
     </main>
-
     <!-- Script opcional apenas para interatividade básica -->
     <script>
         // Lógica simples para marcar o item do menu clicado como ativo
         const menuItems = document.querySelectorAll('.sidebar-menu li');
-        
         menuItems.forEach(item => {
             item.addEventListener('click', () => {
                 menuItems.forEach(i => i.classList.remove('active'));

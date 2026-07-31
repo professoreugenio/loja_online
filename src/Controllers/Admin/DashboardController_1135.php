@@ -35,7 +35,15 @@ final class DashboardController
                         'usuario_admin'
                     ],
 
-                
+                'csrfToken' =>
+                    Csrf::gerar(),
+
+                'indicadores' => [
+                    'produtos' => 0,
+                    'clientes' => 0,
+                    'pedidos' => 0,
+                    'categorias' => 0,
+                ],
             ]
         );
     }

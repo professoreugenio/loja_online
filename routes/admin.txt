@@ -2,16 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Controllers\Site\HomeController;
+use App\Controllers\Admin\DashboardController;
 
 return [
     [
         'method' => 'GET',
-        'path' => '/',
+        'path' => '/admin',
         'action' => [
-            HomeController::class,
+            DashboardController::class,
             'index',
         ],
     ],
-    
 ];

@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-use App\Controllers\Site\HomeController;
+use App\Controllers\Site\MickeyMouseController;
+
 
 return [
     [
         'method' => 'GET',
-        'path' => '/',
+        'path' => '/mickey',
         'action' => [
-            HomeController::class,
+            MickeyMouseController::class,
             'index',
         ],
     ],
