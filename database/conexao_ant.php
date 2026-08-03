@@ -19,7 +19,7 @@ $host = (string) (
 );
 
 $porta = (string) (
-    $_ENV['DB_PORT'] ?? '3307'
+    $_ENV['DB_PORT'] ?? '3306'
 );
 
 $banco = (string) (
@@ -54,19 +54,19 @@ try {
         $senha,
         [
             PDO::ATTR_ERRMODE =>
-            PDO::ERRMODE_EXCEPTION,
+                PDO::ERRMODE_EXCEPTION,
 
             PDO::ATTR_DEFAULT_FETCH_MODE =>
-            PDO::FETCH_ASSOC,
+                PDO::FETCH_ASSOC,
 
             PDO::ATTR_EMULATE_PREPARES =>
-            false,
+                false,
         ]
     );
 } catch (PDOException $erro) {
     error_log(
         '[CONEXÃO COM O BANCO] '
-            . $erro->getMessage()
+        . $erro->getMessage()
     );
 
     throw new RuntimeException(
