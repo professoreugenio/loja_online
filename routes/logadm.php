@@ -7,7 +7,7 @@ use App\Controllers\Admin\LoginAdminController;
 return [
     [
         'method' => 'GET',
-        'path' => '/login-admin',
+        'path' => '/loginadmin',
         'action' => [
             LoginAdminController::class,
             'formulario',
@@ -15,7 +15,7 @@ return [
     ],
     [
         'method' => 'POST',
-        'path' => '/login-admin',
+        'path' => '/loginadmin',
         'action' => [
             LoginAdminController::class,
             'autenticar',
