@@ -179,6 +179,7 @@
         </div>
         
         <h1>Nossa nova loja está chegando!</h1>
+        <a href="loginadmin">loginadmin</a>
         <p>Estamos preparando uma experiência de compra incrível para você, com produtos exclusivos e ofertas imperdíveis. Aguarde novidades!</p>
 
         <!-- Contador -->
@@ -408,6 +409,7 @@ Você pode copiar o código abaixo e salvá-lo como `index.html`.
         
         <!-- Textos Principais -->
         <h1>Nossa Loja Está em Construção</h1>
+        -----
         <p>Estamos preparando uma experiência de compra incrível para você. Deixe seu e-mail abaixo e seja o primeiro a saber quando lançarmos as novidades!</p>
         
         <!-- Formulário para receber novidades -->
