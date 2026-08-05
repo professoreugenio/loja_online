@@ -1,0 +1,450 @@
+Atue como um desenvolvedor web pleno especializado em HTML5, CSS3, Bootstrap 5, acessibilidade, responsividade e boas práticas de desenvolvimento front-end.
+
+Crie uma página completa chamada `home.html` para a página inicial de uma loja online de produtos.
+
+A página faz parte de um projeto PHP com controlador de rotas. Portanto, os links não devem apontar diretamente para arquivos `.html` ou `.php`. Todos os links devem utilizar caminhos por rota.
+
+O projeto está sendo executado inicialmente no seguinte endereço:
+
+http://localhost/loja_online/public/
+
+Adicione no `<head>`:
+
+<base href="/loja_online/public/">
+
+Dessa forma, utilize links relativos como:
+
+- `href=""` para a página inicial;
+- `href="produtos"` para produtos;
+- `href="categorias"` para categorias;
+- `href="ofertas"` para ofertas;
+- `href="ajuda"` para central de ajuda;
+- `href="cliente/login"` para login;
+- `href="cliente/cadastro"` para cadastro;
+- `href="carrinho"` para o carrinho;
+- `href="termos-de-uso"` para os termos;
+- `href="politica-de-privacidade"` para a política de privacidade.
+
+Não utilize links como:
+
+- `home.html`;
+- `produtos.html`;
+- `login.php`;
+- `views/site/home.php`.
+
+## Tecnologias obrigatórias
+
+Utilize:
+
+- HTML5 semântico;
+- Bootstrap 5.3;
+- Bootstrap Icons;
+- CSS personalizado dentro de uma tag `<style>`;
+- JavaScript apenas quando necessário;
+- Bootstrap Bundle antes do fechamento da tag `</body>`.
+
+Não utilize:
+
+- jQuery;
+- React;
+- Vue;
+- Angular;
+- Tailwind;
+- bibliotecas desnecessárias;
+- código PHP, pois inicialmente o arquivo será `home.html`.
+
+## Estrutura obrigatória da página
+
+Crie a página com as seguintes partes:
+
+### 1. Cabeçalho superior
+
+Criar uma barra superior contendo:
+
+- texto de frete ou entrega;
+- telefone para atendimento;
+- link para rastrear pedido;
+- link para central de ajuda.
+
+Rotas:
+
+- `rastrear-pedido`;
+- `ajuda`;
+- `contato`.
+
+A barra deve desaparecer ou se adaptar adequadamente em telas pequenas.
+
+### 2. Navbar principal
+
+Criar uma navbar responsiva com:
+
+- logotipo textual “Loja Online”;
+- botão responsivo para dispositivos móveis;
+- item “Início”;
+- item “Produtos”;
+- menu suspenso “Categorias”;
+- item “Ofertas”;
+- menu suspenso “Ajuda”;
+- formulário de pesquisa;
+- menu da conta;
+- ícone do carrinho com indicador de quantidade.
+
+Links do menu principal:
+
+- Início: `href=""`;
+- Produtos: `href="produtos"`;
+- Categorias: `href="categorias"`;
+- Ofertas: `href="ofertas"`;
+- Carrinho: `href="carrinho"`.
+
+O menu “Categorias” deve conter:
+
+- Informática: `categoria/informatica`;
+- Celulares: `categoria/celulares`;
+- Acessórios: `categoria/acessorios`;
+- Casa e decoração: `categoria/casa-decoracao`;
+- Ver todas: `categorias`.
+
+O menu “Ajuda” deve conter:
+
+- Central de ajuda: `ajuda`;
+- Perguntas frequentes: `faq`;
+- Rastrear pedido: `rastrear-pedido`;
+- Trocas e devoluções: `trocas-devolucoes`;
+- Fale conosco: `contato`.
+
+O menu “Conta” deve conter:
+
+- Entrar: `cliente/login`;
+- Criar conta: `cliente/cadastro`;
+- Meus pedidos: `cliente/pedidos`.
+
+O formulário de pesquisa deve:
+
+- utilizar o método GET;
+- enviar para a rota `buscar`;
+- possuir um campo com `name="q"`;
+- possuir texto acessível;
+- ter botão com ícone de pesquisa.
+
+Não coloque o acesso administrativo no menu principal.
+
+### 3. Banner principal
+
+Criar uma seção Hero moderna e responsiva contendo:
+
+- título chamativo;
+- descrição curta;
+- botão “Comprar agora”;
+- botão “Ver ofertas”;
+- imagem ilustrativa ou espaço reservado para imagem;
+- fundo visual moderno;
+- boa legibilidade.
+
+Links:
+
+- Comprar agora: `produtos`;
+- Ver ofertas: `ofertas`.
+
+O conteúdo deve ter aparência profissional e adequada a uma loja de eletrônicos, informática, acessórios e produtos diversos.
+
+### 4. Benefícios da loja
+
+Criar uma seção com quatro benefícios:
+
+- entrega rápida;
+- pagamento seguro;
+- troca facilitada;
+- atendimento ao cliente.
+
+Cada benefício deve possuir:
+
+- ícone;
+- título;
+- descrição curta.
+
+### 5. Categorias em destaque
+
+Criar uma seção responsiva chamada “Categorias em destaque”.
+
+Exibir pelo menos seis categorias:
+
+- Informática;
+- Celulares;
+- Acessórios;
+- Áudio;
+- Casa e decoração;
+- Games.
+
+Cada categoria deve possuir:
+
+- imagem;
+- título;
+- pequena descrição;
+- link para a respectiva rota.
+
+Utilizar caminhos de imagens locais, como:
+
+- `assets/img/categorias/informatica.jpg`;
+- `assets/img/categorias/celulares.jpg`;
+- `assets/img/categorias/acessorios.jpg`;
+- `assets/img/categorias/audio.jpg`;
+- `assets/img/categorias/casa.jpg`;
+- `assets/img/categorias/games.jpg`.
+
+Caso as imagens não existam, incluir um tratamento visual adequado para que os cards continuem organizados.
+
+### 6. Produtos em destaque
+
+Criar uma seção chamada “Produtos em destaque”.
+
+Exibir oito produtos fictícios em cards responsivos.
+
+Cada card deve possuir:
+
+- imagem do produto;
+- nome;
+- categoria;
+- preço anterior;
+- preço atual;
+- informação de parcelamento;
+- selo de desconto em alguns produtos;
+- avaliação com estrelas;
+- botão “Ver produto”;
+- botão com ícone para adicionar ao carrinho.
+
+Utilizar rotas com slug, por exemplo:
+
+- `produto/notebook-essencial-15`;
+- `produto/smartphone-connect`;
+- `produto/fone-bluetooth-air`;
+- `produto/teclado-confort-plus`;
+- `produto/mouse-sem-fio`;
+- `produto/monitor-full-hd`;
+- `produto/caixa-de-som-portatil`;
+- `produto/headset-gamer`.
+
+Utilizar imagens locais dentro de:
+
+`assets/img/produtos/`
+
+O botão “Adicionar ao carrinho” não precisa executar uma compra real. Ele deve possuir:
+
+- `type="button"`;
+- texto acessível;
+- atributo `aria-label`;
+- ícone do Bootstrap Icons.
+
+### 7. Banner de oferta
+
+Criar uma seção promocional contendo:
+
+- chamada de oferta;
+- desconto em destaque;
+- prazo ou informação promocional;
+- botão “Aproveitar ofertas”;
+- imagem promocional.
+
+O botão deve acessar:
+
+`ofertas`
+
+### 8. Produtos mais vendidos
+
+Criar uma seção com quatro produtos mais vendidos.
+
+Os cards podem ser menores que os cards da seção principal, mas devem continuar responsivos e acessíveis.
+
+### 9. Newsletter
+
+Criar uma seção para cadastro de newsletter contendo:
+
+- título;
+- descrição;
+- campo de e-mail;
+- checkbox de concordância com a Política de Privacidade;
+- botão “Cadastrar”.
+
+O formulário deve:
+
+- utilizar `method="post"`;
+- possuir `action="newsletter"`;
+- validar o campo de e-mail;
+- utilizar labels acessíveis;
+- possuir link para `politica-de-privacidade`;
+- não possuir processamento real em JavaScript.
+
+### 10. Rodapé
+
+Criar um rodapé completo dividido em colunas.
+
+#### Coluna Loja Online
+
+Adicionar:
+
+- descrição da loja;
+- telefone;
+- e-mail;
+- endereço fictício;
+- ícones de redes sociais.
+
+#### Coluna Institucional
+
+Adicionar:
+
+- Sobre a loja: `sobre`;
+- Contato: `contato`;
+- Trabalhe conosco: `trabalhe-conosco`.
+
+#### Coluna Atendimento
+
+Adicionar:
+
+- Central de ajuda: `ajuda`;
+- Perguntas frequentes: `faq`;
+- Rastrear pedido: `rastrear-pedido`;
+- Trocas e devoluções: `trocas-devolucoes`;
+- Política de entrega: `politica-de-entrega`.
+
+#### Coluna Minha conta
+
+Adicionar:
+
+- Entrar: `cliente/login`;
+- Criar conta: `cliente/cadastro`;
+- Meus pedidos: `cliente/pedidos`;
+- Carrinho: `carrinho`.
+
+#### Coluna Políticas
+
+Adicionar obrigatoriamente:
+
+- Termos de Uso: `termos-de-uso`;
+- Política de Privacidade: `politica-de-privacidade`;
+- Política de Cookies: `politica-de-cookies`;
+- Trocas e Devoluções: `trocas-devolucoes`.
+
+Na parte inferior do rodapé, exibir:
+
+- direitos autorais;
+- ano atual escrito diretamente no HTML;
+- texto “Loja Online”;
+- formas de pagamento aceitas;
+- indicação de ambiente seguro.
+
+## Design visual
+
+Utilize um visual:
+
+- moderno;
+- profissional;
+- limpo;
+- organizado;
+- adequado para comércio eletrônico;
+- responsivo em celulares, tablets e computadores.
+
+Aplicar:
+
+- espaçamento consistente;
+- bordas suaves;
+- sombras discretas;
+- cantos arredondados;
+- efeitos de hover;
+- cards com altura uniforme;
+- imagens com `object-fit: cover`;
+- títulos bem destacados;
+- contraste adequado;
+- paleta principal em azul, branco e tons neutros.
+
+Utilize classes do Bootstrap sempre que possível. Crie CSS personalizado somente para complementar o Bootstrap.
+
+## Responsividade
+
+A página deve funcionar corretamente nos seguintes tamanhos:
+
+- celular;
+- tablet;
+- notebook;
+- monitor grande.
+
+Ajustar especialmente:
+
+- navbar;
+- formulário de busca;
+- banner principal;
+- grade de categorias;
+- grade de produtos;
+- newsletter;
+- colunas do rodapé.
+
+## Acessibilidade
+
+Aplicar:
+
+- atributo `lang="pt-BR"`;
+- textos alternativos nas imagens;
+- labels nos campos de formulário;
+- `aria-label` em botões que possuem apenas ícones;
+- links com textos compreensíveis;
+- contraste adequado;
+- navegação possível pelo teclado;
+- uso correto de títulos `h1`, `h2` e `h3`.
+
+Deve existir apenas um `h1` na página.
+
+## SEO básico
+
+Adicionar no `<head>`:
+
+- charset UTF-8;
+- viewport;
+- título da página;
+- meta description;
+- meta keywords;
+- meta author;
+- Open Graph básico;
+- favicon em `assets/img/favicon.ico`.
+
+Sugestão de título:
+
+`Loja Online | Produtos, ofertas e tecnologia`
+
+Sugestão de descrição:
+
+`Encontre produtos de informática, celulares, acessórios, games e ofertas especiais em nossa loja online.`
+
+## Organização do código
+
+Organize o código com comentários como:
+
+- Cabeçalho superior;
+- Navbar;
+- Banner principal;
+- Benefícios;
+- Categorias;
+- Produtos em destaque;
+- Oferta;
+- Mais vendidos;
+- Newsletter;
+- Rodapé;
+- Scripts.
+
+Utilize indentação de quatro espaços.
+
+Não compacte o código.
+
+Não crie arquivos separados nesta primeira versão.
+
+Entregue todo o CSS dentro do próprio arquivo `home.html`.
+
+Entregue o código completo, desde:
+
+`<!doctype html>`
+
+até:
+
+`</html>`
+
+Não escreva explicações antes ou depois do código.
+
+Retorne somente o conteúdo completo do arquivo `home.html`.
