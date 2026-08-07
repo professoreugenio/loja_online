@@ -1,3 +1,8 @@
+<?php
+declare(strict_types=1);
+$tituloHero = $tituloHero ?? 'Encontre tudo o que precisa';
+$textoHero = $textoHero  ?? 'Produtos selecionados para você.';
+?>
 <section class="py-5 border-bottom">
             <div class="container">
                 <div class="row g-4">
@@ -10,7 +15,6 @@
                             </p>
                         </article>
                     </div>
-
                     <div class="col-md-6 col-xl-3">
                         <article class="beneficio-card h-100 p-4 border rounded-4 shadow-sm">
                             <div class="fs-2 mb-3" aria-hidden="true">💳</div>
@@ -20,7 +24,6 @@
                             </p>
                         </article>
                     </div>
-
                     <div class="col-md-6 col-xl-3">
                         <article class="beneficio-card h-100 p-4 border rounded-4 shadow-sm">
                             <div class="fs-2 mb-3" aria-hidden="true">🚚</div>
@@ -30,7 +33,6 @@
                             </p>
                         </article>
                     </div>
-
                     <div class="col-md-6 col-xl-3">
                         <article class="beneficio-card h-100 p-4 border rounded-4 shadow-sm">
                             <div class="fs-2 mb-3" aria-hidden="true">💬</div>

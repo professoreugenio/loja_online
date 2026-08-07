@@ -47,7 +47,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
 $rotas = array_merge(
     require $raizProjeto . '/routes/site.php',
     require $raizProjeto . '/routes/logadm.php',
-    require $raizProjeto . '/routes/admin.php'
+    require $raizProjeto . '/routes/admin.php',
+    require $raizProjeto . '/routes/produtos.php',
+    require $raizProjeto . '/routes/categorias.php'
 );
 /*
 |--------------------------------------------------------------------------

@@ -1,10 +1,15 @@
+<?php
+declare(strict_types=1);
+$tituloNewsletter = $tituloNewsletter ?? '*Receba novidades da loja';
+$textoNewsletter = $textoNewsletter  ?? '**Cadastre seu e-mail para receber informações sobre produtos e ofertas.';
+?>
 <section class="newsletter py-5 text-white">
             <div class="container py-3">
                 <div class="row align-items-center g-4">
                     <div class="col-lg-6">
-                        <h2 class="fw-bold">Receba novidades da loja</h2>
+                        <h2 class="fw-bold"><?= htmlspecialchars($tituloNewsletter, ENT_QUOTES, 'UTF-8') ?></h2>
                         <p class="mb-0 text-white-50">
-                            Cadastre seu e-mail para receber informações sobre produtos e ofertas.
+                            <?= htmlspecialchars($textoNewsletter, ENT_QUOTES, 'UTF-8') ?>
                         </p>
                     </div>
 

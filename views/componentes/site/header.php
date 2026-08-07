@@ -1,10 +1,14 @@
-
+<?php
+declare(strict_types=1);
+$tituloHeader = $tituloHeader ?? 'Loja Online';
+$textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
+?>
  <header class="sticky-top">
         <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm" aria-label="Menu principal">
             <div class="container py-2">
 
                 <a class="navbar-brand fw-bold fs-4 text-primary" href="./">
-                    🛍️ Loja Online
+                    🛍️ <?= htmlspecialchars($tituloHeader, ENT_QUOTES,'UTF-8'  );  ?>
                 </a>
 
                 <button
@@ -41,10 +45,10 @@
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="categoria/informatica">Informática</a></li>
-                                <li><a class="dropdown-item" href="categoria/celulares">Celulares</a></li>
-                                <li><a class="dropdown-item" href="categoria/acessorios">Acessórios</a></li>
-                                <li><a class="dropdown-item" href="categoria/casa">Casa e decoração</a></li>
+                                <li><a class="dropdown-item" href="categoria/?v=1">Informática</a></li>
+                                <li><a class="dropdown-item" href="categoria/?v=2">Celulares</a></li>
+                                <li><a class="dropdown-item" href="categoria/?v=3">Acessórios</a></li>
+                                <li><a class="dropdown-item" href="categoria/?v=4">Casa e decoração</a></li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="categorias">Ver todas</a></li>
                             </ul>

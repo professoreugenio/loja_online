@@ -1,9 +1,13 @@
+<?php
+declare(strict_types=1);
+$tituloCategorias = $tituloCategorias ?? '***Categorias em destaque';
+?>
 <section class="secao-suave py-5" id="categorias">
             <div class="container py-3">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
                     <div>
                         <span class="text-primary fw-semibold">Explore a loja</span>
-                        <h2 class="display-6 fw-bold mb-0">Categorias em destaque</h2>
+                        <h2 class="display-6 fw-bold mb-0"><?= htmlspecialchars($tituloCategorias, ENT_QUOTES, 'UTF-8') ?></h2>
                     </div>
 
                     <a class="btn btn-outline-primary" href="categorias">Ver todas</a>

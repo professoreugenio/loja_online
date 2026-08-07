@@ -1,9 +1,14 @@
+<?php
+declare(strict_types=1);
+$tituloDestaque = $tituloDestaque ?? '*Escolhas populares';
+$textoDestaque = $textoDestaque  ?? '**Produtos em destaque para você';
+?>
 <section class="py-5" id="produtos-destaque">
             <div class="container py-3">
                 <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-end gap-3 mb-4">
                     <div>
-                        <span class="text-primary fw-semibold">Escolhas populares</span>
-                        <h2 class="display-6 fw-bold mb-0">Produtos em destaque</h2>
+                        <span class="text-primary fw-semibold"><?= htmlspecialchars($tituloDestaque, ENT_QUOTES, 'UTF-8') ?></span>
+                        <h2 class="display-6 fw-bold mb-0"><?= htmlspecialchars($textoDestaque, ENT_QUOTES, 'UTF-8') ?></h2>
                     </div>
 
                     <a class="btn btn-outline-primary" href="produtos">Ver catálogo</a>

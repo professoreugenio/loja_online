@@ -29,10 +29,7 @@ final class View
             );
         }
 
-        $arquivo = APP_ROOT
-            . '/views/components/'
-            . $nome
-            . '.php';
+        $arquivo = APP_ROOT. '/views/componentes/site/'. $nome. '.php';
 
         if (!is_file($arquivo)) {
             throw new RuntimeException(
