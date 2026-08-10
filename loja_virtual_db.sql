@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Tempo de geração: 05/08/2026 às 21:37
+-- Tempo de geração: 10/08/2026 às 21:32
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -61,6 +61,7 @@ CREATE TABLE `carrinho_itens` (
 CREATE TABLE `categorias` (
   `id` int(10) UNSIGNED NOT NULL,
   `nome` varchar(100) NOT NULL,
+  `imgcategoria` varchar(150) DEFAULT NULL,
   `slug` varchar(120) NOT NULL,
   `descricao` varchar(255) DEFAULT NULL,
   `ativo` tinyint(1) NOT NULL DEFAULT 1,
@@ -280,7 +281,7 @@ CREATE TABLE `usuarios_admin` (
 
 INSERT INTO `usuarios_admin` (`id`, `nome`, `email`, `senha_hash`, `status`, `ultimo_acesso`, `criado_em`, `atualizado_em`) VALUES
 (1, 'Professor Eugênio', 'professoreugeniomls@gmail.com', '$2y$10$Vx407iuQ2RkUqqBd3I07..iOu.zWW2jnwareqYRcntXV7r/QiYtyK', 'ativo', '2026-07-31 12:06:10', '2026-07-30 15:43:30', '2026-07-31 15:06:10'),
-(2, 'Admin', 'admin@admin.com', '$2y$10$lJz5JNpabVU.92I/OK2Ry.O9fpr6v0xs0eJvwUbgjW6cm30mv55CW', 'ativo', '2026-08-05 15:39:18', '2026-08-03 16:15:18', '2026-08-05 18:39:18');
+(2, 'Admin', 'admin@admin.com', '$2y$10$lJz5JNpabVU.92I/OK2Ry.O9fpr6v0xs0eJvwUbgjW6cm30mv55CW', 'ativo', '2026-08-10 13:13:38', '2026-08-03 16:15:18', '2026-08-10 16:13:38');
 
 -- --------------------------------------------------------
 

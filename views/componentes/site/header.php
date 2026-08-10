@@ -45,12 +45,10 @@ $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="categoria/?v=1">Informática</a></li>
-                                <li><a class="dropdown-item" href="categoria/?v=2">Celulares</a></li>
-                                <li><a class="dropdown-item" href="categoria/?v=3">Acessórios</a></li>
-                                <li><a class="dropdown-item" href="categoria/?v=4">Casa e decoração</a></li>
+                                <li><a class="dropdown-item" href="categoria/?cat=idencryptado">nome</a></li>
+                                
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="categoria/?v=0">Ver todas</a></li>
+                                <li><a class="dropdown-item" href="categoria">Ver todas</a></li>
                             </ul>
                         </li>
 
