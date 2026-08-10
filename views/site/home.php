@@ -37,22 +37,26 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
 <body>
     <!-- ============================================================
          1. BARRA SUPERIOR
-    ============================================================= -->
-    <?php require_once APP_ROOT  . '/views/componentes/site/sections/barraSuperior.php'; ?>
+    =====================   ======================================== -->
+    <?php //require_once APP_ROOT  . '/views/componentes/site/sections/barraSuperior.php'; ?>
+    <?php View::componente('sections/barraSuperior');?>
     <!-- ============================================================
          2. MENU PRINCIPAL
     ============================================================= -->
-    <?php //require_once APP_ROOT  . '/views/layouts/site/header.php'; ?>
-    <?php require_once APP_ROOT  . '/views/componentes/site/header.php'; ?>
+  
+    <?php //require_once APP_ROOT  . '/views/componentes/site/header.php'; ?>
+  <?php View::componente('header');?>
     <main>
         <!-- ========================================================
              3. DESTAQUE PRINCIPAL
         ========================================================= -->
-        <?php require_once APP_ROOT  . '/views/componentes/site/sections/destaquePrincipal.php'; ?>
+        <?php //require_once APP_ROOT  . '/views/componentes/site/sections/destaquePrincipal.php'; ?>
+        <?php View::componente('sections/destaquePrincipal');?>
         <!-- ========================================================
              4. BENEFÍCIOS
         ========================================================= -->
-        <?php require_once APP_ROOT  . '/views/componentes/site/sections/beneficios.php'; ?>
+        <?php //require_once APP_ROOT  . '/views/componentes/site/sections/beneficios.php'; ?>
+        <?php View::componente('sections/beneficios');?>
         <!-- ========================================================
              5. CATEGORIAS
         ========================================================= -->
@@ -60,24 +64,29 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
   
         <hr>
 
-        <?php require_once APP_ROOT  . '/views/componentes/site/sections/categorias.php'; ?>
+        <?php //require_once APP_ROOT  . '/views/componentes/site/sections/categorias.php'; ?>
+        <?php View::componente('sections/categorias');?>
         <!-- ========================================================
              6. PRODUTOS EM DESTAQUE
         ========================================================= -->
-        <?php require_once APP_ROOT  . '/views/componentes/site/sections/produtosDestaque.php'; ?>
+        <?php //require_once APP_ROOT  . '/views/componentes/site/sections/produtosDestaque.php'; ?>
+        <?php View::componente('sections/produtosDestaque');?>
         <!-- ========================================================
              7. CHAMADA PROMOCIONAL
         ========================================================= -->
-        <?php require_once APP_ROOT  . '/views/componentes/site/sections/chamadapromocional.php'; ?>
+        <?php //require_once APP_ROOT  . '/views/componentes/site/sections/chamadapromocional.php'; ?>
+        <?php View::componente('sections/chamadapromocional');?>
         <!-- ========================================================
              8. NEWSLETTER
         ========================================================= -->
-        <?php require_once APP_ROOT  . '/views/componentes/site/sections/newsletter.php'; ?>
+        <?php //require_once APP_ROOT  . '/views/componentes/site/sections/newsletter.php'; ?>
+        <?php View::componente('sections/newsletter');?>
     </main>
     <!-- ============================================================
          9. RODAPÉ
     ============================================================= -->
-    <?php require_once __DIR__ . '/../layouts/site/footer.php'; ?>
+    <?php View::componente('footer');?>
+    <?php //require_once __DIR__ . '/../layouts/site/footer.php'; ?>
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"

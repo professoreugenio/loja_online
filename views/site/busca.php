@@ -1,5 +1,6 @@
 <?php
 declare(strict_types=1);
+use App\Helpers\View;
 $tituloPagina = $tituloPagina   ?? 'Busca';
 $descricaoPagina = $descricaoPagina ?? 'Loja online com produtos, ofertas, atendimento ao cliente e compra segura.';
 $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
@@ -33,7 +34,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
     <!-- ============================================================
          2. MENU PRINCIPAL
     ============================================================= -->
-    <?php require_once APP_ROOT  . '/views/componentes/site/header.php'; ?>
+    <?php View::componente('header');?>
     <main>
         <div class="container">
             <div class="row">
@@ -47,7 +48,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
     <!-- ============================================================
          9. RODAPÉ
     ============================================================= -->
-    <?php require_once __DIR__ . '/../layouts/site/footer.php'; ?>
+    <?php View::componente('footer');?>
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
