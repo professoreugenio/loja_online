@@ -50,7 +50,7 @@ $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
                                 <li><a class="dropdown-item" href="categoria/?v=3">Acessórios</a></li>
                                 <li><a class="dropdown-item" href="categoria/?v=4">Casa e decoração</a></li>
                                 <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="categorias">Ver todas</a></li>
+                                <li><a class="dropdown-item" href="categoria/?v=0">Ver todas</a></li>
                             </ul>
                         </li>
 
@@ -70,11 +70,11 @@ $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="ajuda">Central de ajuda</a></li>
-                                <li><a class="dropdown-item" href="faq">Perguntas frequentes</a></li>
-                                <li><a class="dropdown-item" href="rastrear-pedido">Rastrear pedido</a></li>
-                                <li><a class="dropdown-item" href="trocas-devolucoes">Trocas e devoluções</a></li>
-                                <li><a class="dropdown-item" href="contato">Fale conosco</a></li>
+                                <li><a class="dropdown-item" href="ajuda/central">Central de ajuda</a></li>
+                                <li><a class="dropdown-item" href="ajuda/perguntas">Perguntas frequentes</a></li>
+                                <li><a class="dropdown-item" href="ajuda/rastreio">Rastrear pedido</a></li>
+                                <li><a class="dropdown-item" href="ajuda/trocas">Trocas e devoluções</a></li>
+                                <li><a class="dropdown-item" href="ajuda/contato">Fale conosco</a></li>
                             </ul>
                         </li>
                     </ul>

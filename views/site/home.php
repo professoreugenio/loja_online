@@ -56,6 +56,10 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
         <!-- ========================================================
              5. CATEGORIAS
         ========================================================= -->
+        <hr>
+  
+        <hr>
+
         <?php require_once APP_ROOT  . '/views/componentes/site/sections/categorias.php'; ?>
         <!-- ========================================================
              6. PRODUTOS EM DESTAQUE
