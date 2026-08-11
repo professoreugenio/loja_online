@@ -8,61 +8,65 @@ use PDO;
 
 final class CategoriaRepository
 {
+    private PDO $pdo;
+
     public function __construct(
-        private PDO $pdo
+        PDO $pdo
     ) {
+        $this->pdo = $pdo;
     }
 
-    /**
-     * Retorna somente categorias ativas.
-     */
     public function listarAtivas(): array
     {
-        $sql = "
+        $sql = '
             SELECT
                 id,
                 nome,
-                slug,
                 imgcategoria,
+                slug,
                 descricao
             FROM categorias
             WHERE ativo = 1
             ORDER BY nome ASC
-        ";
+        ';
 
-        $stmt = $this->pdo->prepare($sql);
+        $consulta =
+            $this->pdo->prepare($sql);
 
-        $stmt->execute();
+        $consulta->execute();
 
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+        return $consulta->fetchAll();
     }
 
-    /**
-     * Localiza uma categoria pelo slug.
-     */
-    public function buscarPorSlug(string $slug): ?array
-    {
-        $sql = "
+    public function buscarPorId(
+        int $id
+    ): ?array {
+
+        $sql = '
             SELECT
                 id,
                 nome,
-                slug,
                 imgcategoria,
+                slug,
                 descricao
             FROM categorias
-            WHERE slug = :slug
+            WHERE id = :id
               AND ativo = 1
             LIMIT 1
-        ";
+        ';
 
-        $stmt = $this->pdo->prepare($sql);
+        $consulta =
+            $this->pdo->prepare($sql);
 
-        $stmt->execute([
-            'slug' => $slug
+        $consulta->execute([
+            'id' => $id,
         ]);
 
-        $categoria = $stmt->fetch(PDO::FETCH_ASSOC);
+        $categoria =
+            $consulta->fetch();
 
-        return $categoria ?: null;
+        return is_array($categoria)
+            ? $categoria
+            : null;
     }
 }

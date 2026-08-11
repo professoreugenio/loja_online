@@ -4,74 +4,100 @@ declare(strict_types=1);
 
 use Dotenv\Dotenv;
 
-$raizProjeto = dirname(__DIR__);
+final class Config
+{
+    private static ?PDO $conexao = null;
 
-require_once $raizProjeto . '/vendor/autoload.php';
+    private function __construct()
+    {
+    }
 
-$dotenv = Dotenv::createImmutable(
-    $raizProjeto
-);
+    public static function connect(): PDO
+    {
+        if (self::$conexao instanceof PDO) {
+            return self::$conexao;
+        }
 
-$dotenv->safeLoad();
+        $raizProjeto = dirname(__DIR__);
 
-$host = (string) (
-    $_ENV['DB_HOST'] ?? 'localhost'
-);
+        require_once $raizProjeto
+            . '/vendor/autoload.php';
 
-$porta = (string) (
-    $_ENV['DB_PORT'] ?? '3307'
-);
+        $dotenv = Dotenv::createImmutable(
+            $raizProjeto
+        );
 
-$banco = (string) (
-    $_ENV['DB_DATABASE'] ?? ''
-);
+        $dotenv->safeLoad();
 
-$usuario = (string) (
-    $_ENV['DB_USERNAME'] ?? 'root'
-);
+        $host = (string) (
+            $_ENV['DB_HOST']
+                ?? 'localhost'
+        );
 
-$senha = (string) (
-    $_ENV['DB_PASSWORD'] ?? ''
-);
+        $porta = (string) (
+            $_ENV['DB_PORT']
+                ?? '3307'
+        );
 
-if ($banco === '') {
-    throw new RuntimeException(
-        'A variável DB_DATABASE não foi configurada.'
-    );
-}
+        $banco = (string) (
+            $_ENV['DB_DATABASE']
+                ?? ''
+        );
 
-$dsn = sprintf(
-    'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
-    $host,
-    $porta,
-    $banco
-);
+        $usuario = (string) (
+            $_ENV['DB_USERNAME']
+                ?? 'root'
+        );
 
-try {
-    return new PDO(
-        $dsn,
-        $usuario,
-        $senha,
-        [
-            PDO::ATTR_ERRMODE =>
-            PDO::ERRMODE_EXCEPTION,
+        $senha = (string) (
+            $_ENV['DB_PASSWORD']
+                ?? ''
+        );
 
-            PDO::ATTR_DEFAULT_FETCH_MODE =>
-            PDO::FETCH_ASSOC,
+        if ($banco === '') {
+            throw new RuntimeException(
+                'A variável DB_DATABASE não foi configurada.'
+            );
+        }
 
-            PDO::ATTR_EMULATE_PREPARES =>
-            false,
-        ]
-    );
-} catch (PDOException $erro) {
-    error_log(
-        '[CONEXÃO COM O BANCO] '
-            . $erro->getMessage()
-    );
+        $dsn = sprintf(
+            'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
+            $host,
+            $porta,
+            $banco
+        );
 
-    throw new RuntimeException(
-        'Não foi possível conectar ao banco de dados.',
-        0,
-        $erro
-    );
+        try {
+            self::$conexao = new PDO(
+                $dsn,
+                $usuario,
+                $senha,
+                [
+                    PDO::ATTR_ERRMODE =>
+                        PDO::ERRMODE_EXCEPTION,
+
+                    PDO::ATTR_DEFAULT_FETCH_MODE =>
+                        PDO::FETCH_ASSOC,
+
+                    PDO::ATTR_EMULATE_PREPARES =>
+                        false,
+                ]
+            );
+
+            return self::$conexao;
+
+        } catch (PDOException $erro) {
+
+            error_log(
+                '[CONEXÃO COM O BANCO] '
+                . $erro->getMessage()
+            );
+
+            throw new RuntimeException(
+                'Não foi possível conectar ao banco de dados.',
+                0,
+                $erro
+            );
+        }
+    }
 }

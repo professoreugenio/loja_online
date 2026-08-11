@@ -45,11 +45,39 @@ $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
                             </a>
 
                             <ul class="dropdown-menu">
-                                <li><a class="dropdown-item" href="categoria/?cat=idencryptado">nome</a></li>
-                                
-                                <li><hr class="dropdown-divider"></li>
-                                <li><a class="dropdown-item" href="categoria">Ver todas</a></li>
-                            </ul>
+
+    <?php foreach ($categorias as $categoria): ?>
+
+        <li>
+
+            <a
+                class="dropdown-item"
+                href="<?=
+                    BASE_URL
+                ?>/categorias?cat=<?=
+                    urlencode(
+                        $categoria['id_seguro']
+                    )
+                ?>"
+            >
+
+                <?=
+                    htmlspecialchars(
+                        $categoria['nome'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    )
+                ?>
+
+            </a>
+
+        </li>
+
+    <?php endforeach; ?>
+    <li><a class="dropdown-item" href="categoria">Ver todas</a></li>
+
+</ul>
+
                         </li>
 
                         <li class="nav-item">
