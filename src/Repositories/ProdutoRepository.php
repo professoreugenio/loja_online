@@ -17,6 +17,75 @@ final class ProdutoRepository
     }
 
 
+    /**
+ * Lista todos os produtos ativos.
+ */
+public function listarTodos(
+    int $limite = 60
+): array {
+
+    $sql = '
+        SELECT
+            p.id,
+            p.categoria_id,
+            p.nome,
+            p.slug,
+            p.descricao,
+            p.preco,
+            p.estoque,
+
+            c.nome AS categoria,
+
+            (
+                SELECT pi.url_imagem
+                FROM produto_imagens pi
+
+                WHERE pi.produto_id = p.id
+
+                ORDER BY
+                    pi.principal DESC,
+                    pi.ordem ASC,
+                    pi.id ASC
+
+                LIMIT 1
+            ) AS imagem
+
+        FROM produtos p
+
+        INNER JOIN categorias c
+            ON c.id = p.categoria_id
+
+        WHERE p.status = :status
+          AND c.ativo = 1
+
+        ORDER BY
+            p.nome ASC
+
+        LIMIT :limite
+    ';
+
+    $consulta =
+        $this->pdo->prepare(
+            $sql
+        );
+
+    $consulta->bindValue(
+        ':status',
+        'ativo',
+        PDO::PARAM_STR
+    );
+
+    $consulta->bindValue(
+        ':limite',
+        $limite,
+        PDO::PARAM_INT
+    );
+
+    $consulta->execute();
+
+    return $consulta->fetchAll();
+}
+
     public function listarPorCategoria(
         int $categoriaId,
         int $limite = 24

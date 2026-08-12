@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 use App\Helpers\View;
 
 $tituloPagina = $tituloPagina
@@ -52,8 +50,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
     <?php //require_once APP_ROOT  . '/views/componentes/site/header.php'; 
     ?>
-    <?php //View::componente('header');
-    ?>
+    <?php //View::componente('header'); ?>
     <?php
 
     View::componente('header', ['categorias' => $categorias,]);

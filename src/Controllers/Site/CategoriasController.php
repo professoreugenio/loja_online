@@ -1,141 +1,207 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controllers\Site;
-
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
 use Config;
 use RuntimeException;
-
 class CategoriasController
 {
     public function index(): void
     {
         /*
-         * 1. Recebe o token criptografado da URL
-         *
-         * Exemplo:
-         * /categoria?cat=TOKEN_CRIPTOGRAFADO
-         */
+        |--------------------------------------------------------------------------
+        | 1. Carrega a conexão/configurações
+        |--------------------------------------------------------------------------
+        */
+        require_once APP_ROOT
+            . '/database/conexao.php';
+        $pdo =
+            Config::connect();
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Recebe o token da categoria
+        |--------------------------------------------------------------------------
+        |
+        | Exemplo:
+        |
+        | /categorias?cat=TOKEN
+        |
+        */
         $token = trim(
             (string) (
                 $_GET['cat']
                 ?? ''
             )
         );
-
         /*
-         * 2. Verifica se o parâmetro foi informado
-         */
+        |--------------------------------------------------------------------------
+        | 3. Verifica se o token foi informado
+        |--------------------------------------------------------------------------
+        */
         if ($token === '') {
-            $this->pagina404();
+            $this->pagina404(
+                'Token da categoria não informado.'
+            );
             return;
         }
-
         /*
-         * 3. Descriptografa o ID da categoria
-         */
+        |--------------------------------------------------------------------------
+        | 4. Descriptografa o ID
+        |--------------------------------------------------------------------------
+        */
         $categoriaId =
             IdSeguro::descriptografar(
                 $token
             );
-
+        /*
+        |--------------------------------------------------------------------------
+        | 5. Verifica se o token é válido
+        |--------------------------------------------------------------------------
+        */
         if ($categoriaId === null) {
-            $this->pagina404();
+            $this->pagina404(
+                'Não foi possível descriptografar o token da categoria.'
+            );
             return;
         }
-
         /*
-         * 4. Conecta ao banco de dados
-         */
-        require_once APP_ROOT
-            . '/database/conexao.php';
-
-        $pdo = Config::connect();
-
-        /*
-         * 5. Instancia os repositories
-         */
+        |--------------------------------------------------------------------------
+        | 6. Instancia os repositories
+        |--------------------------------------------------------------------------
+        */
         $categoriaRepository =
             new CategoriaRepository(
                 $pdo
             );
-
         $produtoRepository =
             new ProdutoRepository(
                 $pdo
             );
-
         /*
-         * 6. Busca a categoria
-         */
+        |--------------------------------------------------------------------------
+        | 7. Busca primeiro a categoria selecionada
+        |--------------------------------------------------------------------------
+        */
         $categoria =
             $categoriaRepository
                 ->buscarPorId(
                     $categoriaId
                 );
-
         /*
-         * Categoria não encontrada
-         */
+        |--------------------------------------------------------------------------
+        | 8. Verifica se a categoria existe
+        |--------------------------------------------------------------------------
+        */
         if ($categoria === null) {
-            $this->pagina404();
+            $this->pagina404(
+                'Categoria não encontrada. ID: '
+                . $categoriaId
+            );
             return;
         }
-
         /*
-         * 7. Busca os produtos da categoria
-         */
+        |--------------------------------------------------------------------------
+        | 9. Busca os produtos da categoria
+        |--------------------------------------------------------------------------
+        */
         $produtos =
             $produtoRepository
                 ->listarPorCategoria(
                     $categoriaId
                 );
-
         /*
-         * 8. Carrega a página
-         */
+        |--------------------------------------------------------------------------
+        | 10. Busca categorias para o HEADER
+        |--------------------------------------------------------------------------
+        */
+        $categorias =
+            $categoriaRepository
+                ->listarAtivas();
+        /*
+        |--------------------------------------------------------------------------
+        | 11. Adiciona id_seguro para os links do HEADER
+        |--------------------------------------------------------------------------
+        */
+        $categorias = array_map(
+            static function (
+                array $item
+            ): array {
+                $item['id_seguro'] =
+                    IdSeguro::criptografar(
+                        (int) $item['id']
+                    );
+                return $item;
+            },
+            $categorias
+        );
+        /*
+        |--------------------------------------------------------------------------
+        | 12. Dados da página
+        |--------------------------------------------------------------------------
+        */
+        $tituloPagina =
+            $categoria['nome']
+            . ' - Loja Online';
+        $descricaoPagina =
+            !empty($categoria['descricao'])
+                ? (string) $categoria['descricao']
+                : 'Produtos da categoria '
+                    . $categoria['nome'];
+        /*
+        |--------------------------------------------------------------------------
+        | 13. Localiza a View
+        |--------------------------------------------------------------------------
+        */
         $arquivoView =
             APP_ROOT
             . '/views/site/categorias.php';
-
         if (!is_file($arquivoView)) {
             throw new RuntimeException(
-                'A página de categorias não foi encontrada.'
+                'A página de categorias não foi encontrada: '
+                . $arquivoView
             );
         }
-
         /*
-         * As variáveis:
-         *
-         * $categoria
-         * $produtos
-         *
-         * estarão disponíveis dentro de categorias.php
-         */
+        |--------------------------------------------------------------------------
+        | 14. Carrega a View
+        |--------------------------------------------------------------------------
+        |
+        | Variáveis disponíveis:
+        |
+        | $categorias
+        | $categoria
+        | $produtos
+        | $tituloPagina
+        | $descricaoPagina
+        |
+        */
         require $arquivoView;
     }
-
-
     /**
-     * Exibe a página de erro 404
+     * Exibe a página 404.
      */
-    private function pagina404(): void
-    {
+    private function pagina404(
+        string $motivo = ''
+    ): void {
+        /*
+         * Registra o motivo real no log do PHP.
+         */
+        if ($motivo !== '') {
+            error_log(
+                'CategoriasController: '
+                . $motivo
+            );
+        }
         http_response_code(404);
-
         $arquivo404 =
             APP_ROOT
             . '/views/erros/404.php';
-
         if (is_file($arquivo404)) {
             require $arquivo404;
             return;
         }
-
         echo 'Página não encontrada.';
     }
 }
