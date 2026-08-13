@@ -1,14 +1,10 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controllers\Site;
-
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
 use RuntimeException;
-
 class ProdutosController
 {
     public function index(): void
@@ -20,8 +16,6 @@ class ProdutosController
         */
         $raizProjeto =
             dirname(__DIR__, 3);
-
-
         /*
         |--------------------------------------------------------------------------
         | 2. Conexão com o banco
@@ -29,11 +23,8 @@ class ProdutosController
         */
         require_once $raizProjeto
             . '/database/conexao.php';
-
         $pdo =
             \Config::connect();
-
-
         /*
         |--------------------------------------------------------------------------
         | 3. Categorias do menu
@@ -43,12 +34,9 @@ class ProdutosController
             new CategoriaRepository(
                 $pdo
             );
-
         $categorias =
             $categoriaRepository
                 ->listarAtivas();
-
-
         /*
         |--------------------------------------------------------------------------
         | 4. Gera o ID seguro das categorias
@@ -58,16 +46,12 @@ class ProdutosController
             $categorias
             as &$categoria
         ) {
-
             $categoria['id_seguro'] =
                 IdSeguro::criptografar(
                     (int) $categoria['id']
                 );
         }
-
         unset($categoria);
-
-
         /*
         |--------------------------------------------------------------------------
         | 5. Busca os produtos
@@ -77,12 +61,9 @@ class ProdutosController
             new ProdutoRepository(
                 $pdo
             );
-
         $produtos =
             $produtoRepository
                 ->listarTodos();
-
-
         /*
         |--------------------------------------------------------------------------
         | 6. Localiza a View
@@ -91,16 +72,11 @@ class ProdutosController
         $arquivoView =
             $raizProjeto
             . '/views/site/produtos.php';
-
-
         if (!is_file($arquivoView)) {
-
             throw new RuntimeException(
                 'A página de produtos não foi encontrada.'
             );
         }
-
-
         /*
         |--------------------------------------------------------------------------
         | 7. Carrega a View

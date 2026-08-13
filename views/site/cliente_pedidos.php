@@ -34,7 +34,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
     <!-- ============================================================
          2. MENU PRINCIPAL
     ============================================================= -->
-    <?php View::componente('header');?>
+    <?php View::componente('header', ['categorias' => $categorias,]); ?>
     <main>
         <div class="container">
             <div class="row">

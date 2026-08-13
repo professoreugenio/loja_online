@@ -6,18 +6,32 @@ namespace App\Controllers\Site;
 
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
-use App\Repositories\ProdutoRepository;
 use RuntimeException;
 
-class HomeController
+class ClienteLoginController
 {
     public function index(): void
     {
-        
-        $raizProjeto =dirname(__DIR__, 3);
-        require_once $raizProjeto . '/database/conexao.php';
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Raiz do projeto
+        |--------------------------------------------------------------------------
+        */
+        $raizProjeto =
+            dirname(__DIR__, 3);
 
-        $pdo =\Config::connect();
+
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Conexão com o banco
+        |--------------------------------------------------------------------------
+        */
+        require_once $raizProjeto
+            . '/database/conexao.php';
+
+
+        $pdo =
+            \Config::connect();
 
 
         /*
@@ -29,6 +43,7 @@ class HomeController
             new CategoriaRepository(
                 $pdo
             );
+
 
         $categorias =
             $categoriaRepository
@@ -48,26 +63,20 @@ class HomeController
                 );
         }
 
+
         unset($categoria);
 
 
         /*
         |--------------------------------------------------------------------------
-        | 5. Produtos
+        | 5. Dados específicos da página
         |--------------------------------------------------------------------------
+        |
+        | Futuramente:
+        |
+        | $ofertas = ...
+        |
         */
-        $produtoRepository =
-            new ProdutoRepository(
-                $pdo
-            );
-
-        $produtosDestaque =
-            $produtoRepository
-                ->listarDestaques(10);
-
-        $maisVendidos =
-            $produtoRepository
-                ->listarMaisVendidos(10);
 
 
         /*
@@ -77,13 +86,13 @@ class HomeController
         */
         $arquivoView =
             $raizProjeto
-            . '/views/site/home.php';
+            . '/views/site/cliente_login.php';
 
 
         if (!is_file($arquivoView)) {
 
             throw new RuntimeException(
-                'A página inicial não foi encontrada.'
+                'A página de ofertas não foi encontrada.'
             );
         }
 
@@ -92,6 +101,10 @@ class HomeController
         |--------------------------------------------------------------------------
         | 7. Carrega a View
         |--------------------------------------------------------------------------
+        |
+        | $categorias estará disponível
+        | dentro de ofertas.php.
+        |
         */
         require $arquivoView;
     }

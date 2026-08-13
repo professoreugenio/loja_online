@@ -17,8 +17,12 @@ final class LoginAdminController
 
     public function __construct()
     {
-        $pdo = require APP_ROOT
-            . '/database/conexao.php';
+        
+
+        $raizProjeto =dirname(__DIR__, 3);
+        require_once $raizProjeto . '/database/conexao.php';
+
+        $pdo =\Config::connect();
 
         if (!$pdo instanceof PDO) {
             throw new \RuntimeException(
