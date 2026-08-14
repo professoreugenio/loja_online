@@ -1,6 +1,7 @@
 <?php
 declare(strict_types=1);
 use App\Helpers\View;
+use App\Helpers\Cpf;
 
 $tituloPagina = $tituloPagina
     ?? 'Loja Online';
@@ -68,6 +69,8 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                     <h2 class="fw-bold mb-1">
                         Produtos em Destaque
                     </h2>
+
+                    
 
                     <p class="text-muted mb-0">
                         Confira alguns produtos selecionados para você.

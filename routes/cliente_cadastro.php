@@ -1,17 +1,21 @@
 <?php
-
 declare(strict_types=1);
-
-use App\Controllers\Site\ClienteCadastroController;
-
+use App\Controllers\Cliente\ClienteCadastroController;
 return [
     [
         'method' => 'GET',
         'path' => '/cliente/cadastro',
         'action' => [
             ClienteCadastroController::class,
-            'index',
+            'formulario',
         ],
     ],
-    
+    [
+        'method' => 'POST',
+        'path' => '/cliente/cadastrar',
+        'action' => [
+            ClienteCadastroController::class,
+            'cadastrar',
+        ],
+    ],
 ];
