@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Tempo de geração: 11/08/2026 às 22:04
+-- Tempo de geração: 14/08/2026 às 21:47
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -77,7 +77,8 @@ INSERT INTO `categorias` (`id`, `nome`, `imgcategoria`, `slug`, `descricao`, `at
 (1, 'Informática', 'informatica.webp', 'informatica', 'Computadores, notebooks, monitores, componentes e equipamentos de informática.', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
 (2, 'Celulares', 'celulares.webp', 'celulares', 'Smartphones e dispositivos móveis para comunicação e entretenimento.', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
 (3, 'Acessórios', 'acessorios.webp', 'acessorios', 'Acessórios para computadores, celulares e dispositivos eletrônicos.', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(4, 'Casa e Decoração', 'casa-decoracao.webp', 'casa-decoracao', 'Produtos para organização, conforto, iluminação e decoração da casa.', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39');
+(4, 'Casa e Decoração', 'casa-decoracao.webp', 'casa-decoracao', 'Produtos para organização, conforto, iluminação e decoração da casa.', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(5, 'teste', 'teste', 'teste', 'descricao teste', 1, '2026-08-14 19:16:53', '2026-08-14 19:16:53');
 
 -- --------------------------------------------------------
 
@@ -246,6 +247,10 @@ CREATE TABLE `produtos` (
   `slug` varchar(180) NOT NULL,
   `descricao` text DEFAULT NULL,
   `preco` decimal(10,2) UNSIGNED NOT NULL,
+  `oferta_ativa` tinyint(1) NOT NULL DEFAULT 0,
+  `percentual_oferta` decimal(5,2) DEFAULT NULL,
+  `oferta_inicio` datetime DEFAULT NULL,
+  `oferta_fim` datetime DEFAULT NULL,
   `estoque` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `status` enum('ativo','inativo') NOT NULL DEFAULT 'ativo',
   `destaque` tinyint(1) NOT NULL DEFAULT 0,
@@ -257,47 +262,47 @@ CREATE TABLE `produtos` (
 -- Despejando dados para a tabela `produtos`
 --
 
-INSERT INTO `produtos` (`id`, `categoria_id`, `nome`, `slug`, `descricao`, `preco`, `estoque`, `status`, `destaque`, `criado_em`, `atualizado_em`) VALUES
-(1, 1, 'Notebook Core i5 16GB SSD 512GB', 'notebook-core-i5-16gb-ssd-512gb', 'Notebook com processador Intel Core i5, 16GB de memória RAM e SSD de 512GB.', 3299.90, 15, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(2, 1, 'Notebook Ryzen 5 8GB SSD 512GB', 'notebook-ryzen-5-8gb-ssd-512gb', 'Notebook com processador AMD Ryzen 5, 8GB de memória RAM e SSD de 512GB.', 2899.90, 12, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(3, 1, 'Computador Desktop Core i5 16GB', 'computador-desktop-core-i5-16gb', 'Computador desktop com processador Core i5, 16GB de memória RAM e SSD.', 2499.90, 10, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(4, 1, 'Monitor LED 24 Polegadas Full HD', 'monitor-led-24-full-hd', 'Monitor LED de 24 polegadas com resolução Full HD e conexão HDMI.', 699.90, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(5, 1, 'Monitor Gamer 27 Polegadas 165Hz', 'monitor-gamer-27-165hz', 'Monitor gamer de 27 polegadas com frequência de atualização de 165Hz.', 1399.90, 8, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(6, 1, 'SSD 480GB SATA', 'ssd-480gb-sata', 'Unidade de armazenamento SSD SATA com capacidade de 480GB.', 249.90, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(7, 1, 'SSD NVMe 1TB', 'ssd-nvme-1tb', 'SSD NVMe de alto desempenho com capacidade de armazenamento de 1TB.', 449.90, 22, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(8, 1, 'Memória RAM DDR4 8GB', 'memoria-ram-ddr4-8gb', 'Memória RAM DDR4 de 8GB para computadores desktop.', 179.90, 40, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(9, 1, 'Memória RAM DDR4 16GB', 'memoria-ram-ddr4-16gb', 'Memória RAM DDR4 de 16GB para expansão de computadores.', 299.90, 28, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(10, 1, 'Roteador Wi-Fi Dual Band', 'roteador-wifi-dual-band', 'Roteador Wi-Fi Dual Band para redes domésticas e pequenos escritórios.', 289.90, 18, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(11, 2, 'Smartphone 128GB 6GB RAM Preto', 'smartphone-128gb-6gb-preto', 'Smartphone com armazenamento de 128GB, 6GB de memória RAM e câmera de alta resolução.', 1299.90, 20, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(12, 2, 'Smartphone 256GB 8GB RAM Azul', 'smartphone-256gb-8gb-azul', 'Smartphone com 256GB de armazenamento, 8GB de RAM e tela de alta definição.', 1899.90, 16, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(13, 2, 'Smartphone 5G 128GB', 'smartphone-5g-128gb', 'Smartphone compatível com redes 5G e armazenamento interno de 128GB.', 1599.90, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(14, 2, 'Smartphone 5G 256GB', 'smartphone-5g-256gb', 'Smartphone 5G com armazenamento de 256GB e câmera traseira de alta resolução.', 2199.90, 14, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(15, 2, 'Smartphone Tela 6.5 128GB', 'smartphone-tela-6-5-128gb', 'Smartphone com tela de 6.5 polegadas e armazenamento de 128GB.', 1099.90, 30, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(16, 2, 'Smartphone Tela AMOLED 256GB', 'smartphone-tela-amoled-256gb', 'Smartphone com tela AMOLED e armazenamento interno de 256GB.', 2499.90, 11, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(17, 2, 'Smartphone Dual SIM 128GB', 'smartphone-dual-sim-128gb', 'Smartphone com suporte para dois chips e armazenamento interno de 128GB.', 999.90, 24, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(18, 2, 'Smartphone 64GB Tela 6.4', 'smartphone-64gb-tela-6-4', 'Smartphone de entrada com armazenamento de 64GB e tela de 6.4 polegadas.', 749.90, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(19, 2, 'Smartphone Premium 512GB', 'smartphone-premium-512gb', 'Smartphone premium com armazenamento de 512GB, câmera avançada e conexão 5G.', 4299.90, 6, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(20, 2, 'Smartphone Compacto 128GB', 'smartphone-compacto-128gb', 'Smartphone compacto com 128GB de armazenamento e câmera dupla.', 1199.90, 19, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(21, 3, 'Mouse Sem Fio USB', 'mouse-sem-fio-usb', 'Mouse sem fio com conexão USB e design ergonômico.', 79.90, 50, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(22, 3, 'Mouse Gamer RGB 7200 DPI', 'mouse-gamer-rgb-7200-dpi', 'Mouse gamer com iluminação RGB e resolução ajustável de até 7200 DPI.', 149.90, 30, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(23, 3, 'Teclado Mecânico RGB', 'teclado-mecanico-rgb', 'Teclado mecânico com iluminação RGB e teclas de alta durabilidade.', 289.90, 22, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(24, 3, 'Teclado Sem Fio', 'teclado-sem-fio', 'Teclado compacto sem fio para computadores e notebooks.', 119.90, 32, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(25, 3, 'Headset Gamer com Microfone', 'headset-gamer-com-microfone', 'Headset gamer com microfone integrado e controle de volume.', 199.90, 26, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(26, 3, 'Webcam Full HD USB', 'webcam-full-hd-usb', 'Webcam Full HD com microfone integrado e conexão USB.', 229.90, 17, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(27, 3, 'Carregador USB-C 30W', 'carregador-usb-c-30w', 'Carregador rápido USB-C com potência de 30 watts.', 99.90, 45, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(28, 3, 'Power Bank 10000mAh', 'power-bank-10000mah', 'Bateria portátil com capacidade de 10000mAh e duas portas USB.', 139.90, 34, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(29, 3, 'Hub USB 4 Portas', 'hub-usb-4-portas', 'Hub USB com quatro portas para expansão de conexões.', 69.90, 38, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(30, 3, 'Suporte Ajustável para Notebook', 'suporte-ajustavel-notebook', 'Suporte ajustável e ergonômico para notebooks.', 109.90, 27, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(31, 4, 'Luminária LED de Mesa', 'luminaria-led-de-mesa', 'Luminária LED de mesa com ajuste de intensidade e braço articulado.', 129.90, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(32, 4, 'Lâmpada Inteligente Wi-Fi', 'lampada-inteligente-wifi', 'Lâmpada inteligente com conexão Wi-Fi e controle por aplicativo.', 89.90, 40, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(33, 4, 'Fita LED RGB 5 Metros', 'fita-led-rgb-5-metros', 'Fita LED RGB de cinco metros com controle remoto.', 79.90, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(34, 4, 'Relógio Digital LED', 'relogio-digital-led', 'Relógio digital com display LED para mesa ou cabeceira.', 99.90, 22, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(35, 4, 'Difusor de Aromas USB', 'difusor-de-aromas-usb', 'Difusor compacto para aromatização de ambientes com alimentação USB.', 89.90, 30, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(36, 4, 'Ventilador de Mesa Compacto', 'ventilador-de-mesa-compacto', 'Ventilador compacto para mesa com múltiplas velocidades.', 149.90, 18, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(37, 4, 'Organizador de Mesa Multiuso', 'organizador-de-mesa-multiuso', 'Organizador para materiais de escritório, acessórios e objetos pessoais.', 59.90, 42, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(38, 4, 'Balança Digital para Cozinha', 'balanca-digital-cozinha', 'Balança digital compacta para pesagem de alimentos.', 79.90, 28, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(39, 4, 'Porta Retrato Digital', 'porta-retrato-digital', 'Porta retrato digital para exibição automática de fotografias.', 349.90, 12, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(40, 4, 'Abajur LED Touch', 'abajur-led-touch', 'Abajur LED com acionamento por toque e níveis de iluminação.', 119.90, 20, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39');
+INSERT INTO `produtos` (`id`, `categoria_id`, `nome`, `slug`, `descricao`, `preco`, `oferta_ativa`, `percentual_oferta`, `oferta_inicio`, `oferta_fim`, `estoque`, `status`, `destaque`, `criado_em`, `atualizado_em`) VALUES
+(1, 1, 'Notebook Core i5 16GB SSD 512GB', 'notebook-core-i5-16gb-ssd-512gb', 'Notebook com processador Intel Core i5, 16GB de memória RAM e SSD de 512GB.', 3299.90, 0, NULL, NULL, NULL, 15, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(2, 1, 'Notebook Ryzen 5 8GB SSD 512GB', 'notebook-ryzen-5-8gb-ssd-512gb', 'Notebook com processador AMD Ryzen 5, 8GB de memória RAM e SSD de 512GB.', 2899.90, 0, NULL, NULL, NULL, 12, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(3, 1, 'Computador Desktop Core i5 16GB', 'computador-desktop-core-i5-16gb', 'Computador desktop com processador Core i5, 16GB de memória RAM e SSD.', 2499.90, 0, NULL, NULL, NULL, 10, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(4, 1, 'Monitor LED 24 Polegadas Full HD', 'monitor-led-24-full-hd', 'Monitor LED de 24 polegadas com resolução Full HD e conexão HDMI.', 699.90, 0, NULL, NULL, NULL, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(5, 1, 'Monitor Gamer 27 Polegadas 165Hz', 'monitor-gamer-27-165hz', 'Monitor gamer de 27 polegadas com frequência de atualização de 165Hz.', 1399.90, 0, NULL, NULL, NULL, 8, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(6, 1, 'SSD 480GB SATA', 'ssd-480gb-sata', 'Unidade de armazenamento SSD SATA com capacidade de 480GB.', 249.90, 0, NULL, NULL, NULL, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(7, 1, 'SSD NVMe 1TB', 'ssd-nvme-1tb', 'SSD NVMe de alto desempenho com capacidade de armazenamento de 1TB.', 449.90, 0, NULL, NULL, NULL, 22, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(8, 1, 'Memória RAM DDR4 8GB', 'memoria-ram-ddr4-8gb', 'Memória RAM DDR4 de 8GB para computadores desktop.', 179.90, 0, NULL, NULL, NULL, 40, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(9, 1, 'Memória RAM DDR4 16GB', 'memoria-ram-ddr4-16gb', 'Memória RAM DDR4 de 16GB para expansão de computadores.', 299.90, 0, NULL, NULL, NULL, 28, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(10, 1, 'Roteador Wi-Fi Dual Band', 'roteador-wifi-dual-band', 'Roteador Wi-Fi Dual Band para redes domésticas e pequenos escritórios.', 289.90, 0, NULL, NULL, NULL, 18, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(11, 2, 'Smartphone 128GB 6GB RAM Preto', 'smartphone-128gb-6gb-preto', 'Smartphone com armazenamento de 128GB, 6GB de memória RAM e câmera de alta resolução.', 1299.90, 0, NULL, NULL, NULL, 20, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(12, 2, 'Smartphone 256GB 8GB RAM Azul', 'smartphone-256gb-8gb-azul', 'Smartphone com 256GB de armazenamento, 8GB de RAM e tela de alta definição.', 1899.90, 0, NULL, NULL, NULL, 16, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(13, 2, 'Smartphone 5G 128GB', 'smartphone-5g-128gb', 'Smartphone compatível com redes 5G e armazenamento interno de 128GB.', 1599.90, 0, NULL, NULL, NULL, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(14, 2, 'Smartphone 5G 256GB', 'smartphone-5g-256gb', 'Smartphone 5G com armazenamento de 256GB e câmera traseira de alta resolução.', 2199.90, 0, NULL, NULL, NULL, 14, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(15, 2, 'Smartphone Tela 6.5 128GB', 'smartphone-tela-6-5-128gb', 'Smartphone com tela de 6.5 polegadas e armazenamento de 128GB.', 1099.90, 0, NULL, NULL, NULL, 30, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(16, 2, 'Smartphone Tela AMOLED 256GB', 'smartphone-tela-amoled-256gb', 'Smartphone com tela AMOLED e armazenamento interno de 256GB.', 2499.90, 0, NULL, NULL, NULL, 11, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(17, 2, 'Smartphone Dual SIM 128GB', 'smartphone-dual-sim-128gb', 'Smartphone com suporte para dois chips e armazenamento interno de 128GB.', 999.90, 0, NULL, NULL, NULL, 24, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(18, 2, 'Smartphone 64GB Tela 6.4', 'smartphone-64gb-tela-6-4', 'Smartphone de entrada com armazenamento de 64GB e tela de 6.4 polegadas.', 749.90, 0, NULL, NULL, NULL, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(19, 2, 'Smartphone Premium 512GB', 'smartphone-premium-512gb', 'Smartphone premium com armazenamento de 512GB, câmera avançada e conexão 5G.', 4299.90, 0, NULL, NULL, NULL, 6, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(20, 2, 'Smartphone Compacto 128GB', 'smartphone-compacto-128gb', 'Smartphone compacto com 128GB de armazenamento e câmera dupla.', 1199.90, 0, NULL, NULL, NULL, 19, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(21, 3, 'Mouse Sem Fio USB', 'mouse-sem-fio-usb', 'Mouse sem fio com conexão USB e design ergonômico.', 79.90, 0, NULL, NULL, NULL, 50, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(22, 3, 'Mouse Gamer RGB 7200 DPI', 'mouse-gamer-rgb-7200-dpi', 'Mouse gamer com iluminação RGB e resolução ajustável de até 7200 DPI.', 149.90, 0, NULL, NULL, NULL, 30, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(23, 3, 'Teclado Mecânico RGB', 'teclado-mecanico-rgb', 'Teclado mecânico com iluminação RGB e teclas de alta durabilidade.', 289.90, 0, NULL, NULL, NULL, 22, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(24, 3, 'Teclado Sem Fio', 'teclado-sem-fio', 'Teclado compacto sem fio para computadores e notebooks.', 119.90, 0, NULL, NULL, NULL, 32, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(25, 3, 'Headset Gamer com Microfone', 'headset-gamer-com-microfone', 'Headset gamer com microfone integrado e controle de volume.', 199.90, 0, NULL, NULL, NULL, 26, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(26, 3, 'Webcam Full HD USB', 'webcam-full-hd-usb', 'Webcam Full HD com microfone integrado e conexão USB.', 229.90, 0, NULL, NULL, NULL, 17, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(27, 3, 'Carregador USB-C 30W', 'carregador-usb-c-30w', 'Carregador rápido USB-C com potência de 30 watts.', 99.90, 0, NULL, NULL, NULL, 45, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(28, 3, 'Power Bank 10000mAh', 'power-bank-10000mah', 'Bateria portátil com capacidade de 10000mAh e duas portas USB.', 139.90, 0, NULL, NULL, NULL, 34, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(29, 3, 'Hub USB 4 Portas', 'hub-usb-4-portas', 'Hub USB com quatro portas para expansão de conexões.', 69.90, 0, NULL, NULL, NULL, 38, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(30, 3, 'Suporte Ajustável para Notebook', 'suporte-ajustavel-notebook', 'Suporte ajustável e ergonômico para notebooks.', 109.90, 0, NULL, NULL, NULL, 27, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(31, 4, 'Luminária LED de Mesa', 'luminaria-led-de-mesa', 'Luminária LED de mesa com ajuste de intensidade e braço articulado.', 129.90, 0, NULL, NULL, NULL, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(32, 4, 'Lâmpada Inteligente Wi-Fi', 'lampada-inteligente-wifi', 'Lâmpada inteligente com conexão Wi-Fi e controle por aplicativo.', 89.90, 0, NULL, NULL, NULL, 40, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(33, 4, 'Fita LED RGB 5 Metros', 'fita-led-rgb-5-metros', 'Fita LED RGB de cinco metros com controle remoto.', 79.90, 0, NULL, NULL, NULL, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(34, 4, 'Relógio Digital LED', 'relogio-digital-led', 'Relógio digital com display LED para mesa ou cabeceira.', 99.90, 0, NULL, NULL, NULL, 22, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(35, 4, 'Difusor de Aromas USB', 'difusor-de-aromas-usb', 'Difusor compacto para aromatização de ambientes com alimentação USB.', 89.90, 0, NULL, NULL, NULL, 30, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(36, 4, 'Ventilador de Mesa Compacto', 'ventilador-de-mesa-compacto', 'Ventilador compacto para mesa com múltiplas velocidades.', 149.90, 0, NULL, NULL, NULL, 18, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(37, 4, 'Organizador de Mesa Multiuso', 'organizador-de-mesa-multiuso', 'Organizador para materiais de escritório, acessórios e objetos pessoais.', 59.90, 0, NULL, NULL, NULL, 42, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(38, 4, 'Balança Digital para Cozinha', 'balanca-digital-cozinha', 'Balança digital compacta para pesagem de alimentos.', 79.90, 0, NULL, NULL, NULL, 28, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(39, 4, 'Porta Retrato Digital', 'porta-retrato-digital', 'Porta retrato digital para exibição automática de fotografias.', 349.90, 0, NULL, NULL, NULL, 12, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(40, 4, 'Abajur LED Touch', 'abajur-led-touch', 'Abajur LED com acionamento por toque e níveis de iluminação.', 119.90, 0, NULL, NULL, NULL, 20, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39');
 
 -- --------------------------------------------------------
 
@@ -511,7 +516,7 @@ ALTER TABLE `carrinho_itens`
 -- AUTO_INCREMENT de tabela `categorias`
 --
 ALTER TABLE `categorias`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `clientes`
