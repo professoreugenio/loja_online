@@ -54,6 +54,13 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     ?>
     <?php    View::componente('header', ['categorias' => $categorias,]);  ?>
     <main>
+        <div class="container">
+            <div class="row">
+                <div class="col-12">
+                    Aqui vai o conteúdo da página de produtos.
+                </div>
+            </div>
+        </div>
         
     </main>
     <!-- ============================================================
