@@ -18,6 +18,12 @@ final class ClienteRepository
     }
 
 
+    /*
+    |--------------------------------------------------------------------------
+    | Verifica se o e-mail já está cadastrado
+    |--------------------------------------------------------------------------
+    */
+
     public function emailExiste(
         string $email
     ): bool {
@@ -32,14 +38,14 @@ final class ClienteRepository
 
         $consulta =
             $this->pdo
-                ->prepare($sql);
+            ->prepare($sql);
 
 
         $consulta->execute([
             'email' =>
-                strtolower(
-                    trim($email)
-                ),
+            strtolower(
+                trim($email)
+            ),
         ]);
 
 
@@ -48,6 +54,12 @@ final class ClienteRepository
             !== false;
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Verifica se o CPF já está cadastrado
+    |--------------------------------------------------------------------------
+    */
 
     public function cpfExiste(
         string $cpf
@@ -63,7 +75,7 @@ final class ClienteRepository
 
         $consulta =
             $this->pdo
-                ->prepare($sql);
+            ->prepare($sql);
 
 
         $consulta->execute([
@@ -76,6 +88,12 @@ final class ClienteRepository
             !== false;
     }
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cadastra o cliente
+    |--------------------------------------------------------------------------
+    */
 
     public function cadastrar(
         array $dados
@@ -114,40 +132,191 @@ final class ClienteRepository
 
         $consulta =
             $this->pdo
-                ->prepare($sql);
+            ->prepare($sql);
 
 
         $consulta->execute([
             'nome' =>
-                $dados['nome'],
+            $dados['nome'],
 
             'cpf' =>
-                $dados['cpf'],
+            $dados['cpf'],
 
             'data_nascimento' =>
-                $dados[
-                    'data_nascimento'
-                ],
+            $dados['data_nascimento'],
 
             'telefone' =>
-                $dados['telefone'],
+            $dados['telefone'],
 
             'email' =>
-                $dados['email'],
+            strtolower(
+                trim(
+                    $dados['email']
+                )
+            ),
 
             'senha_hash' =>
-                $dados['senha_hash'],
+            $dados['senha_hash'],
 
             'status' =>
-                'ativo',
+            'ativo',
 
             'newsletter' =>
-                $dados['newsletter'],
+            $dados['newsletter'],
         ]);
 
 
         return (int)
+        $this->pdo
+            ->lastInsertId();
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Busca cliente ativo pelo e-mail
+    |--------------------------------------------------------------------------
+    |
+    | Utilizado durante o login.
+    |
+    */
+
+    public function buscarAtivoPorEmail(
+        string $email
+    ): ?array {
+
+        $sql = '
+            SELECT
+                id,
+                nome,
+                email,
+                senha_hash,
+                foto_url,
+                email_verificado,
+                status,
+                ultimo_acesso
+
+            FROM clientes
+
+            WHERE email = :email
+              AND status = :status
+
+            LIMIT 1
+        ';
+
+
+        $consulta =
             $this->pdo
-                ->lastInsertId();
+            ->prepare($sql);
+
+
+        $consulta->execute([
+            'email' =>
+            strtolower(
+                trim($email)
+            ),
+
+            'status' =>
+            'ativo',
+        ]);
+
+
+        $cliente =
+            $consulta->fetch();
+
+
+        return is_array($cliente)
+            ? $cliente
+            : null;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Busca cliente pelo ID
+    |--------------------------------------------------------------------------
+    */
+
+    public function buscarPorId(
+        int $clienteId
+    ): ?array {
+
+        $sql = '
+            SELECT
+                id,
+                nome,
+                cpf,
+                data_nascimento,
+                telefone,
+                email,
+                foto_url,
+                email_verificado,
+                status,
+                newsletter,
+                ultimo_acesso,
+                criado_em,
+                atualizado_em
+
+            FROM clientes
+
+            WHERE id = :id
+              AND status = :status
+
+            LIMIT 1
+        ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->execute([
+            'id' =>
+            $clienteId,
+
+            'status' =>
+            'ativo',
+        ]);
+
+
+        $cliente =
+            $consulta->fetch();
+
+
+        return is_array($cliente)
+            ? $cliente
+            : null;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Registra o último acesso do cliente
+    |--------------------------------------------------------------------------
+    */
+
+    public function registrarUltimoAcesso(
+        int $clienteId
+    ): void {
+
+        $sql = '
+            UPDATE clientes
+
+            SET ultimo_acesso = NOW()
+
+            WHERE id = :id
+        ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->execute([
+            'id' =>
+            $clienteId,
+        ]);
     }
 }
