@@ -87,6 +87,12 @@ final class ClienteController
             APP_ROOT
             . '/views/cliente/painel.php';
 
+        if (!is_file($arquivoView)) {
+            throw new \RuntimeException(
+                'A página do painel do cliente não foi encontrada: '
+                    . $arquivoView
+            );
+        }
 
         require $arquivoView;
     }

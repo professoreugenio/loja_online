@@ -58,6 +58,14 @@ return [
             'painel',
         ],
     ],
+    [
+        'method' => 'GET',
+        'path' => '/cliente/painel',
+        'action' => [
+            ClienteController::class,
+            'painel',
+        ],
+    ],
 
     [
         'method' => 'GET',

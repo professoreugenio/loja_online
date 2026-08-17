@@ -260,7 +260,6 @@ final class ClienteLoginController
         exit;
     }
 
-
     private function falhar(
         string $mensagem,
         string $email = ''

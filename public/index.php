@@ -59,7 +59,7 @@ $rotas = array_merge(
     require $raizProjeto . '/routes/busca.php',
     require $raizProjeto . '/routes/cliente_login.php',
     require $raizProjeto . '/routes/cliente_cadastro.php',
-    require $raizProjeto . '/routes/cliente_pedidos.php',
+    require $raizProjeto . '/routes/cliente.php',
     require $raizProjeto . '/routes/carrinho.php',
 );
 /*
