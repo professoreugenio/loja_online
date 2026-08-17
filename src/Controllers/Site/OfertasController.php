@@ -6,27 +6,29 @@ namespace App\Controllers\Site;
 
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
+use App\Repositories\ProdutoRepository;
 use RuntimeException;
 
-class OfertasController
+final class OfertasController
 {
     public function index(): void
     {
-
         /*
         |--------------------------------------------------------------------------
         | 1. Raiz do projeto
         |--------------------------------------------------------------------------
         */
+
         $raizProjeto =
             dirname(__DIR__, 3);
 
 
         /*
         |--------------------------------------------------------------------------
-        | 2. Conexão com o banco
+        | 2. Conexão
         |--------------------------------------------------------------------------
         */
+
         require_once $raizProjeto
             . '/database/conexao.php';
 
@@ -37,30 +39,42 @@ class OfertasController
 
         /*
         |--------------------------------------------------------------------------
-        | 3. Categorias
+        | 3. Repositories
         |--------------------------------------------------------------------------
         */
+
         $categoriaRepository =
             new CategoriaRepository(
                 $pdo
             );
 
+
+        $produtoRepository =
+            new ProdutoRepository(
+                $pdo
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4. Categorias do header
+        |--------------------------------------------------------------------------
+        */
 
         $categorias =
             $categoriaRepository
                 ->listarAtivas();
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | 4. Gera ID seguro das categorias
-        |--------------------------------------------------------------------------
-        */
-        foreach ($categorias as &$categoria) {
+        foreach (
+            $categorias
+            as &$categoria
+        ) {
 
             $categoria['id_seguro'] =
                 IdSeguro::criptografar(
-                    (int) $categoria['id']
+                    (int)
+                    $categoria['id']
                 );
         }
 
@@ -70,74 +84,74 @@ class OfertasController
 
         /*
         |--------------------------------------------------------------------------
-        | 5. Dados específicos da página
+        | 5. Produtos em oferta
         |--------------------------------------------------------------------------
-        |
-        | Futuramente:
-        |
-        | $ofertas = ...
-        |
         */
+
+        $ofertas =
+            $produtoRepository
+                ->listarOfertasAtivas(
+                    60
+                );
 
 
         /*
         |--------------------------------------------------------------------------
-        | 6. Localiza a View
+        | 6. ID seguro dos produtos
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
-            $raizProjeto
-            . '/views/site/ofertas.php';
 
+        foreach (
+            $ofertas
+            as &$produto
+        ) {
 
-
-        $raizProjeto =
-            dirname(__DIR__, 3);
-
-        require_once $raizProjeto
-            . '/database/conexao.php';
-        $pdo =
-            \Config::connect();
-
-        $categoriaRepository =
-            new CategoriaRepository(
-                $pdo
-            );
-        $categorias =
-            $categoriaRepository
-            ->listarAtivas();
-
-        foreach ($categorias as &$categoria) {
-            $categoria['id_seguro'] =
+            $produto['id_seguro'] =
                 IdSeguro::criptografar(
-                    (int) $categoria['id']
+                    (int)
+                    $produto['id']
                 );
         }
-        unset($categoria);
+
+
+        unset($produto);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 7. SEO
+        |--------------------------------------------------------------------------
+        */
+
+        $tituloPagina =
+            'Ofertas - Loja Online';
+
+
+        $descricaoPagina =
+            'Confira os produtos em oferta '
+            . 'disponíveis na Loja Online.';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 8. View
+        |--------------------------------------------------------------------------
+        */
 
         $arquivoView =
             $raizProjeto
             . '/views/site/ofertas.php';
+
+
         if (!is_file($arquivoView)) {
 
-
-
             throw new RuntimeException(
-                'A página de ofertas não foi encontrada.'
+                'A página de ofertas '
+                . 'não foi encontrada.'
             );
         }
 
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | 7. Carrega a View
-        |--------------------------------------------------------------------------
-        |
-        | $categorias estará disponível
-        | dentro de ofertas.php.
-        |
-        */
         require $arquivoView;
     }
 }

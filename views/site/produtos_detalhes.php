@@ -568,7 +568,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                             </p>
 
                             <a
-                                href="#"
+                                href="produto/detalhes"
                                 class="btn btn-outline-primary w-100">
 
                                 Ver detalhes

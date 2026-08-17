@@ -11,12 +11,12 @@ final class ProdutoRepository
         $this->pdo = $pdo;
     }
     /**
- * Lista todos os produtos ativos.
- */
-public function listarTodos(
-    int $limite = 60
-): array {
-    $sql = '
+     * Lista todos os produtos ativos.
+     */
+    public function listarTodos(
+        int $limite = 60
+    ): array {
+        $sql = '
         SELECT
             p.id,
             p.categoria_id,
@@ -45,23 +45,23 @@ public function listarTodos(
             p.nome ASC
         LIMIT :limite
     ';
-    $consulta =
-        $this->pdo->prepare(
-            $sql
+        $consulta =
+            $this->pdo->prepare(
+                $sql
+            );
+        $consulta->bindValue(
+            ':status',
+            'ativo',
+            PDO::PARAM_STR
         );
-    $consulta->bindValue(
-        ':status',
-        'ativo',
-        PDO::PARAM_STR
-    );
-    $consulta->bindValue(
-        ':limite',
-        $limite,
-        PDO::PARAM_INT
-    );
-    $consulta->execute();
-    return $consulta->fetchAll();
-}
+        $consulta->bindValue(
+            ':limite',
+            $limite,
+            PDO::PARAM_INT
+        );
+        $consulta->execute();
+        return $consulta->fetchAll();
+    }
     public function listarPorCategoria(
         int $categoriaId,
         int $limite = 24
@@ -331,5 +331,77 @@ public function listarTodos(
         return is_array($produto)
             ? $produto
             : null;
+    }
+    public function listarOfertasAtivas(
+        int $limite = 60
+    ): array {
+        $sql = '
+        SELECT
+            p.id,
+            p.categoria_id,
+            p.nome,
+            p.slug,
+            p.descricao,
+            p.preco,
+            p.estoque,
+            p.percentual_oferta,
+            p.oferta_inicio,
+            p.oferta_fim,
+            c.nome AS categoria,
+            ROUND(
+                p.preco
+                * (
+                    1
+                    - p.percentual_oferta
+                    / 100
+                ),
+                2
+            ) AS preco_oferta,
+            (
+                SELECT pi.url_imagem
+                FROM produto_imagens pi
+                WHERE pi.produto_id = p.id
+                ORDER BY
+                    pi.principal DESC,
+                    pi.ordem ASC,
+                    pi.id ASC
+                LIMIT 1
+            ) AS imagem
+        FROM produtos p
+        INNER JOIN categorias c
+            ON c.id = p.categoria_id
+        WHERE p.status = :status
+          AND c.ativo = 1
+          AND p.oferta_ativa = 1
+          AND p.percentual_oferta > 0
+          AND p.percentual_oferta < 100
+          AND (
+              p.oferta_inicio IS NULL
+              OR p.oferta_inicio <= NOW()
+          )
+          AND (
+              p.oferta_fim IS NULL
+              OR p.oferta_fim >= NOW()
+          )
+        ORDER BY
+            p.percentual_oferta DESC,
+            p.nome ASC
+        LIMIT :limite
+    ';
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+        $consulta->bindValue(
+            ':status',
+            'ativo',
+            PDO::PARAM_STR
+        );
+        $consulta->bindValue(
+            ':limite',
+            $limite,
+            PDO::PARAM_INT
+        );
+        $consulta->execute();
+        return $consulta->fetchAll();
     }
 }

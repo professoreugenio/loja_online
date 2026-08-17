@@ -24,13 +24,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
         name="description"
         content="">
 
-    <title><?=
-            htmlspecialchars(
-                $tituloPagina,
-                ENT_QUOTES,
-                'UTF-8'
-            )
-            ?></title>
+
 
     <title><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8');  ?></title>
 
@@ -60,21 +54,65 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     ============================================================= -->
 
     <?php View::componente('header', ['categorias' => $categorias,]);  ?>
-    <main>
+
+    <main class="py-5">
+
         <div class="container">
             <div class="row">
                 <div class="col-12">
-                    <h1><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8');  ?></h1>
+                    <div class="row mb-4">
+
+                        <div class="col-12">
+
+                            <h1 class="h2 fw-bold mb-2">
+                                Ofertas
+                            </h1>
+
+                            <p class="text-muted mb-0">
+
+                                Aproveite os produtos com
+                                descontos disponíveis por
+                                tempo limitado.
+
+                            </p>
 
 
-    <?php //require_once APP_ROOT  . '/views/componentes/site/header.php'; 
-    ?>
-    <?php //View::componente('header');
-    ?>
-    
-    <main>
-        
+                            <?php if ($ofertas === []): ?>
+
+                                <div
+                                    class="alert alert-info"
+                                    role="alert">
+
+                                    Nenhuma oferta está disponível
+                                    neste momento.
+
+                                </div>
+
+                            <?php endif; ?>
+
+
+                        </div>
+
+
+                        <?php foreach (
+                            $ofertas
+                            as $produto
+                        ): ?>
+
+                            ...
+
+                        <?php endforeach; ?>
+
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
     </main>
+
+
     <!-- ============================================================
          9. RODAPÉ
     ============================================================= -->

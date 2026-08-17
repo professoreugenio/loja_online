@@ -36,7 +36,7 @@ class ProdutosController
             );
         $categorias =
             $categoriaRepository
-                ->listarAtivas();
+            ->listarAtivas();
         /*
         |--------------------------------------------------------------------------
         | 4. Gera o ID seguro das categorias
@@ -61,9 +61,30 @@ class ProdutosController
             new ProdutoRepository(
                 $pdo
             );
+        /*
+|--------------------------------------------------------------------------
+| Todos os produtos
+|--------------------------------------------------------------------------
+*/
         $produtos =
             $produtoRepository
-                ->listarTodos();
+            ->listarTodos();
+        /*
+|--------------------------------------------------------------------------
+| Produtos em destaque
+|--------------------------------------------------------------------------
+*/
+        $produtosDestaque =
+            $produtoRepository
+            ->listarDestaques(10);
+        /*
+|--------------------------------------------------------------------------
+| Produtos mais vendidos
+|--------------------------------------------------------------------------
+*/
+        $maisVendidos =
+            $produtoRepository
+            ->listarMaisVendidos(10);
         /*
         |--------------------------------------------------------------------------
         | 6. Localiza a View
