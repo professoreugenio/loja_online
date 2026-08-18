@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Tempo de geração: 14/08/2026 às 21:47
+-- Tempo de geração: 18/08/2026 às 21:46
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -36,6 +36,13 @@ CREATE TABLE `carrinhos` (
   `atualizado_em` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Despejando dados para a tabela `carrinhos`
+--
+
+INSERT INTO `carrinhos` (`id`, `cliente_id`, `token_sessao`, `status`, `criado_em`, `atualizado_em`) VALUES
+(1, NULL, 'fb7d60c7af03ef9f5c369e3f988a4f80c8c19c7c3ed6b15ccbcb3994c5393467', 'aberto', '2026-08-18 18:54:41', '2026-08-18 18:54:41');
+
 -- --------------------------------------------------------
 
 --
@@ -51,6 +58,13 @@ CREATE TABLE `carrinho_itens` (
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_em` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `carrinho_itens`
+--
+
+INSERT INTO `carrinho_itens` (`id`, `carrinho_id`, `produto_id`, `quantidade`, `preco_unitario`, `criado_em`, `atualizado_em`) VALUES
+(10, 1, 9, 1, 299.90, '2026-08-18 19:37:23', '2026-08-18 19:43:23');
 
 -- --------------------------------------------------------
 
@@ -88,15 +102,29 @@ INSERT INTO `categorias` (`id`, `nome`, `imgcategoria`, `slug`, `descricao`, `at
 
 CREATE TABLE `clientes` (
   `id` int(10) UNSIGNED NOT NULL,
-  `google_sub` varchar(255) NOT NULL,
+  `google_sub` varchar(255) DEFAULT NULL,
   `nome` varchar(150) NOT NULL,
+  `cpf` char(11) DEFAULT NULL,
+  `data_nascimento` date DEFAULT NULL,
+  `telefone` varchar(20) DEFAULT NULL,
   `email` varchar(180) NOT NULL,
+  `senha_hash` varchar(255) DEFAULT NULL,
   `foto_url` varchar(500) DEFAULT NULL,
   `email_verificado` tinyint(1) NOT NULL DEFAULT 0,
+  `status` enum('ativo','inativo','bloqueado') NOT NULL DEFAULT 'ativo',
+  `newsletter` tinyint(1) NOT NULL DEFAULT 0,
+  `aceitou_termos_em` datetime DEFAULT NULL,
   `ultimo_acesso` datetime DEFAULT NULL,
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_em` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `clientes`
+--
+
+INSERT INTO `clientes` (`id`, `google_sub`, `nome`, `cpf`, `data_nascimento`, `telefone`, `email`, `senha_hash`, `foto_url`, `email_verificado`, `status`, `newsletter`, `aceitou_termos_em`, `ultimo_acesso`, `criado_em`, `atualizado_em`) VALUES
+(1, NULL, 'Eugênio', '37153455353', '1971-03-07', '85997810324', 'professoreugeniomls@gmail.com', '$2y$10$Wdx3fvypwyRx/Tbs8FSNY.BGsxb79ADKtmXihsI0KPXeQoEkvMDfe', NULL, 0, 'ativo', 1, '2026-08-14 17:18:27', NULL, '2026-08-14 20:18:27', '2026-08-14 20:18:27');
 
 -- --------------------------------------------------------
 
@@ -137,6 +165,13 @@ CREATE TABLE `enderecos` (
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_em` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Despejando dados para a tabela `enderecos`
+--
+
+INSERT INTO `enderecos` (`id`, `cliente_id`, `identificacao`, `destinatario`, `cep`, `logradouro`, `numero`, `complemento`, `bairro`, `cidade`, `estado`, `principal`, `criado_em`, `atualizado_em`) VALUES
+(1, 1, 'Endereço principal', 'Eugênio', '61925480', 'rua tal', '123', 'teste', 'teste', 'teste', 'CE', 1, '2026-08-14 20:18:27', '2026-08-14 20:18:27');
 
 -- --------------------------------------------------------
 
@@ -263,9 +298,9 @@ CREATE TABLE `produtos` (
 --
 
 INSERT INTO `produtos` (`id`, `categoria_id`, `nome`, `slug`, `descricao`, `preco`, `oferta_ativa`, `percentual_oferta`, `oferta_inicio`, `oferta_fim`, `estoque`, `status`, `destaque`, `criado_em`, `atualizado_em`) VALUES
-(1, 1, 'Notebook Core i5 16GB SSD 512GB', 'notebook-core-i5-16gb-ssd-512gb', 'Notebook com processador Intel Core i5, 16GB de memória RAM e SSD de 512GB.', 3299.90, 0, NULL, NULL, NULL, 15, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(2, 1, 'Notebook Ryzen 5 8GB SSD 512GB', 'notebook-ryzen-5-8gb-ssd-512gb', 'Notebook com processador AMD Ryzen 5, 8GB de memória RAM e SSD de 512GB.', 2899.90, 0, NULL, NULL, NULL, 12, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
-(3, 1, 'Computador Desktop Core i5 16GB', 'computador-desktop-core-i5-16gb', 'Computador desktop com processador Core i5, 16GB de memória RAM e SSD.', 2499.90, 0, NULL, NULL, NULL, 10, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
+(1, 1, 'Notebook Core i5 16GB SSD 512GB', 'notebook-core-i5-16gb-ssd-512gb', 'Notebook com processador Intel Core i5, 16GB de memória RAM e SSD de 512GB.', 3299.90, 1, 15.00, '2026-08-17 16:08:02', '2026-08-24 17:08:02', 15, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-17 19:10:03'),
+(2, 1, 'Notebook Ryzen 5 8GB SSD 512GB', 'notebook-ryzen-5-8gb-ssd-512gb', 'Notebook com processador AMD Ryzen 5, 8GB de memória RAM e SSD de 512GB.', 2899.90, 1, 15.00, '2026-08-17 16:30:05', '2026-08-24 16:30:05', 12, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-17 19:30:05'),
+(3, 1, 'Computador Desktop Core i5 16GB', 'computador-desktop-core-i5-16gb', 'Computador desktop com processador Core i5, 16GB de memória RAM e SSD.', 2499.90, 1, 15.00, '2026-08-17 16:30:05', '2026-08-24 16:30:05', 10, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-17 19:30:05'),
 (4, 1, 'Monitor LED 24 Polegadas Full HD', 'monitor-led-24-full-hd', 'Monitor LED de 24 polegadas com resolução Full HD e conexão HDMI.', 699.90, 0, NULL, NULL, NULL, 25, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
 (5, 1, 'Monitor Gamer 27 Polegadas 165Hz', 'monitor-gamer-27-165hz', 'Monitor gamer de 27 polegadas com frequência de atualização de 165Hz.', 1399.90, 0, NULL, NULL, NULL, 8, 'ativo', 1, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
 (6, 1, 'SSD 480GB SATA', 'ssd-480gb-sata', 'Unidade de armazenamento SSD SATA com capacidade de 480GB.', 249.90, 0, NULL, NULL, NULL, 35, 'ativo', 0, '2026-08-11 17:47:39', '2026-08-11 17:47:39'),
@@ -342,7 +377,7 @@ CREATE TABLE `usuarios_admin` (
 --
 
 INSERT INTO `usuarios_admin` (`id`, `nome`, `email`, `senha_hash`, `status`, `ultimo_acesso`, `criado_em`, `atualizado_em`) VALUES
-(1, 'Professor Eugênio', 'professoreugeniomls@gmail.com', '$2y$10$Vx407iuQ2RkUqqBd3I07..iOu.zWW2jnwareqYRcntXV7r/QiYtyK', 'ativo', '2026-07-31 12:06:10', '2026-07-30 15:43:30', '2026-07-31 15:06:10'),
+(1, 'Professor Eugênio', 'professoreugeniomls@gmail.com', '$2y$10$Vx407iuQ2RkUqqBd3I07..iOu.zWW2jnwareqYRcntXV7r/QiYtyK', 'ativo', '2026-08-18 15:51:29', '2026-07-30 15:43:30', '2026-08-18 18:51:29'),
 (2, 'Admin', 'admin@admin.com', '$2y$10$lJz5JNpabVU.92I/OK2Ry.O9fpr6v0xs0eJvwUbgjW6cm30mv55CW', 'ativo', '2026-08-10 13:13:38', '2026-08-03 16:15:18', '2026-08-10 16:13:38');
 
 -- --------------------------------------------------------
@@ -399,8 +434,9 @@ ALTER TABLE `categorias`
 --
 ALTER TABLE `clientes`
   ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `uq_clientes_email` (`email`),
   ADD UNIQUE KEY `uq_clientes_google_sub` (`google_sub`),
-  ADD UNIQUE KEY `uq_clientes_email` (`email`);
+  ADD UNIQUE KEY `uq_clientes_cpf` (`cpf`);
 
 --
 -- Índices de tabela `dispositivos_notificacao`
@@ -504,13 +540,13 @@ ALTER TABLE `webhook_logs`
 -- AUTO_INCREMENT de tabela `carrinhos`
 --
 ALTER TABLE `carrinhos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `carrinho_itens`
 --
 ALTER TABLE `carrinho_itens`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
 -- AUTO_INCREMENT de tabela `categorias`
@@ -522,7 +558,7 @@ ALTER TABLE `categorias`
 -- AUTO_INCREMENT de tabela `clientes`
 --
 ALTER TABLE `clientes`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `dispositivos_notificacao`
@@ -534,7 +570,7 @@ ALTER TABLE `dispositivos_notificacao`
 -- AUTO_INCREMENT de tabela `enderecos`
 --
 ALTER TABLE `enderecos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT de tabela `movimentacoes_estoque`
