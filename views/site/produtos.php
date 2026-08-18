@@ -134,21 +134,32 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                     </h5>
                                     <!-- Descrição -->
                                     <p class="card-text text-muted small">
-                                        Abajur LED com acionamento por toque
-                                        e níveis de iluminação.
+                                        <?= $descricaoProduto; ?>
+
                                     </p>
                                     <!-- Preço antigo -->
                                     <div class="mt-auto">
                                         <small class="text-muted text-decoration-line-through">
-                                            R$ 149,90
+                                            <?php
+
+                                            if ($desconto): ?>
+                                                R$ <?= $precoNormal ?>
+                                            <?php endif; ?>
                                         </small>
                                         <!-- Preço atual -->
                                         <div class="fs-4 fw-bold text-success">
-                                            R$ 119,90
+                                            R$ <?= $precoOferta ?>
                                         </div>
                                         <!-- Parcelamento -->
+
+                                        <?php
+                                        $valor = $precoOferta ?? $precoNormal;
+                                        $quantidadeParcelas = 10;
+                                        $valorParcela =
+                                            $valor / $quantidadeParcelas;
+                                        ?>
                                         <p class="small text-muted mb-3">
-                                            ou 10x de R$ 11,99
+                                            ou <?= $quantidadeParcelas ?>x de R$ <?= $valorParcela ?>
                                         </p>
                                         <!-- Botões -->
                                         <div class="d-grid gap-2">
