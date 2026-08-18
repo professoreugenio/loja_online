@@ -1,7 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Repositories;
+
 use PDO;
+
 final class ProdutoRepository
 {
     private PDO $pdo;
@@ -24,6 +28,7 @@ final class ProdutoRepository
             p.slug,
             p.descricao,
             p.preco,
+            p.percentual_oferta,
             p.estoque,
             c.nome AS categoria,
             (
@@ -62,6 +67,9 @@ final class ProdutoRepository
         $consulta->execute();
         return $consulta->fetchAll();
     }
+
+
+
     public function listarPorCategoria(
         int $categoriaId,
         int $limite = 24
@@ -74,6 +82,7 @@ final class ProdutoRepository
                 p.slug,
                 p.descricao,
                 p.preco,
+                p.percentual_oferta,
                 p.estoque,
                 c.nome AS categoria,
                 (
@@ -125,6 +134,7 @@ final class ProdutoRepository
                 p.slug,
                 p.descricao,
                 p.preco,
+                p.percentual_oferta,
                 p.estoque,
                 c.nome AS categoria,
                 (
@@ -171,6 +181,7 @@ final class ProdutoRepository
                 p.slug,
                 p.descricao,
                 p.preco,
+                p.percentual_oferta,
                 p.estoque,
                 c.nome AS categoria,
                 SUM(
@@ -207,6 +218,7 @@ final class ProdutoRepository
                 p.slug,
                 p.descricao,
                 p.preco,
+                p.percentual_oferta,
                 p.estoque,
                 c.nome
             ORDER BY
@@ -332,6 +344,121 @@ final class ProdutoRepository
             ? $produto
             : null;
     }
+
+    public function buscarPorId(
+        int $produtoId
+    ): ?array {
+
+        $sql = '
+        SELECT
+            p.id,
+            p.categoria_id,
+            p.nome,
+            p.slug,
+            p.descricao,
+            p.preco,
+            p.estoque,
+
+            p.percentual_oferta,
+            p.oferta_ativa,
+            p.oferta_inicio,
+            p.oferta_fim,
+
+            c.nome AS categoria,
+            c.slug AS categoria_slug,
+
+            (
+                SELECT pi.url_imagem
+
+                FROM produto_imagens pi
+
+                WHERE pi.produto_id = p.id
+
+                ORDER BY
+                    pi.principal DESC,
+                    pi.ordem ASC,
+                    pi.id ASC
+
+                LIMIT 1
+            ) AS imagem,
+
+            CASE
+
+                WHEN
+                    p.oferta_ativa = 1
+
+                    AND p.percentual_oferta > 0
+
+                    AND p.percentual_oferta < 100
+
+                    AND (
+                        p.oferta_inicio IS NULL
+                        OR p.oferta_inicio <= NOW()
+                    )
+
+                    AND (
+                        p.oferta_fim IS NULL
+                        OR p.oferta_fim >= NOW()
+                    )
+
+                THEN ROUND(
+                    p.preco
+                    * (
+                        1
+                        - p.percentual_oferta
+                        / 100
+                    ),
+                    2
+                )
+
+                ELSE NULL
+
+            END AS preco_oferta
+
+        FROM produtos p
+
+        INNER JOIN categorias c
+            ON c.id = p.categoria_id
+
+        WHERE p.id = :produto_id
+          AND p.status = :status
+          AND c.ativo = 1
+
+        LIMIT 1
+    ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->bindValue(
+            ':produto_id',
+            $produtoId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->bindValue(
+            ':status',
+            'ativo',
+            PDO::PARAM_STR
+        );
+
+
+        $consulta->execute();
+
+
+        $produto =
+            $consulta->fetch();
+
+
+        return is_array($produto)
+            ? $produto
+            : null;
+    }
+
     public function listarOfertasAtivas(
         int $limite = 60
     ): array {

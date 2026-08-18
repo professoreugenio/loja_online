@@ -1,7 +1,5 @@
 <?php
-
 declare(strict_types=1);
-
 use App\Helpers\View;
 
 $tituloPagina = $tituloPagina
@@ -15,27 +13,24 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta
-        name="description"
-        content="">
-    <title><?=
+    <meta name="description" content="">
+    <title>
+        <?=
             htmlspecialchars(
                 $tituloPagina,
                 ENT_QUOTES,
                 'UTF-8'
             )
-            ?></title>
+            ?>
+    </title>
     <!--
         Caminho-base das rotas no XAMPP.
         Quando o projeto funcionar sem /public, altere para:
         <base href="/loja_online/">
     -->
     <base href="/loja_online/public/">
-    <link
-        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
-        crossorigin="anonymous">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
 
@@ -54,7 +49,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     ?>
     <?php //View::componente('header');
     ?>
-    <?php View::componente('header', ['categorias' => $categorias,]);  ?>
+    <?php    View::componente('header', ['categorias' => $categorias,]);  ?>
     <main>
         <div class="container">
             <div class="row">
@@ -81,9 +76,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                         </a>
                                     </li>
 
-                                    <li
-                                        class="breadcrumb-item active"
-                                        aria-current="page">
+                                    <li class="breadcrumb-item active" aria-current="page">
                                         Notebook Gamer
                                     </li>
 
@@ -96,53 +89,6 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
         ============================================================= -->
                             <section class="mb-5">
 
-                                <?php
-
-                                $imagem =
-                                    trim(
-                                        (string) (
-                                            $produto['imagem']
-                                            ?? ''
-                                        )
-                                    );
-
-
-                                $imagemPadrao =
-                                    $baseUrl
-                                    . '/assets/img/produtos/'
-                                    . 'sem-imagem.png';
-
-
-                                if ($imagem === '') {
-
-                                    $imagem =
-                                        $imagemPadrao;
-                                } elseif (
-                                    !str_starts_with(
-                                        $imagem,
-                                        'http://'
-                                    )
-                                    &&
-                                    !str_starts_with(
-                                        $imagem,
-                                        'https://'
-                                    )
-                                    &&
-                                    !str_starts_with(
-                                        $imagem,
-                                        '/'
-                                    )
-                                ) {
-
-                                    $imagem =
-                                        $baseUrl
-                                        . '/assets/img/produtos/'
-                                        . $imagem;
-                                }
-
-                                ?>
-
-
                                 <div class="row g-5">
 
                                     <!-- ====================================================
@@ -150,38 +96,10 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                 ===================================================== -->
                                     <div class="col-12 col-md-6">
 
-                                        <div
-                                            class="border rounded-4 p-4 bg-white text-center">
+                                        <div class="border rounded-4 p-4 bg-white text-center">
 
-                                            <img
-                                                src="<?=
-                                                        htmlspecialchars(
-                                                            $imagem,
-                                                            ENT_QUOTES,
-                                                            'UTF-8'
-                                                        )
-                                                        ?>"
-
-                                                alt="<?=
-                                                        htmlspecialchars(
-                                                            $produto['nome'],
-                                                            ENT_QUOTES,
-                                                            'UTF-8'
-                                                        )
-                                                        ?>"
-
-                                                class="img-fluid"
-
-                                                onerror="
-        this.onerror=null;this.src='<?= htmlspecialchars(
-                                        $imagemPadrao,
-                                        ENT_QUOTES,
-                                        'UTF-8'
-                                    )
-                                    ?>';
-    "
-                                                class="img-fluid"
-                                                style="max-height: 450px; object-fit: contain;">
+                                            <img src="assets/img/produtos/notebook.jpg" alt="Notebook Gamer"
+                                                class="img-fluid" style="max-height: 450px; object-fit: contain;">
 
                                         </div>
 
@@ -191,73 +109,24 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                     <!-- ====================================================
                      INFORMAÇÕES DO PRODUTO
                 ===================================================== -->
-
-                                    <?php
-
-                                    $precoNormal =
-                                        (float)
-                                        $produto['preco'];
-
-
-                                    $precoOferta =
-                                        $produto['preco_oferta']
-                                        !== null
-
-                                        ? (float)
-                                        $produto['preco_oferta']
-
-                                        : null;
-
-
-                                    $temOferta =
-                                        $precoOferta !== null;
-
-                                    ?>
-
-
                                     <div class="col-12 col-md-6">
 
                                         <!-- Categoria -->
                                         <span class="badge text-bg-secondary mb-3">
-                                            <?=
-                                            htmlspecialchars(
-                                                $produto['categoria'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            )
-                                            ?>
+                                            Informática
                                         </span>
 
 
                                         <!-- Nome -->
                                         <h1 class="h2 fw-bold mb-3">
-                                            <?=
-                                            htmlspecialchars(
-                                                $produto['nome'],
-                                                ENT_QUOTES,
-                                                'UTF-8'
-                                            )
-                                            ?>
+                                            Notebook Gamer Ryzen 7 16GB SSD 512GB
                                         </h1>
 
 
                                         <!-- Código -->
                                         <p class="text-muted small mb-3">
                                             Código do produto:
-                                            <strong>
-                                                PROD-<?=
-                                                        str_pad(
-                                                            (string)
-                                                            $produto['id'],
-                                                            6,
-                                                            '0',
-                                                            STR_PAD_LEFT
-                                                        )
-                                                        ?>
-
-
-
-                                            </strong>
+                                            <strong>PROD-001</strong>
                                         </p>
 
 
@@ -283,125 +152,37 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                     ================================================== -->
                                         <div class="mb-4">
 
-                                            <?php if ($temOferta): ?>
+                                            <small class="text-muted">
+                                                De:
+                                            </small>
+
+                                            <div>
+                                                <span class="text-decoration-line-through text-muted">
+                                                    R$ 5.499,90
+                                                </span>
+
+                                                <span class="badge text-bg-danger ms-2">
+                                                    15% OFF
+                                                </span>
+                                            </div>
 
 
-                                                <div class="mb-2">
+                                            <div class="mt-2">
 
-                                                    <span
-                                                        class="
-                text-decoration-line-through
-                text-muted
-            ">
+                                                <span class="text-muted">
+                                                    Por:
+                                                </span>
 
-                                                        R$
-
-                                                        <?=
-                                                        number_format(
-                                                            $precoNormal,
-                                                            2,
-                                                            ',',
-                                                            '.'
-                                                        )
-                                                        ?>
-
-                                                    </span>
-
-
-                                                    <span
-                                                        class="
-                badge
-                text-bg-danger
-                ms-2
-            ">
-
-                                                        <?=
-                                                        number_format(
-                                                            (float)
-                                                            $produto['percentual_oferta'],
-                                                            0,
-                                                            ',',
-                                                            '.'
-                                                        )
-                                                        ?>% OFF
-
-                                                    </span>
-
+                                                <div class="display-6 fw-bold text-success">
+                                                    R$ 4.674,92
                                                 </div>
 
-
-                                                <div
-                                                    class="
-            display-6
-            fw-bold
-            text-success
-        ">
-
-                                                    R$
-
-                                                    <?=
-                                                    number_format(
-                                                        $precoOferta,
-                                                        2,
-                                                        ',',
-                                                        '.'
-                                                    )
-                                                    ?>
-
-                                                </div>
-
-
-                                            <?php endif; ?>
-
-
-
-                                            <?php if (!$temOferta): ?>
-
-                                                <div
-                                                    class="
-            display-6
-            fw-bold
-            text-success
-        ">
-
-                                                    R$
-
-                                                    <?=
-                                                    number_format(
-                                                        $precoNormal,
-                                                        2,
-                                                        ',',
-                                                        '.'
-                                                    )
-                                                    ?>
-
-                                                </div>
-
-                                            <?php endif; ?>
-
+                                            </div>
 
 
                                             <p class="text-muted mb-0">
                                                 ou 10x de
-                                                <strong>
-                                                    <?php
-
-                                                    $valor = $precoOferta ?? $precoNormal;
-                                                    $parcelas = $valor / 10;
-
-                                                    ?>
-
-                                                    R$
-
-                                                    <?=
-                                                    number_format(
-                                                        $parcelas,
-                                                        2,
-                                                        ',',
-                                                        '.'
-                                                    )
-                                                    ?>
-                                                </strong>
+                                                <strong>R$ 467,49</strong>
                                                 sem juros
                                             </p>
 
@@ -411,55 +192,17 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                         <!-- =================================================
                          ESTOQUE
                     ================================================== -->
-                                        <?php if (
-                                            (int)
-                                            $produto['estoque']
-                                            > 0
-                                        ): ?>
+                                        <div class="mb-4">
 
-                                            <span
-                                                class="
-            badge
-            text-bg-success
-        ">
-
+                                            <span class="badge text-bg-success">
                                                 Produto disponível
-
                                             </span>
 
-
-                                            <small
-                                                class="
-            text-muted
-            ms-2
-        ">
-
-                                                <?=
-                                                (int)
-                                                $produto['estoque']
-                                                ?>
-
-                                                unidades em estoque
-
+                                            <small class="text-muted ms-2">
+                                                12 unidades em estoque
                                             </small>
 
-
-                                        <?php else: ?>
-
-
-                                            <span
-                                                class="
-            badge
-            text-bg-danger
-        ">
-
-                                                Produto indisponível
-
-                                            </span>
-
-
-                                        <?php endif; ?>
-
+                                        </div>
 
 
                                         <!-- =================================================
@@ -467,37 +210,14 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                     ================================================== -->
                                         <div class="mb-4">
 
-                                            <label
-                                                for="quantidade"
-                                                class="form-label fw-semibold">
+                                            <label for="quantidade" class="form-label fw-semibold">
                                                 Quantidade
                                             </label>
 
                                             <div style="max-width: 130px;">
 
-                                                <input
-                                                    type="number"
-                                                    class="form-control"
-                                                    id="quantidade"
-                                                    name="quantidade"
-                                                    value="1"
-                                                    min="1"
-
-                                                    max="<?=
-                                                            max(
-                                                                1,
-                                                                (int)
-                                                                $produto['estoque']
-                                                            )
-                                                            ?>"
-
-                                                    <?=
-                                                    (int)
-                                                    $produto['estoque']
-                                                        <= 0
-                                                        ? 'disabled'
-                                                        : ''
-                                                    ?>>
+                                                <input type="number" class="form-control" id="quantidade"
+                                                    name="quantidade" value="1" min="1" max="12">
 
                                             </div>
 
@@ -509,9 +229,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                     ================================================== -->
                                         <div class="d-grid gap-2">
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-primary btn-lg">
+                                            <button type="button" class="btn btn-primary btn-lg">
 
                                                 <i class="bi bi-cart-plus"></i>
                                                 Adicionar ao carrinho
@@ -519,9 +237,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                             </button>
 
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-success btn-lg">
+                                            <button type="button" class="btn btn-success btn-lg">
 
                                                 Comprar agora
 
@@ -593,21 +309,11 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                             Descrição do produto
                                         </h2>
 
-                                        <p class="mb-0">
-
-                                            <?=
-                                            nl2br(
-                                                htmlspecialchars(
-                                                    (string)
-                                                    $produto['descricao'],
-                                                    ENT_QUOTES,
-                                                    'UTF-8'
-                                                )
-                                            )
-                                            ?>
-
+                                        <p>
+                                            Notebook de alto desempenho indicado para
+                                            atividades profissionais, estudos, desenvolvimento
+                                            de sistemas, edição de imagens e jogos.
                                         </p>
-
 
 
 
@@ -700,16 +406,13 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
         ============================================================= -->
                             <section>
 
-                                <div
-                                    class="d-flex justify-content-between align-items-center mb-4">
+                                <div class="d-flex justify-content-between align-items-center mb-4">
 
                                     <h2 class="h4 fw-bold mb-0">
                                         Produtos relacionados
                                     </h2>
 
-                                    <a
-                                        href="produtos"
-                                        class="btn btn-outline-primary btn-sm">
+                                    <a href="produtos" class="btn btn-outline-primary btn-sm">
 
                                         Ver todos
 
@@ -725,11 +428,8 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                                         <div class="card h-100 shadow-sm border-0">
 
-                                            <img
-                                                src="assets/img/produtos/produto1.jpg"
-                                                class="card-img-top p-3"
-                                                alt="Produto relacionado"
-                                                style="height: 220px; object-fit: contain;">
+                                            <img src="assets/img/produtos/produto1.jpg" class="card-img-top p-3"
+                                                alt="Produto relacionado" style="height: 220px; object-fit: contain;">
 
                                             <div class="card-body">
 
@@ -741,9 +441,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                                     R$ 149,90
                                                 </p>
 
-                                                <a
-                                                    href="produto/detalhes"
-                                                    class="btn btn-outline-primary w-100">
+                                                <a href="produto/detalhes" class="btn btn-outline-primary w-100">
 
                                                     Ver detalhes
 
@@ -761,11 +459,8 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                                         <div class="card h-100 shadow-sm border-0">
 
-                                            <img
-                                                src="assets/img/produtos/produto2.jpg"
-                                                class="card-img-top p-3"
-                                                alt="Produto relacionado"
-                                                style="height: 220px; object-fit: contain;">
+                                            <img src="assets/img/produtos/produto2.jpg" class="card-img-top p-3"
+                                                alt="Produto relacionado" style="height: 220px; object-fit: contain;">
 
                                             <div class="card-body">
 
@@ -777,9 +472,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                                     R$ 289,90
                                                 </p>
 
-                                                <a
-                                                    href="#"
-                                                    class="btn btn-outline-primary w-100">
+                                                <a href="#" class="btn btn-outline-primary w-100">
 
                                                     Ver detalhes
 
@@ -797,11 +490,8 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                                         <div class="card h-100 shadow-sm border-0">
 
-                                            <img
-                                                src="assets/img/produtos/produto3.jpg"
-                                                class="card-img-top p-3"
-                                                alt="Produto relacionado"
-                                                style="height: 220px; object-fit: contain;">
+                                            <img src="assets/img/produtos/produto3.jpg" class="card-img-top p-3"
+                                                alt="Produto relacionado" style="height: 220px; object-fit: contain;">
 
                                             <div class="card-body">
 
@@ -813,9 +503,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                                     R$ 199,90
                                                 </p>
 
-                                                <a
-                                                    href="#"
-                                                    class="btn btn-outline-primary w-100">
+                                                <a href="#" class="btn btn-outline-primary w-100">
 
                                                     Ver detalhes
 
@@ -833,11 +521,8 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                                         <div class="card h-100 shadow-sm border-0">
 
-                                            <img
-                                                src="assets/img/produtos/produto4.jpg"
-                                                class="card-img-top p-3"
-                                                alt="Produto relacionado"
-                                                style="height: 220px; object-fit: contain;">
+                                            <img src="assets/img/produtos/produto4.jpg" class="card-img-top p-3"
+                                                alt="Produto relacionado" style="height: 220px; object-fit: contain;">
 
                                             <div class="card-body">
 
@@ -849,9 +534,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                                     R$ 899,90
                                                 </p>
 
-                                                <a
-                                                    href="#"
-                                                    class="btn btn-outline-primary w-100">
+                                                <a href="#" class="btn btn-outline-primary w-100">
 
                                                     Ver detalhes
 
@@ -881,8 +564,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     <?php View::componente('footer'); ?>
     <?php //require_once __DIR__ . '/../layouts/site/footer.php'; 
     ?>
-    <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 </body>

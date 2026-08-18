@@ -112,6 +112,21 @@ class CategoriasController
                     $categoriaId
                 );
         /*
+|--------------------------------------------------------------------------
+| 10. Adiciona id_seguro aos produtos
+|--------------------------------------------------------------------------
+*/
+        $produtos = array_map(
+            static function (array $produto): array {
+                $produto['id_seguro'] =
+                    IdSeguro::criptografar(
+                        (int) $produto['id']
+                    );
+                return $produto;
+            },
+            $produtos
+        );
+        /*
         |--------------------------------------------------------------------------
         | 10. Busca categorias para o HEADER
         |--------------------------------------------------------------------------

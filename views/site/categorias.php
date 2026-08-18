@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 use App\Helpers\View;
 
 $tituloPagina = $tituloPagina
@@ -61,142 +63,168 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
         <div class="container">
             <div class="row g-4 py-4">
 
-            <h1>
+                <h1>
 
-    <?=
-        htmlspecialchars(
-            $categoria['nome'],
-            ENT_QUOTES,
-            'UTF-8'
-        )
-    ?>
+                    <?=
+                    htmlspecialchars(
+                        $categoria['nome'],
+                        ENT_QUOTES,
+                        'UTF-8'
+                    )
+                    ?>
 
-</h1>
+                </h1>
 
-<?php if (
-    !empty(
-        $categoria['descricao']
-    )
-): ?>
+                <?php if (
+                    !empty($categoria['descricao'])
+                ): ?>
 
-    <p>
+                    <p>
 
-        <?=
-            htmlspecialchars(
-                $categoria['descricao'],
-                ENT_QUOTES,
-                'UTF-8'
-            )
-        ?>
+                        <?=
+                        htmlspecialchars(
+                            $categoria['descricao'],
+                            ENT_QUOTES,
+                            'UTF-8'
+                        )
+                        ?>
 
-    </p>
+                    </p>
 
-<?php endif; ?>
+                <?php endif; ?>
 
 
-    <!-- =========================================================
+                <!-- =========================================================
          CARD 1
     ========================================================== -->
 
-    <?php if ($produtos === []): ?>
+                <?php if ($produtos === []): ?>
 
-    <div
-        class="alert alert-info"
-        role="alert"
-    >
+                    <div
+                        class="alert alert-info"
+                        role="alert">
 
-        Nenhum produto foi encontrado
-        nesta categoria.
-
-    </div>
-
-<?php else: ?>
-    
-    <?php foreach ($produtos as $produto): ?>
-    <div class="col-12 col-sm-6 col-lg-3">
-        <div class="card h-100 shadow-sm border-0">
-
-            <!-- <img
-                src="assets/img/produtos/notebook.jpg"
-                class="card-img-top"
-                alt="Notebook Lenovo"
-                style="height: 220px; object-fit: contain;"
-            > -->
-
-            <div class="card-body d-flex flex-column">
-
-                <span class="badge text-bg-primary align-self-start mb-2">
-                    <?= htmlspecialchars($categoria['nome'],ENT_QUOTES,'UTF-8');?>
-                </span>
-
-                <h5 class="card-title">
-                    <?= htmlspecialchars($produto['nome'],ENT_QUOTES,'UTF-8');?>
-                </h5>
-
-                <p class="card-text text-muted small">
-                    <?= htmlspecialchars($produto['descricao'],ENT_QUOTES,'UTF-8');?>
-                </p>
-
-                <div class="mt-auto">
-
-                    <small class="text-decoration-line-through text-muted">
-                       <?= htmlspecialchars($produto['preco'],ENT_QUOTES,'UTF-8');?>
-                    </small>
-
-                    <h4 class="text-success fw-bold mb-1">
-                        R$ <?=
-                            number_format(
-                                (float)
-                                $produto['preco'],
-                                2,
-                                ',',
-                                '.'
-                            )
-                        ?>
-                    </h4>
-
-                    <small class="text-muted">
-                        <?php $parcelas=10; $preco =  $produto['preco'];
-                        $valorParcela = $preco / $parcelas;
-
-                        ?>
-                        ou <?= $parcelas ?>x de R$ <?= number_format($valorParcela, 2, ',', '.') ?>
-                    </small>
-
-                    <div class="d-grid gap-2 mt-3">
-
-                        <a
-                            href="produto/detalhes"
-                            class="btn btn-outline-primary"
-                        >
-                            Ver detalhes
-                        </a>
-
-                        <button
-                            type="button"
-                            class="btn btn-primary"
-                        >
-                            Adicionar ao carrinho
-                        </button>
+                        Nenhum produto foi encontrado
+                        nesta categoria.
 
                     </div>
 
-                </div>
+                <?php else: ?>
+
+                    <?php foreach ($produtos as $produto): ?>
+                        <?php
+                        $imagem = trim(
+                            (string) ($produto['imgcategoria'] ?? '')
+                        );
+                        if ($imagem === '') {
+                            $imagem = $baseUrl
+                                . '/assets/img/produtos/sem-imagem.png';
+                        }
+
+                        $desconto = (float) $produto['percentual_oferta'];
+                        $precoNormal = (float) $produto['preco'];
+                        $precoOferta = $precoNormal - ($precoNormal * $desconto / 100);;
+                        $economia = $precoNormal - $precoOferta; ?>
+                        <div class="col-12 col-sm-6 col-lg-3">
+                            <div class="card h-100 shadow-sm border-0">
+
+                                <img
+                                    src="assets/img/produtos/notebook.jpg"
+                                    class="card-img-top"
+                                    alt="<?= htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8') ?>" onerror="this.onerror=null;this.src='<?= htmlspecialchars($baseUrl . '/assets/img/produtos/sem-imagem.png', ENT_QUOTES, 'UTF-8') ?>';"
+                                    style="height: 220px; object-fit: contain;">
+
+                                <div class="card-body d-flex flex-column">
+
+                                    <span class="badge text-bg-primary align-self-start mb-2">
+                                        <?= htmlspecialchars($categoria['nome'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </span>
+
+                                    <h5 class="card-title">
+                                        <?= htmlspecialchars($produto['nome'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </h5>
+
+                                    <p class="card-text text-muted small">
+                                        <?= htmlspecialchars($produto['descricao'], ENT_QUOTES, 'UTF-8'); ?>
+                                    </p>
+
+                                    <div class="mt-auto">
+
+                                        <small class="text-decoration-line-through text-muted">
+                                            <?= number_format(
+                                                (float)$precoNormal,
+                                                2,
+                                                ',',
+                                                '.'
+                                            ) ?>
+                                        </small>
+
+                                        <h4 class="text-success fw-bold mb-1">
+                                            R$ <?=
+                                                number_format(
+                                                    (float)
+                                                    $precoOferta,
+                                                    2,
+                                                    ',',
+                                                    '.'
+                                                )
+                                                ?>
+                                        </h4>
+
+                                        <small class="text-muted">
+                                            <?php $parcelas = 10;
+                                            $preco =  $produto['preco'];
+                                            $valorParcela = $preco / $parcelas;
+
+                                            ?>
+                                            ou <?= $parcelas ?>x de R$ <?= number_format($valorParcela, 2, ',', '.') ?>
+                                        </small>
+
+                                        <div class="d-grid gap-2 mt-3">
+
+                                            <a
+                                                href="<?=
+                                                        htmlspecialchars(
+                                                            $baseUrl
+                                                                . '/produto/detalhes?prod='
+                                                                . urlencode(
+                                                                    $produto['id_seguro']
+                                                                ),
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        )
+                                                        ?>"
+                                                class="btn btn-outline-primary">
+
+                                                Ver detalhes
+
+                                            </a>
+
+
+                                            <button
+                                                type="button"
+                                                class="btn btn-primary">
+                                                Adicionar ao carrinho
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                </div>
+
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+
+
+
+
+
 
             </div>
-
-        </div>
-    </div>
-    <?php endforeach; ?>
-
-<?php endif; ?>
-
-
-
-
-
-
-</div>
         </div>
     </main>
     <!-- ============================================================

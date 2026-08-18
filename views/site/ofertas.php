@@ -79,16 +79,16 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                             (string) ($produto['descricao'] ?? '')
                         );
                         $precoNormal = (float) $produto['preco'];
-                        $precoOferta = (float) $produto['preco_oferta'];
                         $desconto = (float) $produto['percentual_oferta'];
+                        $precoOferta = $precoNormal-($precoNormal*$desconto/100);
                         $estoque = (int) $produto['estoque'];
-                        $imagem = trim(
-                            (string) ($produto['imagem'] ?? '')
-                        );
                         $economia = $precoNormal - $precoOferta;
                         /*
                      * Imagem padrão
                      */
+                        $imagem = trim(
+                            (string) ($produto['imagem'] ?? '')
+                        );
                         if ($imagem === '') {
                             $imagem = $baseUrl
                                 . '/assets/img/produtos/sem-imagem.png';
@@ -99,8 +99,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                 <!-- Imagem -->
                                 <div class="position-relative">
                                     <img src="<?= htmlspecialchars($imagem, ENT_QUOTES, 'UTF-8') ?>" class="card-img-top"
-                                        alt="<?= htmlspecialchars($nomeProduto, ENT_QUOTES, 'UTF-8') ?>" onerror="this.onerror=null;this.src='<?= htmlspecialchars($baseUrl . '/assets/img/produtos/sem-imagem.jpg', ENT_QUOTES, 'UTF-8') ?>';
-    " style="height: 220px; object-fit: contain;">
+                                        alt="<?= htmlspecialchars($nomeProduto, ENT_QUOTES, 'UTF-8') ?>" onerror="this.onerror=null;this.src='<?= htmlspecialchars($baseUrl . '/assets/img/produtos/sem-imagem.jpg', ENT_QUOTES, 'UTF-8') ?>';" style="height: 220px; object-fit: contain;">
                                     <span class="badge text-bg-danger position-absolute top-0 end-0 m-3">
                                         <?= number_format($desconto, 0, ',', '.') ?>% OFF
                                     </span>

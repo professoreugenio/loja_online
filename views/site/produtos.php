@@ -76,26 +76,61 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                 <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-4 g-4">
                     <!-- PRODUTO 1 -->
                     <?php foreach ($produtosDestaque as $produto): ?>
+                        <?php
+
+
+                        $nomeProduto = (string) $produto['nome'];
+                        $descricaoProduto = trim(
+                            (string) ($produto['descricao'] ?? '')
+                        );
+                        $precoNormal = (float) $produto['preco'];
+                        $categoria = (float) $produto['categoria'];
+                        $desconto = (float) $produto['percentual_oferta'];
+                        $precoOferta = $precoNormal - ($precoNormal * $desconto / 100);
+                        $estoque = (int) $produto['estoque'];
+                        $economia = $precoNormal - $precoOferta;
+
+
+                        $imagem = trim(
+                            (string) ($produto['imagem'] ?? '')
+                        );
+                        if ($imagem === '') {
+                            $imagem = $baseUrl
+                                . '/assets/img/produtos/sem-imagem.png';
+                        }
+                        ?>
                         <div class="col">
                             <div class="card h-100 shadow-sm border-0">
                                 <!-- Imagem -->
                                 <div class="p-3 text-center">
                                     <img
-                                        src="assets/img/produtos/abajur-led.jpg"
+                                        src="<?= htmlspecialchars($imagem, ENT_QUOTES, 'UTF-8') ?>"
                                         class="card-img-top img-fluid"
-                                        alt="Abajur LED Touch"
+                                        alt="<?= htmlspecialchars($nomeProduto, ENT_QUOTES, 'UTF-8') ?>"
+                                        onerror="
+    this.onerror=null;
+    this.src='<?=
+                        htmlspecialchars(
+                            $baseUrl
+                                . '/assets/img/produtos/sem-imagem.jpg',
+                            ENT_QUOTES,
+                            'UTF-8'
+                        )
+                ?>';
+"
+
                                         style="height: 220px; object-fit: contain;">
                                 </div>
                                 <div class="card-body d-flex flex-column">
                                     <!-- Categoria -->
                                     <div class="mb-2">
                                         <span class="badge text-bg-primary">
-                                            Casa e Decoração
+                                            <?= $categoria ?>
                                         </span>
                                     </div>
                                     <!-- Nome -->
                                     <h5 class="card-title">
-                                        Abajur LED Touch
+                                        <?= $nomeProduto; ?>
                                     </h5>
                                     <!-- Descrição -->
                                     <p class="card-text text-muted small">
@@ -118,10 +153,23 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                         <!-- Botões -->
                                         <div class="d-grid gap-2">
                                             <a
-                                                href="produto/detalhes?id=1"
+                                                href="<?=
+                                                        htmlspecialchars(
+                                                            $baseUrl
+                                                                . '/produto/detalhes?prod='
+                                                                . urlencode(
+                                                                    $produto['id_seguro']
+                                                                ),
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        )
+                                                        ?>"
                                                 class="btn btn-outline-primary">
+
                                                 Ver detalhes
+
                                             </a>
+
                                             <button
                                                 type="button"
                                                 class="btn btn-primary">
