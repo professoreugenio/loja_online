@@ -118,7 +118,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                         <!-- Botões -->
                                         <div class="d-grid gap-2">
                                             <a
-                                                href="produto-detalhes?id=1"
+                                                href="produto/detalhes?id=1"
                                                 class="btn btn-outline-primary">
                                                 Ver detalhes
                                             </a>
@@ -189,7 +189,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                         </p>
                                         <div class="d-grid gap-2">
                                             <a
-                                                href="produto-detalhes?id=5"
+                                                href="produto/detalhes?id=5"
                                                 class="btn btn-outline-primary">
                                                 Ver detalhes
                                             </a>
