@@ -7,6 +7,8 @@ namespace App\Controllers\Site;
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
+use App\Helpers\CsrfCarrinho;
+
 use RuntimeException;
 
 final class OfertasController
@@ -137,6 +139,8 @@ final class OfertasController
         | 8. View
         |--------------------------------------------------------------------------
         */
+
+        $csrfCarrinho = CsrfCarrinho::gerar();
 
         $arquivoView =
             $raizProjeto

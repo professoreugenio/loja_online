@@ -7,6 +7,8 @@ namespace App\Controllers\Site;
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
+use App\Helpers\CsrfCarrinho;
+
 use RuntimeException;
 
 class ProdutosController
@@ -135,6 +137,9 @@ class ProdutosController
         }
 
         unset($produto);
+
+
+        $csrfCarrinho = CsrfCarrinho::gerar();
 
         /*
         |--------------------------------------------------------------------------

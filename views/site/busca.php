@@ -696,16 +696,63 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                                             </a>
 
 
-                                            <button
-                                                type="button"
-                                                class="
-                                        btn
-                                        btn-primary
-                                    ">
+                                            <form
+                                                action="<?=
+                                                        htmlspecialchars(
+                                                            $baseUrl
+                                                                . '/carrinho/adicionar',
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        )
+                                                        ?>"
+                                                method="post">
 
-                                                Adicionar ao carrinho
 
-                                            </button>
+                                                <input
+                                                    type="hidden"
+                                                    name="csrf_token"
+                                                    value="<?=
+                                                            htmlspecialchars(
+                                                                $csrfCarrinho,
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            )
+                                                            ?>">
+
+
+                                                <input
+                                                    type="hidden"
+                                                    name="produto"
+                                                    value="<?=
+                                                            htmlspecialchars(
+                                                                $produto['id_seguro'],
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            )
+                                                            ?>">
+
+
+                                                <input
+                                                    type="hidden"
+                                                    name="quantidade"
+                                                    value="1">
+
+
+                                                <button
+                                                    type="submit"
+                                                    class="
+            btn
+            btn-primary
+            w-100
+        ">
+
+                                                    Adicionar ao carrinho
+
+                                                </button>
+
+
+                                            </form>
+
 
                                         </div>
 

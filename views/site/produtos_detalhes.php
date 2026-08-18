@@ -509,14 +509,84 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                     ================================================== -->
                                         <div class="d-grid gap-2">
 
-                                            <button
-                                                type="button"
-                                                class="btn btn-primary btn-lg">
+                                            <form
+                                                action="<?=
+                                                        htmlspecialchars(
+                                                            $baseUrl
+                                                                . '/carrinho/adicionar',
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        )
+                                                        ?>"
+                                                method="post">
 
-                                                <i class="bi bi-cart-plus"></i>
-                                                Adicionar ao carrinho
 
-                                            </button>
+                                                <input
+                                                    type="hidden"
+                                                    name="csrf_token"
+                                                    value="<?=
+                                                            htmlspecialchars(
+                                                                $csrfCarrinho,
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            )
+                                                            ?>">
+
+
+                                                <input
+                                                    type="hidden"
+                                                    name="produto"
+                                                    value="<?=
+                                                            htmlspecialchars(
+                                                                $produto['id_seguro'],
+                                                                ENT_QUOTES,
+                                                                'UTF-8'
+                                                            )
+                                                            ?>">
+
+
+                                                <label
+                                                    for="quantidade"
+                                                    class="
+            form-label
+            fw-semibold
+        ">
+
+                                                    Quantidade
+
+                                                </label>
+
+
+                                                <input
+                                                    type="number"
+                                                    class="form-control"
+                                                    id="quantidade"
+                                                    name="quantidade"
+                                                    value="1"
+                                                    min="1"
+                                                    max="<?=
+                                                            (int)
+                                                            $produto['estoque']
+                                                            ?>">
+
+
+                                                <button
+                                                    type="submit"
+                                                    class="
+            btn
+            btn-primary
+            btn-lg
+            w-100
+            mt-3
+        ">
+
+                                                    Adicionar ao carrinho
+
+                                                </button>
+
+
+                                            </form>
+
 
 
                                             <button
@@ -540,7 +610,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                                             <div class="col-12 col-sm-6">
 
-                                                
+
 
                                             </div>
 
@@ -685,7 +755,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                             </section>
 
 
-                          
+
 
                         </div>
 

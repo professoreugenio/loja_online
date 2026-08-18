@@ -1,11 +1,17 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Controllers\Site;
+
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
+use App\Helpers\CsrfCarrinho;
 use Config;
+
 use RuntimeException;
+
 class CategoriasController
 {
     public function index(): void
@@ -86,9 +92,9 @@ class CategoriasController
         */
         $categoria =
             $categoriaRepository
-                ->buscarPorId(
-                    $categoriaId
-                );
+            ->buscarPorId(
+                $categoriaId
+            );
         /*
         |--------------------------------------------------------------------------
         | 8. Verifica se a categoria existe
@@ -97,7 +103,7 @@ class CategoriasController
         if ($categoria === null) {
             $this->pagina404(
                 'Categoria não encontrada. ID: '
-                . $categoriaId
+                    . $categoriaId
             );
             return;
         }
@@ -108,9 +114,9 @@ class CategoriasController
         */
         $produtos =
             $produtoRepository
-                ->listarPorCategoria(
-                    $categoriaId
-                );
+            ->listarPorCategoria(
+                $categoriaId
+            );
         /*
 |--------------------------------------------------------------------------
 | 10. Adiciona id_seguro aos produtos
@@ -133,7 +139,7 @@ class CategoriasController
         */
         $categorias =
             $categoriaRepository
-                ->listarAtivas();
+            ->listarAtivas();
         /*
         |--------------------------------------------------------------------------
         | 11. Adiciona id_seguro para os links do HEADER
@@ -161,9 +167,15 @@ class CategoriasController
             . ' - Loja Online';
         $descricaoPagina =
             !empty($categoria['descricao'])
-                ? (string) $categoria['descricao']
-                : 'Produtos da categoria '
-                    . $categoria['nome'];
+            ? (string) $categoria['descricao']
+            : 'Produtos da categoria '
+            . $categoria['nome'];
+
+
+
+        $csrfCarrinho = CsrfCarrinho::gerar();
+
+
         /*
         |--------------------------------------------------------------------------
         | 13. Localiza a View
@@ -175,7 +187,7 @@ class CategoriasController
         if (!is_file($arquivoView)) {
             throw new RuntimeException(
                 'A página de categorias não foi encontrada: '
-                . $arquivoView
+                    . $arquivoView
             );
         }
         /*
@@ -206,7 +218,7 @@ class CategoriasController
         if ($motivo !== '') {
             error_log(
                 'CategoriasController: '
-                . $motivo
+                    . $motivo
             );
         }
         http_response_code(404);

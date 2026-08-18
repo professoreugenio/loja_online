@@ -3,6 +3,7 @@
 declare(strict_types=1);
 $tituloHeader = $tituloHeader ?? 'Loja Online';
 $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
+$baseUrl = defined('BASE_URL') ? BASE_URL : '';
 ?>
 <header class="sticky-top">
     <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm" aria-label="Menu principal">
@@ -103,10 +104,7 @@ $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
                 </ul>
 
                 <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
-                    <form class="d-flex" action="<?=
-                                                    htmlspecialchars(
-                                                        $baseUrl
-                                                            . '/busca',
+                    <form class="d-flex" action="<?= htmlspecialchars($baseUrl . '/buscar',
                                                         ENT_QUOTES,
                                                         'UTF-8'
                                                     )

@@ -1,0 +1,399 @@
+<main class="py-5">
+        <div class="container">
+
+            <!-- TÍTULO DA PÁGINA -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h1 class="h2 fw-bold mb-2">
+                        Carrinho de Compras
+                    </h1>
+
+                    <p class="text-muted mb-0">
+                        Confira os produtos adicionados ao seu carrinho antes de finalizar a compra.
+                    </p>
+                </div>
+            </div>
+
+            <div class="row g-4">
+
+                <!-- =====================================================
+                 PRODUTOS DO CARRINHO
+            ====================================================== -->
+                <div class="col-12 col-lg-8">
+
+                    <div class="card border-0 shadow-sm">
+
+                        <div class="card-header bg-white py-3">
+                            <h2 class="h5 mb-0">
+                                Produtos
+                            </h2>
+                        </div>
+
+                        <div class="card-body">
+
+                            <!-- PRODUTO 1 -->
+                            <div class="row align-items-center g-3 py-3 border-bottom">
+
+                                <!-- Imagem -->
+                                <div class="col-4 col-md-2">
+
+                                    <img
+                                        src="assets/img/produtos/notebook.jpg"
+                                        class="img-fluid rounded"
+                                        alt="Notebook Lenovo"
+                                        style="height: 100px; width: 100%; object-fit: contain;"
+                                        onerror="this.onerror=null; this.src='assets/img/produtos/sem-imagem.jpg';">
+
+                                </div>
+
+                                <!-- Informações -->
+                                <div class="col-8 col-md-4">
+
+                                    <h3 class="h6 fw-bold mb-1">
+                                        Notebook Lenovo IdeaPad
+                                    </h3>
+
+                                    <p class="text-muted small mb-1">
+                                        Intel Core i5, 8GB RAM, SSD 512GB
+                                    </p>
+
+                                    <small class="text-muted">
+                                        Código: 001
+                                    </small>
+
+                                </div>
+
+                                <!-- Quantidade -->
+                                <div class="col-6 col-md-2">
+
+                                    <label
+                                        for="quantidade1"
+                                        class="form-label small">
+                                        Quantidade
+                                    </label>
+
+                                    <div class="input-group input-group-sm">
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary">
+                                            -
+                                        </button>
+
+                                        <input
+                                            type="number"
+                                            id="quantidade1"
+                                            class="form-control text-center"
+                                            value="1"
+                                            min="1">
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary">
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Preço -->
+                                <div class="col-6 col-md-2 text-md-end">
+
+                                    <small class="text-muted d-block">
+                                        Preço
+                                    </small>
+
+                                    <strong class="fs-6">
+                                        R$ 3.499,90
+                                    </strong>
+
+                                </div>
+
+                                <!-- Remover -->
+                                <div class="col-12 col-md-2 text-md-end">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-danger btn-sm">
+                                        Remover
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+
+                            <!-- PRODUTO 2 -->
+                            <div class="row align-items-center g-3 py-3">
+
+                                <!-- Imagem -->
+                                <div class="col-4 col-md-2">
+
+                                    <img
+                                        src="assets/img/produtos/mouse.jpg"
+                                        class="img-fluid rounded"
+                                        alt="Mouse sem fio"
+                                        style="height: 100px; width: 100%; object-fit: contain;"
+                                        onerror="this.onerror=null; this.src='assets/img/produtos/sem-imagem.jpg';">
+
+                                </div>
+
+                                <!-- Informações -->
+                                <div class="col-8 col-md-4">
+
+                                    <h3 class="h6 fw-bold mb-1">
+                                        Mouse Sem Fio
+                                    </h3>
+
+                                    <p class="text-muted small mb-1">
+                                        Mouse óptico USB com conexão sem fio
+                                    </p>
+
+                                    <small class="text-muted">
+                                        Código: 002
+                                    </small>
+
+                                </div>
+
+                                <!-- Quantidade -->
+                                <div class="col-6 col-md-2">
+
+                                    <label
+                                        for="quantidade2"
+                                        class="form-label small">
+                                        Quantidade
+                                    </label>
+
+                                    <div class="input-group input-group-sm">
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary">
+                                            -
+                                        </button>
+
+                                        <input
+                                            type="number"
+                                            id="quantidade2"
+                                            class="form-control text-center"
+                                            value="2"
+                                            min="1">
+
+                                        <button
+                                            type="button"
+                                            class="btn btn-outline-secondary">
+                                            +
+                                        </button>
+
+                                    </div>
+
+                                </div>
+
+                                <!-- Preço -->
+                                <div class="col-6 col-md-2 text-md-end">
+
+                                    <small class="text-muted d-block">
+                                        Preço
+                                    </small>
+
+                                    <strong class="fs-6">
+                                        R$ 159,90
+                                    </strong>
+
+                                </div>
+
+                                <!-- Remover -->
+                                <div class="col-12 col-md-2 text-md-end">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-danger btn-sm">
+                                        Remover
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+
+
+
+                    <!-- =================================================
+                     CALCULAR FRETE
+                ================================================== -->
+                    <div class="card border-0 shadow-sm mt-4">
+
+                        <div class="card-body">
+
+                            <h2 class="h5 mb-3">
+                                Calcular frete
+                            </h2>
+
+                            <div class="row g-2">
+
+                                <div class="col-12 col-md-8">
+
+                                    <input
+                                        type="text"
+                                        class="form-control"
+                                        placeholder="Digite seu CEP"
+                                        maxlength="9">
+
+                                </div>
+
+                                <div class="col-12 col-md-4">
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-outline-secondary w-100">
+                                        Calcular frete
+                                    </button>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+
+                    <!-- CONTINUAR COMPRANDO -->
+                    <div class="mt-4">
+
+                        <a
+                            href="produtos"
+                            class="btn btn-outline-secondary">
+                            ← Continuar comprando
+                        </a>
+
+                    </div>
+
+                </div>
+
+
+                <!-- =====================================================
+                 RESUMO DO PEDIDO
+            ====================================================== -->
+                <div class="col-12 col-lg-4">
+
+                    <div
+                        class="card border-0 shadow-sm"
+                        style="position: sticky; top: 20px;">
+
+                        <div class="card-header bg-white py-3">
+
+                            <h2 class="h5 mb-0">
+                                Resumo do Pedido
+                            </h2>
+
+                        </div>
+
+                        <div class="card-body">
+
+                            <!-- Subtotal -->
+                            <div class="d-flex justify-content-between mb-3">
+
+                                <span class="text-muted">
+                                    Subtotal
+                                </span>
+
+                                <span>
+                                    R$ 3.819,70
+                                </span>
+
+                            </div>
+
+
+                            <!-- Desconto -->
+                            <div class="d-flex justify-content-between mb-3">
+
+                                <span class="text-muted">
+                                    Desconto
+                                </span>
+
+                                <span class="text-success">
+                                    - R$ 0,00
+                                </span>
+
+                            </div>
+
+
+                            <!-- Frete -->
+                            <div class="d-flex justify-content-between mb-3">
+
+                                <span class="text-muted">
+                                    Frete
+                                </span>
+
+                                <span>
+                                    A calcular
+                                </span>
+
+                            </div>
+
+
+                            <hr>
+
+
+                            <!-- TOTAL -->
+                            <div class="d-flex justify-content-between align-items-center mb-2">
+
+                                <strong class="fs-5">
+                                    Total
+                                </strong>
+
+                                <strong class="fs-4 text-primary">
+                                    R$ 3.819,70
+                                </strong>
+
+                            </div>
+
+
+                            <!-- Parcelamento -->
+                            <p class="text-muted small text-end mb-4">
+                                ou 10x de
+                                <strong>
+                                    R$ 381,97
+                                </strong>
+                                sem juros
+                            </p>
+
+
+                            <!-- FINALIZAR -->
+                            <div class="d-grid">
+
+                                <a
+                                    href="checkout"
+                                    class="btn btn-success btn-lg">
+                                    Finalizar Compra
+                                </a>
+
+                            </div>
+
+
+                            <!-- Compra segura -->
+                            <div class="text-center mt-3">
+
+                                <small class="text-muted">
+                                    Compra segura e protegida
+                                </small>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+    </main>

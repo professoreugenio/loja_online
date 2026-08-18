@@ -7,6 +7,7 @@ namespace App\Controllers\Site;
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
+use App\Helpers\CsrfCarrinho;
 use RuntimeException;
 
 final class BuscaController
@@ -170,6 +171,9 @@ final class BuscaController
 
             : 'Pesquise produtos '
             . 'na Loja Online.';
+
+
+        $csrfCarrinho = CsrfCarrinho::gerar();
 
 
         /*
