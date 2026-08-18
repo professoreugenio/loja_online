@@ -6,26 +6,29 @@ namespace App\Controllers\Site;
 
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
+use App\Repositories\ProdutoRepository;
 use RuntimeException;
 
-class BuscaController
+final class BuscaController
 {
     public function index(): void
     {
         /*
         |--------------------------------------------------------------------------
-        | 1. Raiz do projeto
+        | 1. Raiz
         |--------------------------------------------------------------------------
         */
+
         $raizProjeto =
             dirname(__DIR__, 3);
 
 
         /*
         |--------------------------------------------------------------------------
-        | 2. Conexão com o banco
+        | 2. Conexão
         |--------------------------------------------------------------------------
         */
+
         require_once $raizProjeto
             . '/database/conexao.php';
 
@@ -36,30 +39,42 @@ class BuscaController
 
         /*
         |--------------------------------------------------------------------------
-        | 3. Categorias
+        | 3. Repositories
         |--------------------------------------------------------------------------
         */
+
         $categoriaRepository =
             new CategoriaRepository(
                 $pdo
             );
 
 
-        $categorias =
-            $categoriaRepository
-                ->listarAtivas();
+        $produtoRepository =
+            new ProdutoRepository(
+                $pdo
+            );
 
 
         /*
         |--------------------------------------------------------------------------
-        | 4. Gera ID seguro das categorias
+        | 4. Categorias do header
         |--------------------------------------------------------------------------
         */
-        foreach ($categorias as &$categoria) {
+
+        $categorias =
+            $categoriaRepository
+            ->listarAtivas();
+
+
+        foreach (
+            $categorias
+            as &$categoria
+        ) {
 
             $categoria['id_seguro'] =
                 IdSeguro::criptografar(
-                    (int) $categoria['id']
+                    (int)
+                    $categoria['id']
                 );
         }
 
@@ -69,21 +84,100 @@ class BuscaController
 
         /*
         |--------------------------------------------------------------------------
-        | 5. Dados específicos da página
+        | 5. Recebe o termo
         |--------------------------------------------------------------------------
-        |
-        | Futuramente:
-        |
-        | $ofertas = ...
-        |
         */
+
+        $termo = trim(
+            (string) (
+                $_GET['q']
+                ?? ''
+            )
+        );
 
 
         /*
         |--------------------------------------------------------------------------
-        | 6. Localiza a View
+        | 6. Pesquisa
         |--------------------------------------------------------------------------
         */
+
+        $produtos =
+            $termo !== ''
+            ? $produtoRepository
+            ->buscar(
+                $termo,
+                30
+            )
+
+            : [];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 7. IDs seguros
+        |--------------------------------------------------------------------------
+        */
+
+        foreach (
+            $produtos
+            as &$produto
+        ) {
+
+            $produto['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int)
+                    $produto['id']
+                );
+        }
+
+
+        unset($produto);
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 8. Total
+        |--------------------------------------------------------------------------
+        */
+
+        $totalResultados =
+            count(
+                $produtos
+            );
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 9. SEO
+        |--------------------------------------------------------------------------
+        */
+
+        $tituloPagina =
+            $termo !== ''
+            ? 'Busca por '
+            . $termo
+            . ' - Loja Online'
+
+            : 'Busca - Loja Online';
+
+
+        $descricaoPagina =
+            $termo !== ''
+            ? 'Resultados da busca por '
+            . $termo
+            . '.'
+
+            : 'Pesquise produtos '
+            . 'na Loja Online.';
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | 10. View
+        |--------------------------------------------------------------------------
+        */
+
         $arquivoView =
             $raizProjeto
             . '/views/site/busca.php';
@@ -92,20 +186,12 @@ class BuscaController
         if (!is_file($arquivoView)) {
 
             throw new RuntimeException(
-                'A página de ofertas não foi encontrada.'
+                'A página de busca '
+                    . 'não foi encontrada.'
             );
         }
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | 7. Carrega a View
-        |--------------------------------------------------------------------------
-        |
-        | $categorias estará disponível
-        | dentro de ofertas.php.
-        |
-        */
         require $arquivoView;
     }
 }

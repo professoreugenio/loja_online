@@ -244,61 +244,169 @@ final class ProdutoRepository
         string $termo,
         int $limite = 30
     ): array {
-        $termo = trim($termo);
+
+        $termo =
+            trim(
+                $termo
+            );
+
+
         if ($termo === '') {
+
             return [];
         }
+
+
         $sql = '
-            SELECT
-                p.id,
-                p.nome,
-                p.slug,
-                p.descricao,
-                p.preco,
-                p.estoque,
-                c.nome AS categoria,
-                (
-                    SELECT pi.url_imagem
-                    FROM produto_imagens pi
-                    WHERE pi.produto_id = p.id
-                    ORDER BY
-                        pi.principal DESC,
-                        pi.ordem ASC,
-                        pi.id ASC
-                    LIMIT 1
-                ) AS imagem
-            FROM produtos p
-            INNER JOIN categorias c
-                ON c.id = p.categoria_id
-            WHERE p.status = :status
-              AND c.ativo = 1
-              AND (
-                  p.nome LIKE :termo
-                  OR p.descricao LIKE :termo
-                  OR c.nome LIKE :termo
-              )
-            ORDER BY
-                p.nome ASC
-            LIMIT :limite
-        ';
+        SELECT
+            p.id,
+            p.categoria_id,
+            p.nome,
+            p.slug,
+            p.descricao,
+            p.preco,
+            p.estoque,
+
+            p.percentual_oferta,
+            p.oferta_ativa,
+            p.oferta_inicio,
+            p.oferta_fim,
+
+            c.nome AS categoria,
+
+            CASE
+
+                WHEN
+                    p.oferta_ativa = 1
+
+                    AND p.percentual_oferta > 0
+
+                    AND p.percentual_oferta < 100
+
+                    AND (
+                        p.oferta_inicio IS NULL
+                        OR p.oferta_inicio <= NOW()
+                    )
+
+                    AND (
+                        p.oferta_fim IS NULL
+                        OR p.oferta_fim >= NOW()
+                    )
+
+                THEN ROUND(
+                    p.preco
+                    * (
+                        1
+                        - p.percentual_oferta
+                        / 100
+                    ),
+                    2
+                )
+
+                ELSE NULL
+
+            END AS preco_oferta,
+
+            (
+                SELECT
+                    pi.url_imagem
+
+                FROM produto_imagens pi
+
+                WHERE
+                    pi.produto_id = p.id
+
+                ORDER BY
+                    pi.principal DESC,
+                    pi.ordem ASC,
+                    pi.id ASC
+
+                LIMIT 1
+            ) AS imagem
+
+        FROM produtos p
+
+        INNER JOIN categorias c
+            ON c.id = p.categoria_id
+
+        WHERE
+            p.status = :status
+
+            AND c.ativo = 1
+
+            AND (
+                p.nome
+                    LIKE :termo_nome
+
+                OR p.descricao
+                    LIKE :termo_descricao
+
+                OR c.nome
+                    LIKE :termo_categoria
+            )
+
+        ORDER BY
+            p.nome ASC
+
+        LIMIT :limite
+    ';
+
+
         $consulta =
-            $this->pdo->prepare($sql);
+            $this->pdo
+            ->prepare(
+                $sql
+            );
+
+
+        $valorBusca =
+            '%'
+            . $termo
+            . '%';
+
+
         $consulta->bindValue(
             ':status',
-            'ativo'
+            'ativo',
+            PDO::PARAM_STR
         );
+
+
         $consulta->bindValue(
-            ':termo',
-            '%' . $termo . '%'
+            ':termo_nome',
+            $valorBusca,
+            PDO::PARAM_STR
         );
+
+
+        $consulta->bindValue(
+            ':termo_descricao',
+            $valorBusca,
+            PDO::PARAM_STR
+        );
+
+
+        $consulta->bindValue(
+            ':termo_categoria',
+            $valorBusca,
+            PDO::PARAM_STR
+        );
+
+
         $consulta->bindValue(
             ':limite',
             $limite,
             PDO::PARAM_INT
         );
+
+
         $consulta->execute();
-        return $consulta->fetchAll();
+
+
+        return
+            $consulta->fetchAll();
     }
+
     public function buscarPorSlug(
         string $slug
     ): ?array {

@@ -1,0 +1,400 @@
+<main class="py-5">
+    <div class="container">
+
+        <!-- =====================================================
+             TÍTULO DA PÁGINA
+        ====================================================== -->
+        <div class="row mb-4">
+            <div class="col-12">
+                <h1 class="h2 fw-bold mb-2">
+                    Resultados da busca
+                </h1>
+
+                <p class="text-muted mb-0">
+                    Confira os produtos encontrados para sua pesquisa.
+                </p>
+            </div>
+        </div>
+
+        <!-- =====================================================
+             CAMPO DE BUSCA
+        ====================================================== -->
+        <div class="row mb-5">
+            <div class="col-12 col-lg-8">
+
+                <form action="#" method="get">
+                    <div class="input-group input-group-lg">
+
+                        <input
+                            type="search"
+                            name="q"
+                            class="form-control"
+                            placeholder="Digite o nome do produto..."
+                        >
+
+                        <button
+                            type="submit"
+                            class="btn btn-primary"
+                        >
+                            Buscar
+                        </button>
+
+                    </div>
+                </form>
+
+            </div>
+        </div>
+
+        <!-- =====================================================
+             INFORMAÇÕES DA BUSCA
+        ====================================================== -->
+        <div class="row mb-4">
+            <div class="col-12">
+
+                <div
+                    class="d-flex flex-wrap justify-content-between align-items-center gap-2"
+                >
+                    <p class="mb-0">
+                        Resultado da busca por:
+                        <strong>"Notebook"</strong>
+                    </p>
+
+                    <span class="badge text-bg-secondary">
+                        4 produtos encontrados
+                    </span>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- =====================================================
+             CARDS DOS PRODUTOS
+        ====================================================== -->
+        <div class="row g-4">
+
+            <!-- PRODUTO 1 -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    <img
+                        src="assets/img/produtos/notebook.jpg"
+                        class="card-img-top p-3"
+                        alt="Notebook Lenovo"
+                        style="height: 220px; object-fit: contain;"
+                    >
+
+                    <div class="card-body d-flex flex-column">
+
+                        <span
+                            class="badge text-bg-primary align-self-start mb-2"
+                        >
+                            Notebooks
+                        </span>
+
+                        <h2 class="h5 card-title">
+                            Notebook Lenovo IdeaPad
+                        </h2>
+
+                        <p class="card-text text-muted small">
+                            Notebook com processador Intel Core i5,
+                            8GB de memória RAM e SSD de 512GB.
+                        </p>
+
+                        <div class="mt-auto">
+
+                            <small
+                                class="text-decoration-line-through text-muted"
+                            >
+                                R$ 3.899,90
+                            </small>
+
+                            <div class="fs-4 fw-bold text-primary mb-1">
+                                R$ 3.499,90
+                            </div>
+
+                            <p class="text-muted small mb-3">
+                                ou 10x de
+                                <strong>R$ 349,99</strong>
+                                sem juros
+                            </p>
+
+                            <div class="d-grid gap-2">
+
+                                <a
+                                    href="#"
+                                    class="btn btn-outline-primary"
+                                >
+                                    Ver detalhes
+                                </a>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                >
+                                    Adicionar ao carrinho
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUTO 2 -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    <img
+                        src="assets/img/produtos/notebook.jpg"
+                        class="card-img-top p-3"
+                        alt="Notebook Acer Aspire"
+                        style="height: 220px; object-fit: contain;"
+                    >
+
+                    <div class="card-body d-flex flex-column">
+
+                        <span
+                            class="badge text-bg-primary align-self-start mb-2"
+                        >
+                            Notebooks
+                        </span>
+
+                        <h2 class="h5 card-title">
+                            Notebook Acer Aspire
+                        </h2>
+
+                        <p class="card-text text-muted small">
+                            Notebook com processador Ryzen 5,
+                            8GB de memória RAM e SSD de 512GB.
+                        </p>
+
+                        <div class="mt-auto">
+
+                            <small
+                                class="text-decoration-line-through text-muted"
+                            >
+                                R$ 3.599,90
+                            </small>
+
+                            <div class="fs-4 fw-bold text-primary mb-1">
+                                R$ 3.199,90
+                            </div>
+
+                            <p class="text-muted small mb-3">
+                                ou 10x de
+                                <strong>R$ 319,99</strong>
+                                sem juros
+                            </p>
+
+                            <div class="d-grid gap-2">
+
+                                <a
+                                    href="#"
+                                    class="btn btn-outline-primary"
+                                >
+                                    Ver detalhes
+                                </a>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                >
+                                    Adicionar ao carrinho
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUTO 3 -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    <img
+                        src="assets/img/produtos/notebook.jpg"
+                        class="card-img-top p-3"
+                        alt="Notebook Dell Inspiron"
+                        style="height: 220px; object-fit: contain;"
+                    >
+
+                    <div class="card-body d-flex flex-column">
+
+                        <span
+                            class="badge text-bg-primary align-self-start mb-2"
+                        >
+                            Notebooks
+                        </span>
+
+                        <h2 class="h5 card-title">
+                            Notebook Dell Inspiron
+                        </h2>
+
+                        <p class="card-text text-muted small">
+                            Notebook com processador Intel Core i7,
+                            16GB de memória RAM e SSD de 512GB.
+                        </p>
+
+                        <div class="mt-auto">
+
+                            <small
+                                class="text-decoration-line-through text-muted"
+                            >
+                                R$ 5.299,90
+                            </small>
+
+                            <div class="fs-4 fw-bold text-primary mb-1">
+                                R$ 4.899,90
+                            </div>
+
+                            <p class="text-muted small mb-3">
+                                ou 10x de
+                                <strong>R$ 489,99</strong>
+                                sem juros
+                            </p>
+
+                            <div class="d-grid gap-2">
+
+                                <a
+                                    href="#"
+                                    class="btn btn-outline-primary"
+                                >
+                                    Ver detalhes
+                                </a>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                >
+                                    Adicionar ao carrinho
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+            <!-- PRODUTO 4 -->
+            <div class="col-12 col-sm-6 col-lg-4 col-xl-3">
+
+                <div class="card h-100 shadow-sm border-0">
+
+                    <img
+                        src="assets/img/produtos/notebook.jpg"
+                        class="card-img-top p-3"
+                        alt="Notebook Samsung"
+                        style="height: 220px; object-fit: contain;"
+                    >
+
+                    <div class="card-body d-flex flex-column">
+
+                        <span
+                            class="badge text-bg-primary align-self-start mb-2"
+                        >
+                            Notebooks
+                        </span>
+
+                        <h2 class="h5 card-title">
+                            Notebook Samsung Book
+                        </h2>
+
+                        <p class="card-text text-muted small">
+                            Notebook com processador Intel Core i5,
+                            8GB de memória RAM e SSD de 256GB.
+                        </p>
+
+                        <div class="mt-auto">
+
+                            <small
+                                class="text-decoration-line-through text-muted"
+                            >
+                                R$ 3.499,90
+                            </small>
+
+                            <div class="fs-4 fw-bold text-primary mb-1">
+                                R$ 2.999,90
+                            </div>
+
+                            <p class="text-muted small mb-3">
+                                ou 10x de
+                                <strong>R$ 299,99</strong>
+                                sem juros
+                            </p>
+
+                            <div class="d-grid gap-2">
+
+                                <a
+                                    href="#"
+                                    class="btn btn-outline-primary"
+                                >
+                                    Ver detalhes
+                                </a>
+
+                                <button
+                                    type="button"
+                                    class="btn btn-primary"
+                                >
+                                    Adicionar ao carrinho
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+
+        <!-- =====================================================
+             EXEMPLO: NENHUM RESULTADO
+             Exibir este bloco quando não houver produtos.
+        ====================================================== -->
+        <!--
+        <div class="row">
+            <div class="col-12">
+
+                <div
+                    class="alert alert-light border text-center py-5"
+                    role="alert"
+                >
+                    <h2 class="h4 fw-bold mb-3">
+                        Nenhum produto encontrado
+                    </h2>
+
+                    <p class="text-muted mb-0">
+                        Tente realizar uma nova busca utilizando
+                        outro nome ou palavra-chave.
+                    </p>
+                </div>
+
+            </div>
+        </div>
+        -->
+
+    </div>
+</main>
