@@ -312,4 +312,46 @@ final class CarrinhoRepository
         return
             $consulta->fetchAll();
     }
+
+
+    public function totalUnidades(
+        int $carrinhoId
+    ): int {
+
+        $sql = '
+        SELECT
+            COALESCE(
+                SUM(quantidade),
+                0
+            )
+
+        FROM carrinho_itens
+
+        WHERE carrinho_id =
+            :carrinho_id
+    ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare(
+                $sql
+            );
+
+
+        $consulta->bindValue(
+            ':carrinho_id',
+            $carrinhoId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        return (int)
+        $consulta
+            ->fetchColumn();
+    }
+
 }

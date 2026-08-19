@@ -5,6 +5,21 @@ $tituloHeader = $tituloHeader ?? 'Loja Online';
 $textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
 $baseUrl = defined('BASE_URL') ? BASE_URL : '';
 ?>
+
+<?php
+
+$quantidadeCarrinho =
+    isset(
+        $quantidadeCarrinho
+    )
+    ? max(
+        0,
+        (int)
+        $quantidadeCarrinho
+    )
+    : 0;
+
+?>
 <header class="sticky-top">
     <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm" aria-label="Menu principal">
         <div class="container py-2">
@@ -55,10 +70,10 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                                         href="<?=
                                                 BASE_URL
                                                 ?>/categorias?cat=<?=
-                                    urlencode(
-                                        $categoria['id_seguro']
-                                    )
-                                    ?>">
+                                                                    urlencode(
+                                                                        $categoria['id_seguro']
+                                                                    )
+                                                                    ?>">
 
                                         <?=
                                         htmlspecialchars(
@@ -104,7 +119,8 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                 </ul>
 
                 <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
-                    <form class="d-flex" action="<?= htmlspecialchars($baseUrl . '/buscar',
+                    <form class="d-flex" action="<?= htmlspecialchars(
+                                                        $baseUrl . '/buscar',
                                                         ENT_QUOTES,
                                                         'UTF-8'
                                                     )
@@ -143,7 +159,9 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
 
                     <a class="btn btn-primary text-nowrap" href="carrinho">
                         Carrinho
-                        <span class="badge text-bg-light ms-1">0</span>
+                        <span class="badge text-bg-light ms-1">
+                            <?= $quantidadeCarrinho; ?>
+                        </span>
                     </a>
                 </div>
             </div>

@@ -7,6 +7,8 @@ namespace App\Controllers\Site;
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
+use App\Services\CarrinhoService;
+
 use RuntimeException;
 
 class HomeController
@@ -75,6 +77,15 @@ class HomeController
         | 6. Localiza a View
         |--------------------------------------------------------------------------
         */
+
+
+        $carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+            
         $arquivoView =
             $raizProjeto
             . '/views/site/home.php';

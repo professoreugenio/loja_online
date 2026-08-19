@@ -1,18 +1,22 @@
 <?php
+
 declare(strict_types=1);
+
 use App\Helpers\View;
+
 $tituloPagina = $tituloPagina   ?? 'Cliente Entrar';
 $descricaoPagina = $descricaoPagina ?? 'Loja online com produtos, ofertas, atendimento ao cliente e compra segura.';
-$baseUrl = defined('BASE_URL')? BASE_URL: '';?>
+$baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta
         name="description"
         content="">
-    <title><?= htmlspecialchars($tituloPagina,ENT_QUOTES,'UTF-8');  ?></title>
+    <title><?= htmlspecialchars($tituloPagina, ENT_QUOTES, 'UTF-8');  ?></title>
     <!--
         Caminho-base das rotas no XAMPP.
         Quando o projeto funcionar sem /public, altere para:
@@ -24,8 +28,9 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
         rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB"
         crossorigin="anonymous">
-    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css',ENT_QUOTES,'UTF-8')?>">
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
+
 <body>
     <!-- ============================================================
          1. BARRA SUPERIOR
@@ -34,7 +39,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
     <!-- ============================================================
          2. MENU PRINCIPAL
     ============================================================= -->
-    <?php View::componente('header', ['categorias' => $categorias,]); ?>
+    <?php View::componente('header', ['categorias' => $categorias, 'quantidadeCarrinho' => $quantidadeCarrinho,]); ?>
     <main>
         <div class="container">
             <div class="row">
@@ -53,8 +58,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
                             <?php if (!empty($erroLogin)): ?>
                                 <div
                                     class="alert alert-danger"
-                                    role="alert"
-                                >
+                                    role="alert">
                                     <?= htmlspecialchars(
                                         (string) $erroLogin,
                                         ENT_QUOTES,
@@ -66,8 +70,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
                             <?php if (!empty($mensagemSucesso)): ?>
                                 <div
                                     class="alert alert-success"
-                                    role="alert"
-                                >
+                                    role="alert">
                                     <?= htmlspecialchars(
                                         (string) $mensagemSucesso,
                                         ENT_QUOTES,
@@ -78,31 +81,28 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
 
                             <form
                                 action="<?= htmlspecialchars(
-                                    $baseUrl . '/cliente/login',
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ) ?>"
+                                            $baseUrl . '/cliente/login',
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ) ?>"
                                 method="post"
-                                autocomplete="on"
-                            >
+                                autocomplete="on">
 
                                 <?php if (!empty($csrfToken)): ?>
                                     <input
                                         type="hidden"
                                         name="csrf_token"
                                         value="<?= htmlspecialchars(
-                                            (string) $csrfToken,
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>"
-                                    >
+                                                    (string) $csrfToken,
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>">
                                 <?php endif; ?>
 
                                 <div class="mb-3">
                                     <label
                                         for="email"
-                                        class="form-label"
-                                    >
+                                        class="form-label">
                                         E-mail
                                     </label>
 
@@ -113,22 +113,20 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
                                         name="email"
                                         placeholder="seuemail@exemplo.com"
                                         value="<?= htmlspecialchars(
-                                            (string) ($_POST['email'] ?? ''),
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>"
+                                                    (string) ($_POST['email'] ?? ''),
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>"
                                         autocomplete="email"
                                         maxlength="180"
                                         required
-                                        autofocus
-                                    >
+                                        autofocus>
                                 </div>
 
                                 <div class="mb-3">
                                     <label
                                         for="senha"
-                                        class="form-label"
-                                    >
+                                        class="form-label">
                                         Senha
                                     </label>
 
@@ -139,38 +137,33 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
                                         name="senha"
                                         placeholder="Digite sua senha"
                                         autocomplete="current-password"
-                                        required
-                                    >
+                                        required>
                                 </div>
 
                                 <div
-                                    class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-4"
-                                >
+                                    class="d-flex flex-column flex-sm-row justify-content-between gap-2 mb-4">
                                     <div class="form-check">
                                         <input
                                             class="form-check-input"
                                             type="checkbox"
                                             name="lembrar"
                                             value="1"
-                                            id="lembrar"
-                                        >
+                                            id="lembrar">
 
                                         <label
                                             class="form-check-label"
-                                            for="lembrar"
-                                        >
+                                            for="lembrar">
                                             Lembrar-me
                                         </label>
                                     </div>
 
                                     <a
                                         href="<?= htmlspecialchars(
-                                            $baseUrl . '/cliente/recuperar-senha',
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>"
-                                        class="text-decoration-none"
-                                    >
+                                                    $baseUrl . '/cliente/recuperar-senha',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>"
+                                        class="text-decoration-none">
                                         Esqueci minha senha
                                     </a>
                                 </div>
@@ -178,8 +171,7 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
                                 <div class="d-grid mb-3">
                                     <button
                                         type="submit"
-                                        class="btn btn-primary btn-lg"
-                                    >
+                                        class="btn btn-primary btn-lg">
                                         Entrar
                                     </button>
                                 </div>
@@ -188,12 +180,11 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
                                     Ainda não possui uma conta?
                                     <a
                                         href="<?= htmlspecialchars(
-                                            $baseUrl . '/cliente/cadastro',
-                                            ENT_QUOTES,
-                                            'UTF-8'
-                                        ) ?>"
-                                        class="text-decoration-none fw-semibold"
-                                    >
+                                                    $baseUrl . '/cliente/cadastro',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                ) ?>"
+                                        class="text-decoration-none fw-semibold">
                                         Criar conta
                                     </a>
                                 </p>
@@ -210,10 +201,11 @@ $baseUrl = defined('BASE_URL')? BASE_URL: '';?>
     <!-- ============================================================
          9. RODAPÉ
     ============================================================= -->
-    <?php View::componente('footer');?>
+    <?php View::componente('footer'); ?>
     <script
         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 </body>
+
 </html>

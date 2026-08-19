@@ -1,5 +1,7 @@
 <?php
+
 declare(strict_types=1);
+
 use App\Helpers\View;
 
 $tituloPagina = $tituloPagina
@@ -52,9 +54,9 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     ?>
     <?php //View::componente('header');
     ?>
-    <?php View::componente('header', ['categorias' => $categorias,]); ?>
+    <?php View::componente('header', ['categorias' => $categorias, 'quantidadeCarrinho' => $quantidadeCarrinho,]); ?>
     <main>
-        
+
     </main>
     <!-- ============================================================
          9. RODAPÉ
