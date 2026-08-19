@@ -8,6 +8,7 @@ use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
 use App\Helpers\CsrfCarrinho;
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 final class BuscaController
@@ -182,7 +183,14 @@ final class BuscaController
         |--------------------------------------------------------------------------
         */
 
-        $arquivoView =
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
             $raizProjeto
             . '/views/site/busca.php';
 

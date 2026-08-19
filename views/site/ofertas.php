@@ -10,6 +10,7 @@ $descricaoPagina = $descricaoPagina
     ?? 'Loja online com produtos, ofertas, atendimento ao cliente e compra segura.';
 $tituloPagina = $tituloPagina   ?? 'Ofertas';
 $descricaoPagina = $descricaoPagina ?? 'Loja online com produtos, ofertas, atendimento ao cliente e compra segura.';
+$quantidadeCarrinho = $quantidadeCarrinho ?? 0;
 $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 <!doctype html>
 <html lang="pt-BR">

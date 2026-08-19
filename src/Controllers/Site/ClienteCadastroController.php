@@ -6,6 +6,7 @@ namespace App\Controllers\Site;
 
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 class ClienteCadastroController
@@ -84,7 +85,14 @@ class ClienteCadastroController
         | 6. Localiza a View
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
             $raizProjeto
             . '/views/site/cliente_cadastro.php';
 

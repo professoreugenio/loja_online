@@ -9,6 +9,7 @@ use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
 use App\Helpers\CsrfCarrinho;
 
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 final class OfertasController
@@ -142,7 +143,14 @@ final class OfertasController
 
         $csrfCarrinho = CsrfCarrinho::gerar();
 
-        $arquivoView =
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
             $raizProjeto
             . '/views/site/ofertas.php';
 

@@ -6,6 +6,7 @@ namespace App\Controllers\Site;
 
 use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 class AjudaTrocasController
@@ -84,7 +85,14 @@ class AjudaTrocasController
         | 6. Localiza a View
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
             $raizProjeto
             . '/views/site/ajuda_troca.php';
 

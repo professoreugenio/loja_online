@@ -8,7 +8,14 @@ class AdminLoginController
 {
     public function index(): void
     {
-        $arquivoView = dirname(__DIR__, 3) . '/views/site/loginadmin.php';
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView = dirname(__DIR__, 3) . '/views/site/loginadmin.php';
 
         if (!is_file($arquivoView)) {
             throw new \RuntimeException(

@@ -310,7 +310,7 @@ final class ClienteCadastroController
         }
 
 
-        if (
+       if (
             !Cpf::validar(
                 $dados['cpf']
             )

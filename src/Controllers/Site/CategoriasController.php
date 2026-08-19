@@ -10,6 +10,7 @@ use App\Repositories\ProdutoRepository;
 use App\Helpers\CsrfCarrinho;
 use Config;
 
+use App\Services\CarrinhoService;
 use RuntimeException;
 
 class CategoriasController
@@ -181,7 +182,14 @@ class CategoriasController
         | 13. Localiza a View
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
             APP_ROOT
             . '/views/site/categorias.php';
         if (!is_file($arquivoView)) {

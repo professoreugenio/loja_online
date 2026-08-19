@@ -5,6 +5,7 @@ use App\Helpers\IdSeguro;
 use App\Repositories\CategoriaRepository;
 use App\Repositories\ProdutoRepository;
 use App\Helpers\CsrfCarrinho;
+use App\Services\CarrinhoService;
 use RuntimeException;
 final class ProdutosDetalhesController
 {
@@ -140,7 +141,14 @@ final class ProdutosDetalhesController
         | 10. View
         |--------------------------------------------------------------------------
         */
-        $arquivoView =
+        
+$carrinhoService =
+            new CarrinhoService($pdo);
+
+        $quantidadeCarrinho =
+            $carrinhoService->quantidade();
+
+$arquivoView =
             $raizProjeto
             . '/views/site/'
             . 'produtos_detalhes.php';
