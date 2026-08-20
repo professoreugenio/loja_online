@@ -188,4 +188,132 @@ final class ClienteController
         }
         require $arquivoView;
     }
+
+    public function perfil(): void
+{
+    /*
+    |--------------------------------------------------------------------------
+    | Proteção
+    |--------------------------------------------------------------------------
+    */
+
+    ClienteAuth::exigirLogin();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Banco
+    |--------------------------------------------------------------------------
+    */
+
+    require_once APP_ROOT
+        . '/database/conexao.php';
+
+
+    $pdo =
+        \Config::connect();
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Repository
+    |--------------------------------------------------------------------------
+    */
+
+    $clienteRepository =
+        new ClienteRepository(
+            $pdo
+        );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Cliente autenticado
+    |--------------------------------------------------------------------------
+    */
+
+    $clienteId =
+        ClienteAuth::id();
+
+
+    if ($clienteId === null) {
+
+        ClienteAuth::exigirLogin();
+
+        return;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Dados do cliente
+    |--------------------------------------------------------------------------
+    */
+
+    $cliente =
+        $clienteRepository
+            ->buscarPorId(
+                $clienteId
+            );
+
+
+    if ($cliente === null) {
+
+        ClienteAuth::sair();
+
+
+        header(
+            'Location: '
+            . BASE_URL
+            . '/cliente/login'
+        );
+
+
+        exit;
+    }
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Mensagem
+    |--------------------------------------------------------------------------
+    */
+
+    $mensagemSucesso =
+        $_SESSION[
+            'perfil_sucesso'
+        ]
+        ?? null;
+
+
+    unset(
+        $_SESSION[
+            'perfil_sucesso'
+        ]
+    );
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | View
+    |--------------------------------------------------------------------------
+    */
+
+    $arquivoView =
+        APP_ROOT
+        . '/views/cliente/perfil.php';
+
+
+    if (!is_file($arquivoView)) {
+
+        throw new \RuntimeException(
+            'A página de perfil '
+            . 'não foi encontrada.'
+        );
+    }
+
+
+    require $arquivoView;
+}
+
 }
