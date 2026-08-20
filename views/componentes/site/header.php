@@ -1,13 +1,20 @@
 <?php
 
 declare(strict_types=1);
-$tituloHeader = $tituloHeader ?? 'Loja Online';
-$textoHeader = $textoHeader  ?? 'Produtos selecionados para você.';
-$baseUrl = defined('BASE_URL') ? BASE_URL : '';
-?>
 
-<?php
+use App\Helpers\ClienteAuth;
+use App\Helpers\CsrfCliente;
 
+$tituloHeader =
+    $tituloHeader
+    ?? 'Loja Online';
+$textoHeader =
+    $textoHeader
+    ?? 'Produtos selecionados para você.';
+$baseUrl =
+    defined('BASE_URL')
+    ? BASE_URL
+    : '';
 $quantidadeCarrinho =
     isset(
         $quantidadeCarrinho
@@ -18,16 +25,57 @@ $quantidadeCarrinho =
         $quantidadeCarrinho
     )
     : 0;
-
+/*
+|--------------------------------------------------------------------------
+| Autenticação do cliente
+|--------------------------------------------------------------------------
+*/
+$clienteLogado =
+    ClienteAuth::logado();
+$clienteAtual =
+    ClienteAuth::usuario();
+$nomeCliente = '';
+if (
+    $clienteLogado
+    &&
+    is_array($clienteAtual)
+) {
+    $nomeCliente =
+        trim(
+            (string) (
+                $clienteAtual['nome']
+                ?? ''
+            )
+        );
+}
+$primeiroNome =
+    'Cliente';
+if ($nomeCliente !== '') {
+    $partesNome =
+        preg_split(
+            '/\s+/',
+            $nomeCliente
+        );
+    if (
+        is_array($partesNome)
+        &&
+        isset($partesNome[0])
+    ) {
+        $primeiroNome =
+            $partesNome[0];
+    }
+}
+$csrfCliente =
+    $clienteLogado
+    ? CsrfCliente::gerar()
+    : '';
 ?>
 <header class="sticky-top">
     <nav class="navbar navbar-expand-lg bg-white border-bottom shadow-sm" aria-label="Menu principal">
         <div class="container py-2">
-
             <a class="navbar-brand fw-bold fs-4 text-primary" href="./">
                 🛍️ <?= htmlspecialchars($tituloHeader, ENT_QUOTES, 'UTF-8');  ?>
             </a>
-
             <button
                 class="navbar-toggler"
                 type="button"
@@ -38,17 +86,14 @@ $quantidadeCarrinho =
                 aria-label="Abrir ou fechar o menu">
                 <span class="navbar-toggler-icon"></span>
             </button>
-
             <div class="collapse navbar-collapse" id="menuPrincipal">
                 <ul class="navbar-nav mx-auto mb-3 mb-lg-0">
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="./">Início</a>
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="produtos">Produtos</a>
                     </li>
-
                     <li class="nav-item dropdown">
                         <a
                             class="nav-link dropdown-toggle"
@@ -58,13 +103,9 @@ $quantidadeCarrinho =
                             aria-expanded="false">
                             Categorias
                         </a>
-
                         <ul class="dropdown-menu">
-
                             <?php foreach ($categorias as $categoria): ?>
-
                                 <li>
-
                                     <a
                                         class="dropdown-item"
                                         href="<?=
@@ -74,7 +115,6 @@ $quantidadeCarrinho =
                                                                         $categoria['id_seguro']
                                                                     )
                                                                     ?>">
-
                                         <?=
                                         htmlspecialchars(
                                             $categoria['nome'],
@@ -82,22 +122,15 @@ $quantidadeCarrinho =
                                             'UTF-8'
                                         )
                                         ?>
-
                                     </a>
-
                                 </li>
-
                             <?php endforeach; ?>
                             <li><a class="dropdown-item" href="categoria">Ver todas</a></li>
-
                         </ul>
-
                     </li>
-
                     <li class="nav-item">
                         <a class="nav-link" href="ofertas">Ofertas</a>
                     </li>
-
                     <li class="nav-item dropdown">
                         <a
                             class="nav-link dropdown-toggle"
@@ -107,7 +140,6 @@ $quantidadeCarrinho =
                             aria-expanded="false">
                             Ajuda
                         </a>
-
                         <ul class="dropdown-menu">
                             <li><a class="dropdown-item" href="ajuda/central">Central de ajuda</a></li>
                             <li><a class="dropdown-item" href="ajuda/perguntas">Perguntas frequentes</a></li>
@@ -117,7 +149,6 @@ $quantidadeCarrinho =
                         </ul>
                     </li>
                 </ul>
-
                 <div class="d-flex flex-column flex-lg-row align-items-lg-center gap-2">
                     <form class="d-flex" action="<?= htmlspecialchars(
                                                         $baseUrl . '/buscar',
@@ -137,26 +168,218 @@ $quantidadeCarrinho =
                             Buscar
                         </button>
                     </form>
-
                     <div class="dropdown">
+
+
                         <button
-                            class="btn btn-outline-dark dropdown-toggle w-100"
+                            class="
+            btn
+            btn-outline-dark
+            dropdown-toggle
+            w-100
+        "
                             type="button"
                             data-bs-toggle="dropdown"
                             aria-expanded="false">
-                            Conta
+
+                            <?php if (
+                                $clienteLogado
+                            ): ?>
+
+                                Olá,
+                                <?=
+                                htmlspecialchars(
+                                    $primeiroNome,
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                )
+                                ?>
+
+                            <?php else: ?>
+
+                                Conta
+
+                            <?php endif; ?>
+
                         </button>
 
-                        <ul class="dropdown-menu dropdown-menu-end">
-                            <li><a class="dropdown-item" href="cliente/login">Entrar</a></li>
-                            <li><a class="dropdown-item" href="cliente/cadastro">Criar conta</a></li>
-                            <li>
-                                <hr class="dropdown-divider">
-                            </li>
-                            <li><a class="dropdown-item" href="cliente/pedidos">Meus pedidos</a></li>
-                        </ul>
-                    </div>
 
+                        <ul
+                            class="
+            dropdown-menu
+            dropdown-menu-end
+        ">
+
+
+                            <?php if (
+                                !$clienteLogado
+                            ): ?>
+
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl
+                                                        . '/cliente/login',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>">
+
+                                        Entrar
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl
+                                                        . '/cliente/cadastro',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>">
+
+                                        Criar conta
+
+                                    </a>
+
+                                </li>
+
+
+                            <?php else: ?>
+
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl
+                                                        . '/cliente',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>">
+
+                                        Painel do cliente
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl
+                                                        . '/cliente/perfil',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>">
+
+                                        Meu perfil
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+
+                                    <a
+                                        class="dropdown-item"
+                                        href="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl
+                                                        . '/cliente/pedidos',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>">
+
+                                        Meus pedidos
+
+                                    </a>
+
+                                </li>
+
+
+                                <li>
+
+                                    <hr
+                                        class="
+                        dropdown-divider
+                    ">
+
+                                </li>
+
+
+                                <li>
+
+                                    <form
+                                        action="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl
+                                                        . '/cliente/logout',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>"
+                                        method="post"
+                                        class="m-0">
+
+
+                                        <input
+                                            type="hidden"
+                                            name="csrf_token"
+                                            value="<?=
+                                                    htmlspecialchars(
+                                                        $csrfCliente,
+                                                        ENT_QUOTES,
+                                                        'UTF-8'
+                                                    )
+                                                    ?>">
+
+
+                                        <button
+                                            type="submit"
+                                            class="
+                            dropdown-item
+                            text-danger
+                        ">
+
+                                            Sair
+
+                                        </button>
+
+
+                                    </form>
+
+                                </li>
+
+
+                            <?php endif; ?>
+
+
+                        </ul>
+
+
+                    </div>
                     <a class="btn btn-primary text-nowrap" href="carrinho">
                         Carrinho
                         <span class="badge text-bg-light ms-1">

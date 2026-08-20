@@ -56,9 +56,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
     <?php //View::componente('header'); 
     ?>
     <?php
-
     View::componente('header', ['categorias' => $categorias, 'quantidadeCarrinho' => $quantidadeCarrinho,]);
-
     ?>
     <main>
         <!-- ========================================================

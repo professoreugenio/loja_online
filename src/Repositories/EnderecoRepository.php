@@ -54,49 +54,138 @@ final class EnderecoRepository
 
         $consulta =
             $this->pdo
-                ->prepare($sql);
+            ->prepare($sql);
 
 
         $consulta->execute([
             'cliente_id' =>
-                $clienteId,
+            $clienteId,
 
             'identificacao' =>
-                'Endereço principal',
+            'Endereço principal',
 
             'destinatario' =>
-                $dados['nome'],
+            $dados['nome'],
 
             'cep' =>
-                $dados['cep'],
+            $dados['cep'],
 
             'logradouro' =>
-                $dados['logradouro'],
+            $dados['logradouro'],
 
             'numero' =>
-                $dados['numero'],
+            $dados['numero'],
 
             'complemento' =>
-                $dados['complemento']
-                    !== ''
-                        ? $dados[
-                            'complemento'
-                        ]
-                        : null,
+            $dados['complemento']
+                !== ''
+                ? $dados['complemento']
+                : null,
 
             'bairro' =>
-                $dados['bairro'],
+            $dados['bairro'],
 
             'cidade' =>
-                $dados['cidade'],
+            $dados['cidade'],
 
             'estado' =>
-                $dados['estado'],
+            $dados['estado'],
         ]);
 
 
         return (int)
+        $this->pdo
+            ->lastInsertId();
+    }
+
+    public function contarPorCliente(
+        int $clienteId
+    ): int {
+
+        $sql = '
+        SELECT COUNT(*)
+
+        FROM enderecos
+
+        WHERE cliente_id =
+            :cliente_id
+    ';
+
+
+        $consulta =
             $this->pdo
-                ->lastInsertId();
+            ->prepare($sql);
+
+
+        $consulta->bindValue(
+            ':cliente_id',
+            $clienteId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        return (int)
+        $consulta
+            ->fetchColumn();
+    }
+
+    public function buscarPrincipalPorCliente(
+        int $clienteId
+    ): ?array {
+
+        $sql = '
+        SELECT
+            id,
+            identificacao,
+            destinatario,
+            cep,
+            logradouro,
+            numero,
+            complemento,
+            bairro,
+            cidade,
+            estado,
+            principal
+
+        FROM enderecos
+
+        WHERE cliente_id =
+            :cliente_id
+
+          AND principal = 1
+
+        ORDER BY id DESC
+
+        LIMIT 1
+    ';
+
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+
+        $consulta->bindValue(
+            ':cliente_id',
+            $clienteId,
+            PDO::PARAM_INT
+        );
+
+
+        $consulta->execute();
+
+
+        $endereco =
+            $consulta->fetch();
+
+
+        return is_array(
+            $endereco
+        )
+            ? $endereco
+            : null;
     }
 }

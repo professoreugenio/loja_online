@@ -26,6 +26,7 @@ use App\Helpers\View;
          NAV
     ============================================================= -->
     <?php View::componenteCliente('nav'); ?>
+
     <!-- ============================================================
          MAIN
     ============================================================= -->
@@ -37,7 +38,13 @@ use App\Helpers\View;
             <div class="row mb-4">
                 <div class="col-12">
                     <h1 class="h3 fw-bold mb-1">
-                        Olá, João da Silva!
+                        <?=
+                        htmlspecialchars(
+                            $primeiroNome,
+                            ENT_QUOTES,
+                            'UTF-8'
+                        )
+                        ?>!
                     </h1>
                     <p class="text-muted mb-0">
                         Bem-vindo à sua área de cliente.
@@ -60,7 +67,10 @@ use App\Helpers\View;
                                         Total de Pedidos
                                     </p>
                                     <h2 class="fw-bold mb-0">
-                                        8
+                                        <?=
+                                        (int)
+                                        $totalPedidos
+                                        ?>
                                     </h2>
                                 </div>
                                 <div class="fs-1 text-primary">
@@ -80,7 +90,10 @@ use App\Helpers\View;
                                         Em Andamento
                                     </p>
                                     <h2 class="fw-bold mb-0">
-                                        2
+                                        <?=
+                                        (int)
+                                        $pedidosEmAndamento
+                                        ?>
                                     </h2>
                                 </div>
                                 <div class="fs-1 text-warning">
@@ -100,7 +113,10 @@ use App\Helpers\View;
                                         Entregues
                                     </p>
                                     <h2 class="fw-bold mb-0">
-                                        6
+                                        <?=
+                                        (int)
+                                        $pedidosEntregues
+                                        ?>
                                     </h2>
                                 </div>
                                 <div class="fs-1 text-success">
@@ -120,7 +136,10 @@ use App\Helpers\View;
                                         Endereços
                                     </p>
                                     <h2 class="fw-bold mb-0">
-                                        3
+                                        <?=
+                                        (int)
+                                        $quantidadeEnderecos
+                                        ?>
                                     </h2>
                                 </div>
                                 <div class="fs-1 text-info">
@@ -151,99 +170,150 @@ use App\Helpers\View;
                         </div>
                         <div class="card-body p-0">
                             <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Pedido</th>
-                                            <th>Data</th>
-                                            <th>Total</th>
-                                            <th>Status</th>
-                                            <th class="text-end">
-                                                Ação
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <!-- PEDIDO 1 -->
-                                        <tr>
-                                            <td>
-                                                <strong>
-                                                    #000125
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                15/08/2026
-                                            </td>
-                                            <td>
-                                                <strong>
-                                                    R$ 119,90
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-bg-warning">
-                                                    Em preparação
-                                                </span>
-                                            </td>
-                                            <td class="text-end">
-                                                <a href="cliente/pedido?id=125" class="btn btn-outline-primary btn-sm">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <!-- PEDIDO 2 -->
-                                        <tr>
-                                            <td>
-                                                <strong>
-                                                    #000124
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                10/08/2026
-                                            </td>
-                                            <td>
-                                                <strong>
-                                                    R$ 199,90
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-bg-primary">
-                                                    Enviado
-                                                </span>
-                                            </td>
-                                            <td class="text-end">
-                                                <a href="cliente/pedido?id=124" class="btn btn-outline-primary btn-sm">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <!-- PEDIDO 3 -->
-                                        <tr>
-                                            <td>
-                                                <strong>
-                                                    #000123
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                02/08/2026
-                                            </td>
-                                            <td>
-                                                <strong>
-                                                    R$ 179,80
-                                                </strong>
-                                            </td>
-                                            <td>
-                                                <span class="badge text-bg-success">
-                                                    Entregue
-                                                </span>
-                                            </td>
-                                            <td class="text-end">
-                                                <a href="cliente/pedido?id=123" class="btn btn-outline-primary btn-sm">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+
+                                <?php if (
+                                    $ultimosPedidos === []
+                                ): ?>
+
+                                    <div
+                                        class="
+            text-center
+            py-5
+        ">
+
+                                        <i
+                                            class="
+                bi
+                bi-bag
+                fs-1
+                text-muted
+            "></i>
+
+
+                                        <h3 class="h6 mt-3">
+
+                                            Você ainda não possui pedidos.
+
+                                        </h3>
+
+
+                                        <a
+                                            href="produtos"
+                                            class="
+                btn
+                btn-primary
+                btn-sm
+                mt-2
+            ">
+
+                                            Começar a comprar
+
+                                        </a>
+
+                                    </div>
+
+                                <?php else: ?>
+                                    <table class="table table-hover align-middle mb-0">
+                                        <thead class="table-light">
+                                            <tr>
+                                                <th>Pedido</th>
+                                                <th>Data</th>
+                                                <th>Total</th>
+                                                <th>Status</th>
+                                                <th class="text-end">
+                                                    Ação
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <!-- PEDIDO 1 -->
+                                            <?php foreach ($ultimosPedidos as $pedido): ?>
+
+                                                <?php
+
+                                                $statusPedidos = [
+
+                                                    'aguardando_pagamento' => [
+                                                        'texto' =>
+                                                        'Aguardando pagamento',
+
+                                                        'classe' =>
+                                                        'text-bg-secondary',
+                                                    ],
+
+                                                    'pago' => [
+                                                        'texto' =>
+                                                        'Pago',
+
+                                                        'classe' =>
+                                                        'text-bg-info',
+                                                    ],
+
+                                                    'em_separacao' => [
+                                                        'texto' =>
+                                                        'Em separação',
+
+                                                        'classe' =>
+                                                        'text-bg-warning',
+                                                    ],
+
+                                                    'enviado' => [
+                                                        'texto' =>
+                                                        'Enviado',
+
+                                                        'classe' =>
+                                                        'text-bg-primary',
+                                                    ],
+
+                                                    'entregue' => [
+                                                        'texto' =>
+                                                        'Entregue',
+
+                                                        'classe' =>
+                                                        'text-bg-success',
+                                                    ],
+
+                                                    'cancelado' => [
+                                                        'texto' =>
+                                                        'Cancelado',
+
+                                                        'classe' =>
+                                                        'text-bg-danger',
+                                                    ],
+                                                ];
+
+                                                ?>
+                                                <tr>
+                                                    <td>
+                                                        <strong>
+                                                            #000125
+                                                        </strong>
+                                                    </td>
+                                                    <td>
+                                                        15/08/2026
+                                                    </td>
+                                                    <td>
+                                                        <strong>
+                                                            R$ 119,90
+                                                        </strong>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge text-bg-warning">
+                                                            Em preparação
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <a href="cliente/pedido?id=125" class="btn btn-outline-primary btn-sm">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+
+
+                                        </tbody>
+                                    </table>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </div>
@@ -261,14 +331,68 @@ use App\Helpers\View;
                         </div>
                         <div class="card-body text-center">
                             <div class="mb-3">
-                                <i class="bi bi-person-circle text-primary" style="font-size: 5rem;">
-                                </i>
+                                <?php
+
+                                $fotoCliente =
+                                    trim(
+                                        (string) (
+                                            $cliente['foto_url']
+                                            ?? ''
+                                        )
+                                    );
+
+                                ?>
+                                <?php if (
+                                    $fotoCliente !== ''
+                                ): ?>
+
+                                    <img
+                                        src="<?=
+                                                htmlspecialchars(
+                                                    $fotoCliente,
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>"
+                                        class="
+            rounded-circle
+            object-fit-cover
+        "
+                                        width="100"
+                                        height="100"
+                                        alt="Foto do cliente">
+
+                                <?php else: ?>
+
+                                    <i
+                                        class="
+            bi
+            bi-person-circle
+            text-primary
+        "
+                                        style="font-size:5rem;"></i>
+
+                                <?php endif; ?>
                             </div>
                             <h3 class="h5 fw-bold">
-                                João da Silva
+                                <?=
+                                htmlspecialchars(
+                                    (string)
+                                    $cliente['nome'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                )
+                                ?>
                             </h3>
                             <p class="text-muted">
-                                joao@email.com
+                                <?=
+                                htmlspecialchars(
+                                    (string)
+                                    $cliente['email'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                )
+                                ?>
                             </p>
                             <hr>
                             <div class="d-grid gap-2">
