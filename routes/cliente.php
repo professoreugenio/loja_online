@@ -1,21 +1,16 @@
 <?php
-
 declare(strict_types=1);
-
 use App\Controllers\Cliente\ClienteController;
 use App\Controllers\Cliente\ClienteLoginController;
 use App\Controllers\Cliente\EnderecoController;
 use App\Controllers\Cliente\PedidoController;
 use App\Controllers\Cliente\PerfilController;
-
 return [
-
     /*
     |--------------------------------------------------------------------------
     | Autenticação
     |--------------------------------------------------------------------------
     */
-
     [
         'method' => 'GET',
         'path' => '/cliente/login',
@@ -24,7 +19,6 @@ return [
             'formulario',
         ],
     ],
-
     [
         'method' => 'POST',
         'path' => '/cliente/login',
@@ -33,7 +27,6 @@ return [
             'autenticar',
         ],
     ],
-
     [
         'method' => 'POST',
         'path' => '/cliente/sair',
@@ -42,14 +35,11 @@ return [
             'sair',
         ],
     ],
-
-
     /*
     |--------------------------------------------------------------------------
     | Área protegida
     |--------------------------------------------------------------------------
     */
-
     [
         'method' => 'GET',
         'path' => '/cliente',
@@ -66,16 +56,31 @@ return [
             'painel',
         ],
     ],
-
     [
         'method' => 'GET',
         'path' => '/cliente/perfil',
         'action' => [
-            PerfilController::class,
-            'index',
+            ClienteController::class,
+            'perfil',
         ],
     ],
-
+    [
+        'method' => 'GET',
+        'path' => '/cliente/perfil/editar',
+        'action' => [
+            ClienteController::class,
+            'editarPerfil',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' =>
+        '/cliente/perfil/atualizar',
+        'action' => [
+            ClienteController::class,
+            'atualizarPerfil',
+        ],
+    ],
     [
         'method' => 'GET',
         'path' => '/cliente/enderecos',
@@ -84,7 +89,6 @@ return [
             'index',
         ],
     ],
-
     [
         'method' => 'GET',
         'path' => '/cliente/pedidos',
@@ -93,7 +97,6 @@ return [
             'index',
         ],
     ],
-
     [
         'method' => 'GET',
         'path' => '/cliente/pedido',
@@ -102,7 +105,6 @@ return [
             'detalhe',
         ],
     ],
-
     [
         'method' => 'GET',
         'path' => '/cliente/seguranca',

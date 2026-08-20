@@ -56,10 +56,25 @@ use App\Helpers\View;
                                 </i>
                             </div>
                             <h2 class="h5 fw-bold mb-1">
-                                João da Silva
+                                <?=
+                                htmlspecialchars(
+                                    (string)
+                                    $cliente['nome'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                )
+                                ?>
                             </h2>
                             <p class="text-muted small mb-4">
-                                joao@email.com
+                                <?=
+                                htmlspecialchars(
+                                    (string)
+                                    $cliente['email'],
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                )
+                                ?>
+
                             </p>
                             <hr>
                             <div class="list-group list-group-flush text-start">
@@ -103,6 +118,142 @@ use App\Helpers\View;
                                 Editar perfil
                             </a>
                         </div>
+
+                        <?php
+
+                        $cpf =
+                            preg_replace(
+                                '/\D/',
+                                '',
+                                (string)
+                                $cliente['cpf']
+                            );
+
+
+                        $cpfFormatado =
+                            strlen($cpf) === 11
+
+                            ? substr($cpf, 0, 3)
+                            . '.'
+                            . substr($cpf, 3, 3)
+                            . '.'
+                            . substr($cpf, 6, 3)
+                            . '-'
+                            . substr($cpf, 9, 2)
+
+                            : $cpf;
+
+                        ?>
+
+                        <?php
+
+                        $dataNascimento =
+                            '-';
+
+
+                        if (
+                            !empty($cliente['data_nascimento'])
+                        ) {
+
+                            $timestampNascimento =
+                                strtotime(
+                                    (string)
+                                    $cliente['data_nascimento']
+                                );
+
+
+                            if (
+                                $timestampNascimento
+                                !== false
+                            ) {
+
+                                $dataNascimento =
+                                    date(
+                                        'd/m/Y',
+                                        $timestampNascimento
+                                    );
+                            }
+                        }
+
+                        ?>
+
+                        <?php
+
+                        $clienteDesde = '-';
+
+
+                        $timestampCadastro =
+                            strtotime(
+                                (string)
+                                $cliente['criado_em']
+                            );
+
+
+                        if (
+                            $timestampCadastro !== false
+                        ) {
+
+                            $clienteDesde =
+                                date(
+                                    'd/m/Y',
+                                    $timestampCadastro
+                                );
+                        }
+
+                        ?>
+
+
+                        <?php
+
+                        $telefone =
+                            preg_replace(
+                                '/\D/',
+                                '',
+                                (string) (
+                                    $cliente['telefone']
+                                    ?? ''
+                                )
+                            );
+
+
+                        $telefoneFormatado =
+                            $telefone;
+
+
+                        if (
+                            strlen($telefone) === 11
+                        ) {
+
+                            $telefoneFormatado =
+                                '('
+                                . substr($telefone, 0, 2)
+                                . ') '
+                                . substr($telefone, 2, 5)
+                                . '-'
+                                . substr($telefone, 7, 4);
+                        } elseif (
+                            strlen($telefone) === 10
+                        ) {
+
+                            $telefoneFormatado =
+                                '('
+                                . substr($telefone, 0, 2)
+                                . ') '
+                                . substr($telefone, 2, 4)
+                                . '-'
+                                . substr($telefone, 6, 4);
+                        }
+
+
+                        if ($telefoneFormatado === '') {
+
+                            $telefoneFormatado =
+                                'Não informado';
+                        }
+
+                        ?>
+
+
                         <div class="card-body">
                             <div class="row g-4">
                                 <div class="col-12 col-md-6">
@@ -110,7 +261,14 @@ use App\Helpers\View;
                                         Nome completo
                                     </small>
                                     <strong>
-                                        João da Silva
+                                        <?=
+                                        htmlspecialchars(
+                                            (string)
+                                            $cliente['nome'],
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        )
+                                        ?>
                                     </strong>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -118,7 +276,14 @@ use App\Helpers\View;
                                         CPF
                                     </small>
                                     <strong>
-                                        123.456.789-00
+                                        <?=
+                                        htmlspecialchars(
+                                            (string)
+                                            $cpfFormatado,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        )
+                                        ?>
                                     </strong>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -126,7 +291,14 @@ use App\Helpers\View;
                                         Data de nascimento
                                     </small>
                                     <strong>
-                                        10/05/1990
+                                        <?=
+                                        htmlspecialchars(
+                                            (string)
+                                            $dataNascimento,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        )
+                                        ?>
                                     </strong>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -134,7 +306,14 @@ use App\Helpers\View;
                                         Cliente desde
                                     </small>
                                     <strong>
-                                        15/08/2026
+                                        <?=
+                                        htmlspecialchars(
+                                            (string)
+                                            $clienteDesde,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        )
+                                        ?>
                                     </strong>
                                 </div>
                             </div>
@@ -155,7 +334,49 @@ use App\Helpers\View;
                                         E-mail
                                     </small>
                                     <strong>
-                                        joao@email.com
+                                        <?=
+            htmlspecialchars(
+                (string)
+                $cliente['email'],
+                ENT_QUOTES,
+                'UTF-8'
+            )
+        ?>
+
+        <?php if (
+    (int)
+    $cliente['email_verificado']
+    === 1
+): ?>
+
+    <span
+        class="
+            badge
+            text-bg-success
+            ms-2
+        "
+    >
+
+        Verificado
+
+    </span>
+
+<?php else: ?>
+
+    <span
+        class="
+            badge
+            text-bg-warning
+            ms-2
+        "
+    >
+
+        Não verificado
+
+    </span>
+
+<?php endif; ?>
+
                                     </strong>
                                 </div>
                                 <div class="col-12 col-md-6">
@@ -163,7 +384,15 @@ use App\Helpers\View;
                                         Telefone
                                     </small>
                                     <strong>
-                                        (85) 99999-9999
+                                        
+                                        <?=
+                                        htmlspecialchars(
+                                            (string)
+                                            $telefoneFormatado,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        )
+                                        ?>
                                     </strong>
                                 </div>
                             </div>
