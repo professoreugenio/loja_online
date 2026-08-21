@@ -1,9 +1,6 @@
 <?php
-
 declare(strict_types=1);
-
 namespace App\Controllers\Cliente;
-
 use App\Helpers\Cpf;
 use App\Helpers\CsrfCliente;
 use App\Helpers\IdSeguro;
@@ -13,19 +10,14 @@ use App\Repositories\EnderecoRepository;
 use App\Services\CarrinhoService;
 use App\Services\ClienteCadastroService;
 use RuntimeException;
-
 final class ClienteCadastroController
 {
     private CategoriaRepository
         $categoriaRepository;
-
     private ClienteCadastroService
         $cadastroService;
-
         private CarrinhoService
     $carrinhoService;
-
-
     public function __construct()
 {
     /*
@@ -33,89 +25,67 @@ final class ClienteCadastroController
     | Conexão
     |--------------------------------------------------------------------------
     */
-
     require_once APP_ROOT
         . '/database/conexao.php';
-
     $pdo =
         \Config::connect();
-
-
     /*
     |--------------------------------------------------------------------------
     | Categoria Repository
     |--------------------------------------------------------------------------
     */
-
     $this->categoriaRepository =
         new CategoriaRepository(
             $pdo
         );
-
-
     /*
     |--------------------------------------------------------------------------
     | Cliente Repository
     |--------------------------------------------------------------------------
     */
-
     $clienteRepository =
         new ClienteRepository(
             $pdo
         );
-
-
     /*
     |--------------------------------------------------------------------------
     | Endereço Repository
     |--------------------------------------------------------------------------
     */
-
     $enderecoRepository =
         new EnderecoRepository(
             $pdo
         );
-
-
     /*
     |--------------------------------------------------------------------------
     | Cadastro Service
     |--------------------------------------------------------------------------
     */
-
     $this->cadastroService =
         new ClienteCadastroService(
             $pdo,
             $clienteRepository,
             $enderecoRepository
         );
-
-
     /*
     |--------------------------------------------------------------------------
     | Carrinho Service
     |--------------------------------------------------------------------------
     */
-
     $this->carrinhoService =
         new CarrinhoService(
             $pdo
         );
 }
-
-
     public function formulario(): void
     {
         $categorias =
             $this->categoriaRepository
                 ->listarAtivas();
-
-
         foreach (
             $categorias
             as &$categoria
         ) {
-
             $categoria[
                 'id_seguro'
             ] =
@@ -124,31 +94,22 @@ final class ClienteCadastroController
                     $categoria['id']
                 );
         }
-
         unset($categoria);
-
-
         $erro =
             $_SESSION[
                 'cliente_cadastro_erro'
             ]
             ?? null;
-
-
         $sucesso =
             $_SESSION[
                 'cliente_cadastro_sucesso'
             ]
             ?? null;
-
-
         $dados =
             $_SESSION[
                 'cliente_cadastro_dados'
             ]
             ?? [];
-
-
         unset(
             $_SESSION[
                 'cliente_cadastro_erro'
@@ -160,42 +121,25 @@ final class ClienteCadastroController
                 'cliente_cadastro_dados'
             ]
         );
-
-
         $csrfToken =
             CsrfCliente::gerar();
-
-
         $tituloPagina =
             'Criar minha conta';
-
-
-            
-
         $quantidadeCarrinho =
     $this->carrinhoService
         ->quantidade();
-
-
         $arquivoView =
             APP_ROOT
             . '/views/site/'
             . 'cliente_cadastro.php';
-
-
         if (!is_file($arquivoView)) {
-
             throw new RuntimeException(
                 'A página de cadastro '
                 . 'não foi encontrada.'
             );
         }
-
-
         require $arquivoView;
     }
-
-
     public function cadastrar(): void
     {
         $token =
@@ -205,8 +149,6 @@ final class ClienteCadastroController
                 ? (string)
                     $_POST['csrf_token']
                 : null;
-
-
         if (
             !CsrfCliente::validar(
                 $token
@@ -219,8 +161,6 @@ final class ClienteCadastroController
                 []
             );
         }
-
-
         $dados = [
             'nome' =>
                 trim(
@@ -229,7 +169,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'cpf' =>
                 trim(
                     (string) (
@@ -237,7 +176,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'data_nascimento' =>
                 trim(
                     (string) (
@@ -247,7 +185,6 @@ final class ClienteCadastroController
                         ?? ''
                     )
                 ),
-
             'telefone' =>
                 trim(
                     (string) (
@@ -255,7 +192,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'cep' =>
                 trim(
                     (string) (
@@ -263,7 +199,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'logradouro' =>
                 trim(
                     (string) (
@@ -271,7 +206,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'numero' =>
                 trim(
                     (string) (
@@ -279,7 +213,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'complemento' =>
                 trim(
                     (string) (
@@ -287,7 +220,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'bairro' =>
                 trim(
                     (string) (
@@ -295,7 +227,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'cidade' =>
                 trim(
                     (string) (
@@ -303,7 +234,6 @@ final class ClienteCadastroController
                             ?? ''
                     )
                 ),
-
             'estado' =>
                 strtoupper(
                     trim(
@@ -313,7 +243,6 @@ final class ClienteCadastroController
                         )
                     )
                 ),
-
             'email' =>
                 strtolower(
                     trim(
@@ -323,7 +252,6 @@ final class ClienteCadastroController
                         )
                     )
                 ),
-
             'newsletter' =>
                 isset(
                     $_POST['newsletter']
@@ -331,15 +259,11 @@ final class ClienteCadastroController
                     ? 1
                     : 0,
         ];
-
-
         $senha =
             (string) (
                 $_POST['senha']
                     ?? ''
             );
-
-
         $confirmarSenha =
             (string) (
                 $_POST[
@@ -347,8 +271,6 @@ final class ClienteCadastroController
                 ]
                 ?? ''
             );
-
-
         if (
             mb_strlen(
                 $dados['nome']
@@ -360,8 +282,6 @@ final class ClienteCadastroController
                 $dados
             );
         }
-
-
        if (
             !Cpf::validar(
                 $dados['cpf']
@@ -372,8 +292,6 @@ final class ClienteCadastroController
                 $dados
             );
         }
-
-
         if (
             filter_var(
                 $dados['email'],
@@ -386,18 +304,13 @@ final class ClienteCadastroController
                 $dados
             );
         }
-
-
         if (strlen($senha) < 8) {
-
             $this->falhar(
                 'A senha deve possuir '
                 . 'pelo menos 8 caracteres.',
                 $dados
             );
         }
-
-
         if (
             $senha
             !== $confirmarSenha
@@ -408,8 +321,6 @@ final class ClienteCadastroController
                 $dados
             );
         }
-
-
         $aceitouTermos =
             isset(
                 $_POST['aceite_termos']
@@ -417,18 +328,13 @@ final class ClienteCadastroController
             &&
             $_POST['aceite_termos']
                 === '1';
-
-
         if (!$aceitouTermos) {
-
             $this->falhar(
                 'Você precisa aceitar '
                 . 'os termos de uso.',
                 $dados
             );
         }
-
-
         $camposObrigatorios = [
             'telefone',
             'cep',
@@ -438,13 +344,10 @@ final class ClienteCadastroController
             'cidade',
             'estado',
         ];
-
-
         foreach (
             $camposObrigatorios
             as $campo
         ) {
-
             if (
                 $dados[$campo]
                 === ''
@@ -456,8 +359,6 @@ final class ClienteCadastroController
                 );
             }
         }
-
-
         $estadosValidos = [
             'AC', 'AL', 'AP', 'AM',
             'BA', 'CE', 'DF', 'ES',
@@ -467,8 +368,6 @@ final class ClienteCadastroController
             'RS', 'RO', 'RR', 'SC',
             'SP', 'SE', 'TO',
         ];
-
-
         if (
             !in_array(
                 $dados['estado'],
@@ -481,14 +380,10 @@ final class ClienteCadastroController
                 $dados
             );
         }
-
-
         $dados['cpf'] =
             Cpf::somenteNumeros(
                 $dados['cpf']
             );
-
-
         if (
             $dados[
                 'data_nascimento'
@@ -499,85 +394,57 @@ final class ClienteCadastroController
                 'data_nascimento'
             ] = null;
         }
-
-
         $dados['senha'] =
             $senha;
-
-
         try {
-
             $this->cadastroService
                 ->cadastrar(
                     $dados
                 );
-
         } catch (RuntimeException $erro) {
-
             unset(
                 $dados['senha']
             );
-
-
             $this->falhar(
                 $erro->getMessage(),
                 $dados
             );
         }
-
-
         CsrfCliente::renovar();
-
-
         $_SESSION[
             'cliente_login_sucesso'
         ] =
             'Cadastro realizado com sucesso. '
             . 'Agora você pode entrar '
             . 'na sua conta.';
-
-
         header(
             'Location: '
             . BASE_URL
             . '/cliente/login'
         );
-
-
         exit;
     }
-
-
     private function falhar(
         string $mensagem,
         array $dados
     ): void {
-
         unset(
             $dados['senha'],
             $dados['confirmar_senha']
         );
-
-
         $_SESSION[
             'cliente_cadastro_erro'
         ] =
             $mensagem;
-
-
         $_SESSION[
             'cliente_cadastro_dados'
         ] =
             $dados;
-
-
         header(
             'Location: '
             . BASE_URL
             . '/cliente/cadastro'
         );
-
-
         exit;
     }
 }

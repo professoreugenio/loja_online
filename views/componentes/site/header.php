@@ -335,7 +335,7 @@ $csrfCliente =
                                         action="<?=
                                                 htmlspecialchars(
                                                     $baseUrl
-                                                        . '/cliente/logout',
+                                                        . '/cliente/sair',
                                                     ENT_QUOTES,
                                                     'UTF-8'
                                                 )
