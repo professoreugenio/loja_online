@@ -75,11 +75,35 @@ return [
     ],
     
     [
-        'method' => 'POST',
+        'method' => 'GET',
         'path' => '/admin/produto/imagens',
         'action' => [
             ModuloAdminController::class,
             'produtoImagens',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/produto/imagens/upload',
+        'action' => [
+            ModuloAdminController::class,
+            'produtoImagensUpload',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/produto/imagens/principal',
+        'action' => [
+            ModuloAdminController::class,
+            'produtoImagemPrincipal',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/produto/imagens/excluir',
+        'action' => [
+            ModuloAdminController::class,
+            'produtoImagemExcluir',
         ],
     ],
 

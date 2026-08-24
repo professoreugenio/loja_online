@@ -22,6 +22,21 @@ $categorias =
         ? $categorias
         : [];
 
+$imagemPrincipal =
+    is_array($imagemPrincipal ?? null)
+        ? $imagemPrincipal
+        : null;
+
+$imagemPrincipalUrl =
+    $imagemPrincipal !== null
+        ? trim(
+            (string) (
+                $imagemPrincipal['url_imagem']
+                ?? ''
+            )
+        )
+        : '';
+
 $produtoToken =
     (string) ($produtoToken ?? '');
 
@@ -217,7 +232,17 @@ $formatarDataInput =
                             </p>
                         </div>
 
-                        <div>
+                        <div class="d-flex align-items-center gap-2">
+                            <a
+                                href="admin/produto/imagens?id=<?= rawurlencode(
+                                    $produtoToken
+                                ); ?>"
+                                class="btn btn-outline-primary"
+                            >
+                                <i class="bi bi-images me-1"></i>
+                                Imagens
+                            </a>
+
                             <span
                                 class="badge text-bg-light border"
                             >
@@ -534,6 +559,75 @@ $formatarDataInput =
 
                         <!-- COLUNA LATERAL -->
                         <div class="col-12 col-xl-4">
+
+                            <!-- Imagem principal -->
+                            <section class="card border-0 shadow-sm mb-4">
+                                <div
+                                    class="card-header bg-body py-3
+                                           d-flex justify-content-between
+                                           align-items-center gap-2"
+                                >
+                                    <h2 class="h5 fw-bold mb-0">
+                                        Imagem principal
+                                    </h2>
+
+                                    <a
+                                        href="admin/produto/imagens?id=<?= rawurlencode(
+                                            $produtoToken
+                                        ); ?>"
+                                        class="btn btn-sm btn-outline-primary"
+                                    >
+                                        <i class="bi bi-images me-1"></i>
+                                        Gerenciar
+                                    </a>
+                                </div>
+
+                                <div class="card-body">
+                                    <?php if ($imagemPrincipalUrl !== ''): ?>
+                                        <img
+                                            src="<?= htmlspecialchars(
+                                                $imagemPrincipalUrl,
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ); ?>"
+                                            class="img-fluid rounded border w-100"
+                                            alt="<?= htmlspecialchars(
+                                                (string) (
+                                                    $imagemPrincipal['texto_alternativo']
+                                                    ?? $produto['nome']
+                                                    ?? 'Imagem principal do produto'
+                                                ),
+                                                ENT_QUOTES,
+                                                'UTF-8'
+                                            ); ?>"
+                                            style="height: 280px; object-fit: contain;"
+                                            onerror="this.onerror=null;this.src='assets/img/sem-imagem.jpg';"
+                                        >
+
+                                        <div class="mt-2 text-center">
+                                            <span class="badge text-bg-success">
+                                                <i class="bi bi-star-fill me-1"></i>
+                                                Principal
+                                            </span>
+                                        </div>
+                                    <?php else: ?>
+                                        <div
+                                            class="border rounded bg-body-tertiary
+                                                   text-center text-secondary p-4"
+                                        >
+                                            <i class="bi bi-image fs-1 d-block mb-2"></i>
+
+                                            <strong class="d-block">
+                                                Sem imagem principal
+                                            </strong>
+
+                                            <small>
+                                                Clique em Gerenciar para enviar imagens.
+                                            </small>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </section>
 
                             <!-- Organização -->
                             <section class="card border-0 shadow-sm mb-4">

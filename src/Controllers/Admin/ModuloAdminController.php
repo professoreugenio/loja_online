@@ -6,6 +6,8 @@ namespace App\Controllers\Admin;
 
 use App\Helpers\IdSeguro;
 use App\Repositories\ProdutoAdminRepository;
+use App\Repositories\ProdutoImagemAdminRepository;
+use App\Services\ProdutoImagemService;
 use DateTime;
 use RuntimeException;
 use Throwable;
@@ -93,7 +95,589 @@ final class ModuloAdminController
 
     public function produtoImagens(): void
     {
-        $this->carregarView('produto_imagens');
+        [$pdo, $produtoRepository] =
+            $this->produtoRepository();
+
+        $token = trim(
+            (string) ($_GET['id'] ?? '')
+        );
+
+        if ($token === '') {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Produto não informado.'
+            );
+        }
+
+        $produtoId =
+            IdSeguro::descriptografar(
+                $token
+            );
+
+        if (
+            $produtoId === null
+            || $produtoId < 1
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Identificador do produto inválido.'
+            );
+        }
+
+        $produto =
+            $produtoRepository->buscarPorId(
+                $produtoId
+            );
+
+        if ($produto === null) {
+            http_response_code(404);
+
+            throw new RuntimeException(
+                'Produto não encontrado.'
+            );
+        }
+
+        $imagemRepository =
+            new ProdutoImagemAdminRepository(
+                $pdo
+            );
+
+        $imagens =
+            $imagemRepository
+                ->listarPorProduto(
+                    $produtoId
+                );
+
+        foreach ($imagens as &$imagem) {
+            $imagem['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int) $imagem['id']
+                );
+        }
+
+        unset($imagem);
+
+        $erro =
+            $_SESSION[
+                'admin_produto_imagem_erro'
+            ]
+            ?? null;
+
+        $sucesso =
+            $_SESSION[
+                'admin_produto_imagem_sucesso'
+            ]
+            ?? null;
+
+        unset(
+            $_SESSION[
+                'admin_produto_imagem_erro'
+            ],
+            $_SESSION[
+                'admin_produto_imagem_sucesso'
+            ]
+        );
+
+        $this->carregarView(
+            'produto_imagens',
+            [
+                'produto' => $produto,
+                'produtoToken' => $token,
+                'imagens' => $imagens,
+                'csrfToken' =>
+                    $this->gerarCsrfProduto(),
+                'erro' => $erro,
+                'sucesso' => $sucesso,
+            ]
+        );
+    }
+
+    public function produtoImagensUpload(): void
+    {
+        [$pdo, $produtoRepository] =
+            $this->produtoRepository();
+
+        $token = trim(
+            (string) ($_POST['id'] ?? '')
+        );
+
+        if ($token === '') {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Produto não informado.'
+            );
+        }
+
+        $produtoId =
+            IdSeguro::descriptografar(
+                $token
+            );
+
+        if (
+            $produtoId === null
+            || $produtoId < 1
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Identificador do produto inválido.'
+            );
+        }
+
+        if (
+            !$this->validarCsrfProduto(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+            $this->redirecionarProdutoImagens(
+                $token,
+                'O formulário expirou. Atualize a página e tente novamente.'
+            );
+        }
+
+        $produto =
+            $produtoRepository->buscarPorId(
+                $produtoId
+            );
+
+        if ($produto === null) {
+            http_response_code(404);
+
+            throw new RuntimeException(
+                'Produto não encontrado.'
+            );
+        }
+
+        $arquivos =
+            $this->normalizarArquivosUpload(
+                $_FILES['imagens']
+                ?? []
+            );
+
+        if ($arquivos === []) {
+            $this->redirecionarProdutoImagens(
+                $token,
+                'Selecione pelo menos uma imagem.'
+            );
+        }
+
+        if (count($arquivos) > 20) {
+            $this->redirecionarProdutoImagens(
+                $token,
+                'Envie no máximo 20 imagens por vez.'
+            );
+        }
+
+        $imagemRepository =
+            new ProdutoImagemAdminRepository(
+                $pdo
+            );
+
+        $servicoImagem =
+            new ProdutoImagemService(
+                dirname(__DIR__, 3)
+            );
+
+        $arquivosCriados = [];
+
+        try {
+            $pdo->beginTransaction();
+
+            $possuiPrincipal =
+                $imagemRepository
+                    ->possuiPrincipal(
+                        $produtoId
+                    );
+
+            $ordem =
+                $imagemRepository
+                    ->proximaOrdem(
+                        $produtoId
+                    );
+
+            foreach (
+                $arquivos
+                as $indice => $arquivo
+            ) {
+                $processada =
+                    $servicoImagem
+                        ->processarUpload(
+                            $arquivo,
+                            (string) $produto['nome'],
+                            $produtoId,
+                            (int) $produto[
+                                'categoria_id'
+                            ],
+                            time() + $indice
+                        );
+
+                $arquivosCriados[] =
+                    $processada[
+                        'caminho_fisico'
+                    ];
+
+                $principal =
+                    !$possuiPrincipal
+                    && $indice === 0;
+
+                $imagemRepository->inserir(
+                    $produtoId,
+                    $processada[
+                        'url_imagem'
+                    ],
+                    (string) $produto['nome'],
+                    $principal,
+                    $ordem + $indice
+                );
+
+                if ($principal) {
+                    $possuiPrincipal = true;
+                }
+            }
+
+            $pdo->commit();
+
+            $_SESSION[
+                'admin_produto_imagem_sucesso'
+            ] =
+                count($arquivos)
+                . (
+                    count($arquivos) === 1
+                        ? ' imagem enviada com sucesso.'
+                        : ' imagens enviadas com sucesso.'
+                );
+
+            $this->redirecionarProdutoImagens(
+                $token
+            );
+
+        } catch (Throwable $erro) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            foreach (
+                $arquivosCriados
+                as $arquivoCriado
+            ) {
+                if (
+                    is_string($arquivoCriado)
+                    && is_file(
+                        $arquivoCriado
+                    )
+                ) {
+                    @unlink(
+                        $arquivoCriado
+                    );
+                }
+            }
+
+            error_log(
+                '[ADMIN PRODUTO IMAGENS UPLOAD] '
+                . $erro->getMessage()
+            );
+
+            $this->redirecionarProdutoImagens(
+                $token,
+                $erro->getMessage()
+            );
+        }
+    }
+
+    public function produtoImagemPrincipal(): void
+    {
+        [$pdo, $produtoRepository] =
+            $this->produtoRepository();
+
+        $produtoToken = trim(
+            (string) ($_POST['id'] ?? '')
+        );
+
+        $imagemToken = trim(
+            (string) (
+                $_POST['imagem_id']
+                ?? ''
+            )
+        );
+
+        if (
+            $produtoToken === ''
+            || $imagemToken === ''
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Produto ou imagem não informado.'
+            );
+        }
+
+        if (
+            !$this->validarCsrfProduto(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+            $this->redirecionarProdutoImagens(
+                $produtoToken,
+                'O formulário expirou. Atualize a página e tente novamente.'
+            );
+        }
+
+        $produtoId =
+            IdSeguro::descriptografar(
+                $produtoToken
+            );
+
+        $imagemId =
+            IdSeguro::descriptografar(
+                $imagemToken
+            );
+
+        if (
+            $produtoId === null
+            || $produtoId < 1
+            || $imagemId === null
+            || $imagemId < 1
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Identificador inválido.'
+            );
+        }
+
+        $produto =
+            $produtoRepository->buscarPorId(
+                $produtoId
+            );
+
+        if ($produto === null) {
+            http_response_code(404);
+
+            throw new RuntimeException(
+                'Produto não encontrado.'
+            );
+        }
+
+        $imagemRepository =
+            new ProdutoImagemAdminRepository(
+                $pdo
+            );
+
+        $imagem =
+            $imagemRepository
+                ->buscarPorIdEProduto(
+                    $imagemId,
+                    $produtoId
+                );
+
+        if ($imagem === null) {
+            $this->redirecionarProdutoImagens(
+                $produtoToken,
+                'A imagem selecionada não pertence a este produto.'
+            );
+        }
+
+        try {
+            $pdo->beginTransaction();
+
+            $imagemRepository
+                ->definirComoPrincipal(
+                    $produtoId,
+                    $imagemId
+                );
+
+            $pdo->commit();
+
+            $_SESSION[
+                'admin_produto_imagem_sucesso'
+            ] =
+                'Imagem principal alterada com sucesso.';
+
+            $this->redirecionarProdutoImagens(
+                $produtoToken
+            );
+
+        } catch (Throwable $erro) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            error_log(
+                '[ADMIN PRODUTO IMAGEM PRINCIPAL] '
+                . $erro->getMessage()
+            );
+
+            $this->redirecionarProdutoImagens(
+                $produtoToken,
+                'Não foi possível definir a imagem principal.'
+            );
+        }
+    }
+
+    public function produtoImagemExcluir(): void
+    {
+        [$pdo, $produtoRepository] =
+            $this->produtoRepository();
+
+        $produtoToken = trim(
+            (string) ($_POST['id'] ?? '')
+        );
+
+        $imagemToken = trim(
+            (string) (
+                $_POST['imagem_id']
+                ?? ''
+            )
+        );
+
+        if (
+            $produtoToken === ''
+            || $imagemToken === ''
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Produto ou imagem não informado.'
+            );
+        }
+
+        if (
+            !$this->validarCsrfProduto(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+            $this->redirecionarProdutoImagens(
+                $produtoToken,
+                'O formulário expirou. Atualize a página e tente novamente.'
+            );
+        }
+
+        $produtoId =
+            IdSeguro::descriptografar(
+                $produtoToken
+            );
+
+        $imagemId =
+            IdSeguro::descriptografar(
+                $imagemToken
+            );
+
+        if (
+            $produtoId === null
+            || $produtoId < 1
+            || $imagemId === null
+            || $imagemId < 1
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Identificador inválido.'
+            );
+        }
+
+        if (
+            $produtoRepository
+                ->buscarPorId(
+                    $produtoId
+                ) === null
+        ) {
+            http_response_code(404);
+
+            throw new RuntimeException(
+                'Produto não encontrado.'
+            );
+        }
+
+        $imagemRepository =
+            new ProdutoImagemAdminRepository(
+                $pdo
+            );
+
+        $imagem =
+            $imagemRepository
+                ->buscarPorIdEProduto(
+                    $imagemId,
+                    $produtoId
+                );
+
+        if ($imagem === null) {
+            $this->redirecionarProdutoImagens(
+                $produtoToken,
+                'Imagem não encontrada.'
+            );
+        }
+
+        $eraPrincipal =
+            (int) $imagem['principal']
+                === 1;
+
+        try {
+            $pdo->beginTransaction();
+
+            $imagemRepository->excluir(
+                $imagemId,
+                $produtoId
+            );
+
+            if ($eraPrincipal) {
+                $imagemRepository
+                    ->definirPrimeiraDisponivelComoPrincipal(
+                        $produtoId
+                    );
+            }
+
+            $pdo->commit();
+
+            $servicoImagem =
+                new ProdutoImagemService(
+                    dirname(__DIR__, 3)
+                );
+
+            $apagouArquivo =
+                $servicoImagem->excluirPorUrl(
+                    (string) $imagem[
+                        'url_imagem'
+                    ]
+                );
+
+            $_SESSION[
+                'admin_produto_imagem_sucesso'
+            ] =
+                $apagouArquivo
+                    ? 'Imagem excluída com sucesso.'
+                    : 'Registro excluído, mas o arquivo físico não pôde ser removido.';
+
+            $this->redirecionarProdutoImagens(
+                $produtoToken
+            );
+
+        } catch (Throwable $erro) {
+            if ($pdo->inTransaction()) {
+                $pdo->rollBack();
+            }
+
+            error_log(
+                '[ADMIN PRODUTO IMAGEM EXCLUIR] '
+                . $erro->getMessage()
+            );
+
+            $this->redirecionarProdutoImagens(
+                $produtoToken,
+                'Não foi possível excluir a imagem.'
+            );
+        }
     }
 
     public function produtoEditar(): void
@@ -151,6 +735,17 @@ final class ModuloAdminController
         $categorias =
             $repository->listarCategorias();
 
+        $imagemRepository =
+            new ProdutoImagemAdminRepository(
+                $pdo
+            );
+
+        $imagemPrincipal =
+            $imagemRepository
+                ->buscarPrincipal(
+                    $produtoId
+                );
+
         $erro =
             $_SESSION['admin_produto_erro']
             ?? null;
@@ -178,6 +773,8 @@ final class ModuloAdminController
                 'produto' => $produto,
                 'dadosFormulario' => $dadosFormulario,
                 'categorias' => $categorias,
+                'imagemPrincipal' =>
+                    $imagemPrincipal,
                 'produtoToken' => $token,
                 'csrfToken' => $csrfToken,
                 'erro' => $erro,
@@ -758,6 +1355,107 @@ final class ModuloAdminController
             . $this->baseUrl()
             . '/admin/produto/editar?id='
             . rawurlencode($token)
+        );
+
+        exit;
+    }
+
+    private function normalizarArquivosUpload(
+        array $arquivos
+    ): array {
+        if (
+            !isset(
+                $arquivos['name'],
+                $arquivos['tmp_name'],
+                $arquivos['error'],
+                $arquivos['size']
+            )
+        ) {
+            return [];
+        }
+
+        if (
+            !is_array(
+                $arquivos['name']
+            )
+        ) {
+            return [
+                $arquivos,
+            ];
+        }
+
+        $normalizados = [];
+
+        foreach (
+            $arquivos['name']
+            as $indice => $nome
+        ) {
+            $erro =
+                (int) (
+                    $arquivos['error'][
+                        $indice
+                    ]
+                    ?? UPLOAD_ERR_NO_FILE
+                );
+
+            if (
+                $erro
+                === UPLOAD_ERR_NO_FILE
+            ) {
+                continue;
+            }
+
+            $normalizados[] = [
+                'name' =>
+                    (string) $nome,
+                'type' =>
+                    (string) (
+                        $arquivos['type'][
+                            $indice
+                        ]
+                        ?? ''
+                    ),
+                'tmp_name' =>
+                    (string) (
+                        $arquivos['tmp_name'][
+                            $indice
+                        ]
+                        ?? ''
+                    ),
+                'error' => $erro,
+                'size' =>
+                    (int) (
+                        $arquivos['size'][
+                            $indice
+                        ]
+                        ?? 0
+                    ),
+            ];
+        }
+
+        return $normalizados;
+    }
+
+    private function redirecionarProdutoImagens(
+        string $produtoToken,
+        ?string $erro = null
+    ): never {
+        if (
+            $erro !== null
+            && $erro !== ''
+        ) {
+            $_SESSION[
+                'admin_produto_imagem_erro'
+            ] = $erro;
+        }
+
+        header(
+            'Location: '
+            . $this->baseUrl()
+            . '/admin/produto/imagens?id='
+            . rawurlencode(
+                $produtoToken
+            )
         );
 
         exit;
