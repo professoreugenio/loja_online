@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
+use App\Helpers\IdSeguro;
+use App\Repositories\ProdutoAdminRepository;
 use RuntimeException;
 
 final class ModuloAdminController
@@ -15,7 +17,78 @@ final class ModuloAdminController
 
     public function produtos(): void
     {
-        $this->carregarView('produtos');
+        $raizProjeto = dirname(__DIR__, 3);
+
+        require_once $raizProjeto
+            . '/database/conexao.php';
+
+        $pdo = \Config::connect();
+
+        $repository =
+            new ProdutoAdminRepository($pdo);
+
+        $busca = trim(
+            (string) ($_GET['q'] ?? '')
+        );
+
+        $categoriaId = filter_input(
+            INPUT_GET,
+            'categoria',
+            FILTER_VALIDATE_INT
+        );
+
+        if (
+            $categoriaId === false
+            || $categoriaId === null
+            || $categoriaId < 1
+        ) {
+            $categoriaId = null;
+        }
+
+        $destaqueRecebido =
+            (string) ($_GET['destaque'] ?? '');
+
+        $destaque = null;
+
+        if (
+            $destaqueRecebido === '0'
+            || $destaqueRecebido === '1'
+        ) {
+            $destaque =
+                (int) $destaqueRecebido;
+        }
+
+        $categorias =
+            $repository->listarCategorias();
+
+        $produtos =
+            $repository->listarComFiltros(
+                $busca,
+                $categoriaId,
+                $destaque
+            );
+
+        foreach ($produtos as &$produto) {
+            $produto['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int) $produto['id']
+                );
+        }
+
+        unset($produto);
+
+        $this->carregarView(
+            'produtos',
+            [
+                'produtos' => $produtos,
+                'categorias' => $categorias,
+                'filtros' => [
+                    'q' => $busca,
+                    'categoria' => $categoriaId,
+                    'destaque' => $destaqueRecebido,
+                ],
+            ]
+        );
     }
 
     public function produtoNovo(): void
@@ -24,7 +97,39 @@ final class ModuloAdminController
     }    
     public function produtoEditar(): void
     {
-        $this->carregarView('produto_editar');
+        $token = trim(
+            (string) ($_GET['id'] ?? '')
+        );
+
+        if ($token === '') {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Produto não informado.'
+            );
+        }
+
+        $produtoId =
+            IdSeguro::descriptografar($token);
+
+        if (
+            $produtoId === null
+            || $produtoId < 1
+        ) {
+            http_response_code(400);
+
+            throw new RuntimeException(
+                'Identificador do produto inválido.'
+            );
+        }
+
+        $this->carregarView(
+            'produto_editar',
+            [
+                'produtoId' => $produtoId,
+                'produtoToken' => $token,
+            ]
+        );
     }
 
     public function categorias(): void

@@ -53,7 +53,7 @@ return [
         'path' => '/admin/produto/novo',
         'action' => [
             ModuloAdminController::class,
-            'ProdutoNovo',
+            'produtoNovo',
         ],
     ],
     [
@@ -61,7 +61,7 @@ return [
         'path' => '/admin/produto/editar',
         'action' => [
             ModuloAdminController::class,
-            'ProdutoEditar',
+            'produtoEditar',
         ],
     ],
 
