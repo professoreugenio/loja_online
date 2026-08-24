@@ -107,15 +107,6 @@ final class ProdutoImagemService
 
         if (
             $larguraOriginal
-            < self::LARGURA_SAIDA
-        ) {
-            throw new RuntimeException(
-                'A imagem deve possuir largura mínima de 1024 px.'
-            );
-        }
-
-        if (
-            $larguraOriginal
             * $alturaOriginal
             > self::PIXELS_MAXIMOS
         ) {
@@ -168,6 +159,12 @@ final class ProdutoImagemService
             );
         }
 
+        /*
+         * A largura de 1024 px é o TAMANHO DE SAÍDA.
+         * Não é uma largura mínima exigida no upload.
+         * Se a imagem original for menor, ela também será
+         * ajustada para 1024 px, mantendo a proporção.
+         */
         $alturaSaida = max(
             1,
             (int) round(
@@ -271,23 +268,12 @@ final class ProdutoImagemService
             $caminhoFinal
             . '.tmp.webp';
 
-        $qualidades = [
-            82,
-            76,
-            70,
-            64,
-            58,
-            52,
-            46,
-            40,
-            34,
-            28,
-            22,
-            18,
-            14,
-            10,
-            6,
-        ];
+        /*
+         * Reduz progressivamente a qualidade do WebP até
+         * atingir o limite de 120 KB, mantendo a largura
+         * final em 1024 px.
+         */
+        $qualidades = range(82, 1, -1);
 
         $tamanhoFinal = 0;
         $atingiuLimite = false;

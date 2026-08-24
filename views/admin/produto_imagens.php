@@ -304,10 +304,11 @@ $sucesso =
 
                                     <div class="form-text">
                                         Formatos: JPG, PNG ou WebP.
-                                        Cada imagem deve ter no mínimo
-                                        <strong>1024 px de largura</strong>.
-                                        O servidor converterá para WebP,
-                                        largura de 1024 px e até 120 KB.
+                                        A imagem pode ser enviada em qualquer largura.
+                                        O servidor ajustará automaticamente para
+                                        <strong>1024 px de largura</strong>, manterá a proporção,
+                                        converterá para WebP e comprimirá para até
+                                        <strong>120 KB</strong>.
                                     </div>
                                 </div>
 
