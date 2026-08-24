@@ -53,7 +53,15 @@ return [
         'path' => '/admin/produto/novo',
         'action' => [
             ModuloAdminController::class,
-            'novoProduto',
+            'ProdutoNovo',
+        ],
+    ],
+    [
+        'method' => 'GET',
+        'path' => '/admin/produto/editar',
+        'action' => [
+            ModuloAdminController::class,
+            'ProdutoEditar',
         ],
     ],
 

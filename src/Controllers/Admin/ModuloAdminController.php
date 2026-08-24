@@ -18,9 +18,13 @@ final class ModuloAdminController
         $this->carregarView('produtos');
     }
 
-    public function novoProduto(): void
+    public function produtoNovo(): void
     {
         $this->carregarView('produto_novo');
+    }    
+    public function produtoEditar(): void
+    {
+        $this->carregarView('produto_editar');
     }
 
     public function categorias(): void
