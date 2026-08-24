@@ -63,7 +63,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : '';
                 <section class="mb-4">
                     <div class="row g-3">
                         <div class="col-12 col-sm-6 col-xl-3">
-                            <h1 class="h3 fw-bold mb-1">Produto Novo</h1>
+                            <h1 class="h3 fw-bold mb-1">Produto Imagens</h1>
                             
                         </div>
 

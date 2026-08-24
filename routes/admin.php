@@ -65,6 +65,24 @@ return [
         ],
     ],
 
+    [
+        'method' => 'POST',
+        'path' => '/admin/produto/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'produtoAtualizar',
+        ],
+    ],
+    
+    [
+        'method' => 'POST',
+        'path' => '/admin/produto/imagens',
+        'action' => [
+            ModuloAdminController::class,
+            'produtoImagens',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Categorias
