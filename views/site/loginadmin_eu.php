@@ -130,7 +130,7 @@ declare(strict_types=1);
 
                     <?php endif; ?>
         
-        <form action="<?=BASE_URL?>/login-admin" method="POST">
+        <form action="<?=BASE_URL?>/loginadmin" method="POST">
 
 
 <input

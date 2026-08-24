@@ -1,3 +1,60 @@
+<?php
+
+declare(strict_types=1);
+
+use App\Helpers\View;
+$baseUrl = defined('BASE_URL') ? BASE_URL : '';
+
+$indicadores = is_array($indicadores ?? null)
+    ? $indicadores
+    : [];
+
+$pedidosRecentes = is_array($pedidosRecentes ?? null)
+    ? $pedidosRecentes
+    : [];
+
+$produtosEstoqueBaixo =
+    is_array($produtosEstoqueBaixo ?? null)
+        ? $produtosEstoqueBaixo
+        : [];
+
+$notificacoesNaoLidas =
+    (int) ($notificacoesNaoLidas ?? 0);
+
+$contatosRecebidos =
+    (int) ($contatosRecebidos ?? 0);
+
+$contatosAguardando =
+    (int) ($contatosAguardando ?? 0);
+
+$statusPedidos = [
+    'aguardando_pagamento' => [
+        'texto' => 'Aguardando pagamento',
+        'classe' => 'text-bg-warning',
+    ],
+    'pago' => [
+        'texto' => 'Pago',
+        'classe' => 'text-bg-success',
+    ],
+    'em_separacao' => [
+        'texto' => 'Em separação',
+        'classe' => 'text-bg-primary',
+    ],
+    'enviado' => [
+        'texto' => 'Enviado',
+        'classe' => 'text-bg-info',
+    ],
+    'entregue' => [
+        'texto' => 'Entregue',
+        'classe' => 'text-bg-success',
+    ],
+    'cancelado' => [
+        'texto' => 'Cancelado',
+        'classe' => 'text-bg-danger',
+    ],
+];
+
+?>
 <!doctype html>
 <html lang="pt-BR">
 <head>
@@ -13,308 +70,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 
-    <style>
-        :root {
-            --sidebar-width: 270px;
-            --sidebar-bg: #111827;
-            --sidebar-hover: #1f2937;
-            --sidebar-active: #2563eb;
-            --page-bg: #f4f7fb;
-        }
-
-        * { box-sizing: border-box; }
-
-        body {
-            min-height: 100vh;
-            margin: 0;
-            background: var(--page-bg);
-            color: #1f2937;
-        }
-
-        a { text-decoration: none; }
-
-        .sidebar {
-            position: fixed;
-            inset: 0 auto 0 0;
-            z-index: 1030;
-            width: var(--sidebar-width);
-            min-height: 100vh;
-            overflow-y: auto;
-            background: var(--sidebar-bg);
-            color: #fff;
-        }
-
-        .sidebar-brand {
-            min-height: 72px;
-            display: flex;
-            align-items: center;
-            gap: .75rem;
-            padding: 1rem 1.25rem;
-            border-bottom: 1px solid rgba(255,255,255,.08);
-            color: #fff;
-        }
-
-        .brand-icon {
-            width: 42px;
-            height: 42px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: .8rem;
-            background: var(--sidebar-active);
-            font-size: 1.25rem;
-        }
-
-        .menu-title {
-            padding: 1.15rem 1.25rem .45rem;
-            color: #9ca3af;
-            font-size: .72rem;
-            font-weight: 700;
-            letter-spacing: .08em;
-            text-transform: uppercase;
-        }
-
-        .sidebar-nav { padding: 0 .75rem 1rem; }
-
-        .sidebar-link,
-        .sidebar-button {
-            width: 100%;
-            display: flex;
-            align-items: center;
-            gap: .85rem;
-            padding: .78rem .9rem;
-            margin-bottom: .3rem;
-            border: 0;
-            border-radius: .75rem;
-            background: transparent;
-            color: #d1d5db;
-            text-align: left;
-            transition: .2s ease;
-        }
-
-        .sidebar-link:hover,
-        .sidebar-link:focus,
-        .sidebar-button:hover,
-        .sidebar-button:focus {
-            background: var(--sidebar-hover);
-            color: #fff;
-            transform: translateX(3px);
-        }
-
-        .sidebar-link.active {
-            background: var(--sidebar-active);
-            color: #fff;
-        }
-
-        .main-wrapper {
-            min-height: 100vh;
-            margin-left: var(--sidebar-width);
-        }
-
-        .topbar {
-            position: sticky;
-            top: 0;
-            z-index: 1020;
-            min-height: 72px;
-            display: flex;
-            align-items: center;
-            background: rgba(255,255,255,.96);
-            border-bottom: 1px solid #e5e7eb;
-            backdrop-filter: blur(10px);
-        }
-
-        .content-area { padding: 1.5rem; }
-
-        .avatar {
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            background: #dbeafe;
-            color: #1d4ed8;
-            font-weight: 700;
-        }
-
-        .metric-card,
-        .panel-card {
-            height: 100%;
-            border: 0;
-            border-radius: 1rem;
-            box-shadow: 0 .55rem 1.75rem rgba(15,23,42,.07);
-        }
-
-        .metric-card {
-            transition: transform .2s ease, box-shadow .2s ease;
-        }
-
-        .metric-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 .85rem 2rem rgba(15,23,42,.11);
-        }
-
-        .metric-icon {
-            width: 52px;
-            height: 52px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: .9rem;
-            font-size: 1.4rem;
-        }
-
-        .metric-label { color: #6b7280; font-size: .9rem; }
-        .metric-value { margin: .15rem 0 0; font-size: 1.65rem; font-weight: 700; }
-
-        .quick-card {
-            height: 100%;
-            display: block;
-            padding: 1.1rem;
-            border: 1px solid #e5e7eb;
-            border-radius: 1rem;
-            background: #fff;
-            color: #1f2937;
-            transition: .2s ease;
-        }
-
-        .quick-card:hover {
-            border-color: #93c5fd;
-            color: #1f2937;
-            transform: translateY(-3px);
-            box-shadow: 0 .7rem 1.6rem rgba(37,99,235,.1);
-        }
-
-        .quick-icon {
-            width: 46px;
-            height: 46px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: .8rem;
-            border-radius: .85rem;
-            background: #eff6ff;
-            color: #2563eb;
-            font-size: 1.25rem;
-        }
-
-        .panel-card .card-header {
-            padding: 1rem 1.15rem;
-            border-bottom: 1px solid #eef0f3;
-            background: #fff;
-            border-radius: 1rem 1rem 0 0;
-        }
-
-        .table thead th {
-            white-space: nowrap;
-            color: #6b7280;
-            font-size: .8rem;
-            text-transform: uppercase;
-        }
-
-        .table tbody td { vertical-align: middle; }
-
-        .offcanvas-dashboard {
-            background: var(--sidebar-bg);
-            color: #fff;
-        }
-
-        .offcanvas-dashboard .btn-close { filter: invert(1); }
-
-        .dashboard-footer {
-            padding: 1.2rem 1.5rem;
-            border-top: 1px solid #e5e7eb;
-            background: #fff;
-            color: #6b7280;
-            font-size: .9rem;
-        }
-
-        @media (max-width: 991.98px) {
-            .sidebar { display: none; }
-            .main-wrapper { margin-left: 0; }
-            .content-area { padding: 1rem; }
-        }
-    </style>
+  
+    <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/admin.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
 
 <body>
-    <aside class="sidebar d-none d-lg-flex flex-column">
-        <a class="sidebar-brand" href="admin">
-            <span class="brand-icon"><i class="bi bi-shop"></i></span>
-            <span>
-                <strong class="d-block">Loja Online</strong>
-                <small class="text-white-50">Painel administrativo</small>
-            </span>
-        </a>
-
-        <div class="flex-grow-1">
-            <div class="menu-title">Visão geral</div>
-            <nav class="sidebar-nav" aria-label="Visão geral">
-                <a class="sidebar-link active" href="admin" data-route="admin">
-                    <i class="bi bi-grid-1x2-fill"></i> Dashboard
-                </a>
-                <a class="sidebar-link" href="admin/relatorios" data-route="admin/relatorios">
-                    <i class="bi bi-bar-chart-line-fill"></i> Relatórios
-                </a>
-            </nav>
-
-            <div class="menu-title">Cadastros</div>
-            <nav class="sidebar-nav" aria-label="Cadastros">
-                <a class="sidebar-link" href="admin/produtos" data-route="admin/produtos">
-                    <i class="bi bi-box-seam-fill"></i> Produtos
-                </a>
-                <a class="sidebar-link" href="admin/categorias" data-route="admin/categorias">
-                    <i class="bi bi-tags-fill"></i> Categorias
-                </a>
-                <a class="sidebar-link" href="admin/clientes" data-route="admin/clientes">
-                    <i class="bi bi-people-fill"></i> Clientes
-                </a>
-            </nav>
-
-            <div class="menu-title">Vendas</div>
-            <nav class="sidebar-nav" aria-label="Vendas">
-                <a class="sidebar-link" href="admin/pedidos" data-route="admin/pedidos">
-                    <i class="bi bi-bag-check-fill"></i> Pedidos
-                </a>
-                <a class="sidebar-link" href="admin/pagamentos" data-route="admin/pagamentos">
-                    <i class="bi bi-credit-card-2-front-fill"></i> Pagamentos
-                </a>
-                <a class="sidebar-link" href="admin/carrinhos" data-route="admin/carrinhos">
-                    <i class="bi bi-cart-fill"></i> Carrinhos ativos
-                </a>
-            </nav>
-
-            <div class="menu-title">Controle</div>
-            <nav class="sidebar-nav" aria-label="Controle">
-                <a class="sidebar-link" href="admin/estoque" data-route="admin/estoque">
-                    <i class="bi bi-boxes"></i> Estoque
-                </a>
-                <a class="sidebar-link" href="admin/notificacoes" data-route="admin/notificacoes">
-                    <i class="bi bi-bell-fill"></i> Notificações
-                    <span class="badge rounded-pill text-bg-danger ms-auto">5</span>
-                </a>
-                <a class="sidebar-link" href="admin/contatos" data-route="admin/contatos">
-                    <i class="bi bi-chat-left-text-fill"></i> Contatos
-                </a>
-                <a class="sidebar-link" href="admin/configuracoes" data-route="admin/configuracoes">
-                    <i class="bi bi-gear-fill"></i> Configurações
-                </a>
-            </nav>
-        </div>
-
-        <div class="p-3 border-top border-secondary">
-            <a class="sidebar-link" href="" target="_blank">
-                <i class="bi bi-box-arrow-up-right"></i> Visualizar loja
-            </a>
-
-            <!-- Em produção, inclua token CSRF após converter para PHP. -->
-            <form action="admin/sair" method="post">
-                <button class="sidebar-button text-danger" type="submit">
-                    <i class="bi bi-box-arrow-left"></i> Sair do sistema
-                </button>
-            </form>
-        </div>
-    </aside>
+    <?php View::componenteAdmin('aside', [
+    'notificacoesNaoLidas' => $notificacoesNaoLidas,
+]); ?>
 
     <div class="offcanvas offcanvas-start offcanvas-dashboard" tabindex="-1" id="menuMobile">
         <div class="offcanvas-header border-bottom border-secondary">
@@ -368,9 +131,11 @@
                         <a class="btn btn-light position-relative" href="admin/notificacoes"
                            aria-label="Abrir notificações">
                             <i class="bi bi-bell"></i>
-                            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
-                                5
-                            </span>
+                            <?php if ($notificacoesNaoLidas > 0): ?>
+                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
+                                    <?= number_format($notificacoesNaoLidas, 0, ',', '.'); ?>
+                                </span>
+                            <?php endif; ?>
                         </a>
 
                         <div class="dropdown">
@@ -440,8 +205,8 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Produtos cadastrados</div>
-                                            <p class="metric-value">248</p>
-                                            <small class="text-success">12 novos neste mês</small>
+                                            <p class="metric-value"><?= number_format((int) ($indicadores['total_produtos'] ?? 0), 0, ',', '.'); ?></p>
+                                            <small class="text-success"><?= number_format((int) ($indicadores['produtos_mes'] ?? 0), 0, ',', '.'); ?> novos neste mês</small>
                                         </div>
                                         <span class="metric-icon bg-primary-subtle text-primary">
                                             <i class="bi bi-box-seam"></i>
@@ -457,8 +222,8 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Clientes cadastrados</div>
-                                            <p class="metric-value">1.084</p>
-                                            <small class="text-success">8,4% de crescimento</small>
+                                            <p class="metric-value"><?= number_format((int) ($indicadores['total_clientes'] ?? 0), 0, ',', '.'); ?></p>
+                                            <small class="text-success"><?= number_format((int) ($indicadores['clientes_mes'] ?? 0), 0, ',', '.'); ?> novos neste mês</small>
                                         </div>
                                         <span class="metric-icon bg-success-subtle text-success">
                                             <i class="bi bi-people"></i>
@@ -474,8 +239,8 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Pedidos pendentes</div>
-                                            <p class="metric-value">32</p>
-                                            <small class="text-warning-emphasis">7 aguardam pagamento</small>
+                                            <p class="metric-value"><?= number_format((int) ($indicadores['pedidos_pendentes'] ?? 0), 0, ',', '.'); ?></p>
+                                            <small class="text-warning-emphasis"><?= number_format((int) ($indicadores['pedidos_aguardando_pagamento'] ?? 0), 0, ',', '.'); ?> aguardam pagamento</small>
                                         </div>
                                         <span class="metric-icon bg-warning-subtle text-warning-emphasis">
                                             <i class="bi bi-bag-check"></i>
@@ -491,7 +256,7 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Estoque baixo</div>
-                                            <p class="metric-value">14</p>
+                                            <p class="metric-value"><?= number_format((int) ($indicadores['estoque_baixo'] ?? 0), 0, ',', '.'); ?></p>
                                             <small class="text-danger">Requer atenção</small>
                                         </div>
                                         <span class="metric-icon bg-danger-subtle text-danger">
@@ -508,8 +273,8 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Carrinhos ativos</div>
-                                            <p class="metric-value">46</p>
-                                            <small class="text-secondary">11 iniciados hoje</small>
+                                            <p class="metric-value"><?= number_format((int) ($indicadores['carrinhos_ativos'] ?? 0), 0, ',', '.'); ?></p>
+                                            <small class="text-secondary"><?= number_format((int) ($indicadores['carrinhos_hoje'] ?? 0), 0, ',', '.'); ?> iniciados hoje</small>
                                         </div>
                                         <span class="metric-icon bg-info-subtle text-info-emphasis">
                                             <i class="bi bi-cart"></i>
@@ -525,7 +290,7 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Pagamentos confirmados</div>
-                                            <p class="metric-value">R$ 28.640</p>
+                                            <p class="metric-value">R$ <?= number_format((float) ($indicadores['pagamentos_mes'] ?? 0), 2, ',', '.'); ?></p>
                                             <small class="text-success">Total do mês</small>
                                         </div>
                                         <span class="metric-icon bg-success-subtle text-success">
@@ -542,8 +307,8 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Notificações</div>
-                                            <p class="metric-value">5</p>
-                                            <small class="text-secondary">Não lidas</small>
+                                            <p class="metric-value"><?= number_format($notificacoesNaoLidas, 0, ',', '.'); ?></p>
+                                            <small class="text-secondary">Tabela ainda não criada</small>
                                         </div>
                                         <span class="metric-icon bg-primary-subtle text-primary">
                                             <i class="bi bi-bell"></i>
@@ -559,8 +324,8 @@
                                     <div class="card-body d-flex justify-content-between gap-3">
                                         <div>
                                             <div class="metric-label">Contatos recebidos</div>
-                                            <p class="metric-value">18</p>
-                                            <small class="text-secondary">4 aguardam resposta</small>
+                                            <p class="metric-value"><?= number_format($contatosRecebidos, 0, ',', '.'); ?></p>
+                                            <small class="text-secondary"><?= number_format($contatosAguardando, 0, ',', '.'); ?> aguardam resposta</small>
                                         </div>
                                         <span class="metric-icon bg-secondary-subtle text-secondary">
                                             <i class="bi bi-chat-left-text"></i>
@@ -645,43 +410,61 @@
                                         </tr>
                                     </thead>
                                     <tbody>
+                                    <?php if ($pedidosRecentes === []): ?>
                                         <tr>
-                                            <td class="fw-semibold">#1058</td>
-                                            <td>Mariana Alves</td>
-                                            <td>05/08/2026</td>
-                                            <td>R$ 1.249,90</td>
-                                            <td><span class="badge text-bg-warning">Aguardando</span></td>
-                                            <td class="text-end">
-                                                <a class="btn btn-sm btn-light" href="admin/pedidos/1058" aria-label="Ver pedido 1058">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
+                                            <td colspan="6" class="text-center text-secondary py-4">
+                                                Nenhum pedido registrado até o momento.
                                             </td>
                                         </tr>
-                                        <tr>
-                                            <td class="fw-semibold">#1057</td>
-                                            <td>Carlos Henrique</td>
-                                            <td>05/08/2026</td>
-                                            <td>R$ 389,90</td>
-                                            <td><span class="badge text-bg-success">Pago</span></td>
-                                            <td class="text-end">
-                                                <a class="btn btn-sm btn-light" href="admin/pedidos/1057" aria-label="Ver pedido 1057">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="fw-semibold">#1056</td>
-                                            <td>Ana Beatriz</td>
-                                            <td>04/08/2026</td>
-                                            <td>R$ 2.899,00</td>
-                                            <td><span class="badge text-bg-primary">Em separação</span></td>
-                                            <td class="text-end">
-                                                <a class="btn btn-sm btn-light" href="admin/pedidos/1056" aria-label="Ver pedido 1056">
-                                                    <i class="bi bi-eye"></i>
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </tbody>
+                                    <?php else: ?>
+                                        <?php foreach ($pedidosRecentes as $pedido): ?>
+                                            <?php
+                                            $pedidoId = (int) ($pedido['id'] ?? 0);
+                                            $codigoPedido = trim((string) ($pedido['codigo'] ?? ''));
+
+                                            if ($codigoPedido === '') {
+                                                $codigoPedido = '#' . $pedidoId;
+                                            }
+
+                                            $statusPedido = (string) ($pedido['status'] ?? '');
+                                            $statusInfo = $statusPedidos[$statusPedido] ?? [
+                                                'texto' => ucfirst(str_replace('_', ' ', $statusPedido)),
+                                                'classe' => 'text-bg-secondary',
+                                            ];
+
+                                            $dataPedido = !empty($pedido['criado_em'])
+                                                ? date('d/m/Y H:i', strtotime((string) $pedido['criado_em']))
+                                                : '-';
+                                            ?>
+                                            <tr>
+                                                <td class="fw-semibold">
+                                                    <?= htmlspecialchars($codigoPedido, ENT_QUOTES, 'UTF-8'); ?>
+                                                </td>
+                                                <td>
+                                                    <?= htmlspecialchars((string) ($pedido['cliente_nome'] ?? 'Cliente'), ENT_QUOTES, 'UTF-8'); ?>
+                                                </td>
+                                                <td><?= htmlspecialchars($dataPedido, ENT_QUOTES, 'UTF-8'); ?></td>
+                                                <td>
+                                                    R$ <?= number_format((float) ($pedido['total'] ?? 0), 2, ',', '.'); ?>
+                                                </td>
+                                                <td>
+                                                    <span class="badge <?= htmlspecialchars($statusInfo['classe'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                        <?= htmlspecialchars($statusInfo['texto'], ENT_QUOTES, 'UTF-8'); ?>
+                                                    </span>
+                                                </td>
+                                                <td class="text-end">
+                                                    <a
+                                                        class="btn btn-sm btn-light"
+                                                        href="admin/pedidos/detalhes?id=<?= $pedidoId; ?>"
+                                                        aria-label="Ver pedido <?= $pedidoId; ?>"
+                                                    >
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
+                                                </td>
+                                            </tr>
+                                        <?php endforeach; ?>
+                                    <?php endif; ?>
+</tbody>
                                 </table>
                             </div>
                         </article>
@@ -698,19 +481,35 @@
                             </div>
 
                             <div class="card-body">
-                                <div class="d-flex justify-content-between border-bottom py-3">
-                                    <span>Mouse sem fio</span>
-                                    <span class="badge text-bg-danger">2 unidades</span>
-                                </div>
-                                <div class="d-flex justify-content-between border-bottom py-3">
-                                    <span>Teclado mecânico</span>
-                                    <span class="badge text-bg-warning">5 unidades</span>
-                                </div>
-                                <div class="d-flex justify-content-between py-3">
-                                    <span>Fone Bluetooth</span>
-                                    <span class="badge text-bg-warning">7 unidades</span>
-                                </div>
-                            </div>
+                                <?php if ($produtosEstoqueBaixo === []): ?>
+                                    <div class="text-center text-secondary py-4">
+                                        Nenhum produto com estoque baixo.
+                                    </div>
+                                <?php else: ?>
+                                    <?php foreach ($produtosEstoqueBaixo as $index => $produto): ?>
+                                        <?php
+                                        $estoque = (int) ($produto['estoque'] ?? 0);
+                                        $classeBadge = $estoque <= 2
+                                            ? 'text-bg-danger'
+                                            : 'text-bg-warning';
+
+                                        $classeBorda =
+                                            $index < count($produtosEstoqueBaixo) - 1
+                                                ? 'border-bottom'
+                                                : '';
+                                        ?>
+                                        <div class="d-flex justify-content-between align-items-center gap-3 <?= $classeBorda; ?> py-3">
+                                            <span>
+                                                <?= htmlspecialchars((string) ($produto['nome'] ?? 'Produto'), ENT_QUOTES, 'UTF-8'); ?>
+                                            </span>
+                                            <span class="badge <?= $classeBadge; ?>">
+                                                <?= number_format($estoque, 0, ',', '.'); ?>
+                                                <?= $estoque === 1 ? 'unidade' : 'unidades'; ?>
+                                            </span>
+                                        </div>
+                                    <?php endforeach; ?>
+                                <?php endif; ?>
+</div>
                         </article>
                     </section>
                 </div>

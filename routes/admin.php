@@ -3,16 +3,7 @@
 declare(strict_types=1);
 
 use App\Controllers\Admin\DashboardController;
-// use App\Controllers\Admin\ProdutosController;
-// use App\Controllers\Admin\CategoriasController;
-// use App\Controllers\Admin\ClientesController;
-// use App\Controllers\Admin\PedidosController;
-// use App\Controllers\Admin\PagamentosController;
-// use App\Controllers\Admin\CarrinhosController;
-// use App\Controllers\Admin\EstoqueController;
-// use App\Controllers\Admin\NotificacoesController;
-// use App\Controllers\Admin\ContatosController;
-// use App\Controllers\Admin\RelatoriosController;
+use App\Controllers\Admin\ModuloAdminController;
 
 return [
 
@@ -32,6 +23,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Relatórios
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/relatorios',
+        'action' => [
+            ModuloAdminController::class,
+            'relatorios',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Produtos
     |--------------------------------------------------------------------------
     */
@@ -39,11 +44,208 @@ return [
         'method' => 'GET',
         'path' => '/admin/produtos',
         'action' => [
-            ProdutosController::class,
-            'index',
+            ModuloAdminController::class,
+            'produtos',
+        ],
+    ],
+    [
+        'method' => 'GET',
+        'path' => '/admin/produto/novo',
+        'action' => [
+            ModuloAdminController::class,
+            'novoProduto',
         ],
     ],
 
-    
+    /*
+    |--------------------------------------------------------------------------
+    | Categorias
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/categorias',
+        'action' => [
+            ModuloAdminController::class,
+            'categorias',
+        ],
+    ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Clientes
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/clientes',
+        'action' => [
+            ModuloAdminController::class,
+            'clientes',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pedidos
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/pedidos',
+        'action' => [
+            ModuloAdminController::class,
+            'pedidos',
+        ],
+    ],
+    [
+        'method' => 'GET',
+        'path' => '/admin/pedidos/detalhes',
+        'action' => [
+            ModuloAdminController::class,
+            'pedidoDetalhes',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Pagamentos
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/pagamentos',
+        'action' => [
+            ModuloAdminController::class,
+            'pagamentos',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Carrinhos
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/carrinhos',
+        'action' => [
+            ModuloAdminController::class,
+            'carrinhos',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Estoque
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/estoque',
+        'action' => [
+            ModuloAdminController::class,
+            'estoque',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Notificações
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/notificacoes',
+        'action' => [
+            ModuloAdminController::class,
+            'notificacoes',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Contatos
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/contatos',
+        'action' => [
+            ModuloAdminController::class,
+            'contatos',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Configurações
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/configuracoes',
+        'action' => [
+            ModuloAdminController::class,
+            'configuracoes',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Perfil administrativo
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/perfil',
+        'action' => [
+            ModuloAdminController::class,
+            'perfil',
+        ],
+    ],
+       [
+        'method' => 'GET',
+        'path' => '/admin/perfil/novo',
+        'action' => [
+            ModuloAdminController::class,
+            'perfilNovo',
+        ],
+    ],
+    [
+        'method' => 'GET',
+        'path' => '/admin/perfil/lista',
+        'action' => [
+            ModuloAdminController::class,
+            'perfilLista',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Busca do painel
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'GET',
+        'path' => '/admin/buscar',
+        'action' => [
+            ModuloAdminController::class,
+            'buscar',
+        ],
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logout
+    |--------------------------------------------------------------------------
+    */
+    [
+        'method' => 'POST',
+        'path' => '/admin/sair',
+        'action' => [
+            ModuloAdminController::class,
+            'sair',
+        ],
+    ],
 ];

@@ -26,6 +26,16 @@ final class View
             $nome,
             $dados
         );
+    } 
+    public static function componenteAdmin(
+        string $nome,
+        array $dados = []
+    ): void {
+        self::carregarComponente(
+            'admin',
+            $nome,
+            $dados
+        );
     }
     /*
     |--------------------------------------------------------------------------

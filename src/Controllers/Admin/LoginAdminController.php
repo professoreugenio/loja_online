@@ -290,7 +290,7 @@ final class LoginAdminController
         ] = $email;
 
         $this->redirecionar(
-            '/login-admin'
+            '/loginadmin'
         );
     }
 }

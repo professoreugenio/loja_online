@@ -134,7 +134,7 @@ final class AuthController extends Controller
         SessaoAdmin::sair();
 
         $this->redirecionar(
-            '/login-admin'
+            '/loginadmin'
         );
     }
 
@@ -149,7 +149,7 @@ final class AuthController extends Controller
             $email;
 
         $this->redirecionar(
-            '/login-admin'
+            '/loginadmin'
         );
     }
 }
