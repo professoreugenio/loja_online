@@ -90,6 +90,32 @@ return [
         ],
     ],
     [
+        'method' => 'POST',
+        'path' => '/cliente/endereco/editar',
+        'action' => [
+            EnderecoController::class,
+            'editar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/cliente/endereco/cadastrar',
+        'action' => [
+            EnderecoController::class,
+            'cadastrar',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/cliente/endereco/excluir',
+        'action' => [
+            EnderecoController::class,
+            'excluir',
+        ],
+    ],
+    
+    [
         'method' => 'GET',
         'path' => '/cliente/pedidos',
         'action' => [
