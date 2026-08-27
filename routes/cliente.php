@@ -1,10 +1,13 @@
 <?php
+
 declare(strict_types=1);
+
 use App\Controllers\Cliente\ClienteController;
 use App\Controllers\Cliente\ClienteLoginController;
 use App\Controllers\Cliente\EnderecoController;
 use App\Controllers\Cliente\PedidoController;
 use App\Controllers\Cliente\PerfilController;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -114,7 +117,7 @@ return [
             'excluir',
         ],
     ],
-    
+
     [
         'method' => 'GET',
         'path' => '/cliente/pedidos',
@@ -137,6 +140,14 @@ return [
         'action' => [
             PerfilController::class,
             'seguranca',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/cliente/seguranca/senha',
+        'action' => [
+            PerfilController::class,
+            'alterarSenha',
         ],
     ],
 ];
