@@ -191,4 +191,112 @@ final class AdminRepository
             'pagamentos_mes' => 0.0,
         ];
     }
+
+    public function listarClientes(string $busca = '', string $status = ''): array
+    {
+        $busca = trim($busca);
+        $status = trim($status);
+
+        $sql = "
+            SELECT
+                id,
+                nome,
+                cpf,
+                email,
+                telefone,
+                status,
+                criado_em
+            FROM clientes
+            WHERE 1 = 1
+        ";
+
+        $params = [];
+
+        if ($busca !== '') {
+            /*
+             * Não reutilizamos o mesmo placeholder várias vezes.
+             * A conexão do projeto usa prepared statements nativos
+             * (ATTR_EMULATE_PREPARES = false).
+             */
+            $sql .= "
+                AND (
+                    nome LIKE :busca_nome
+                    OR email LIKE :busca_email
+                    OR cpf LIKE :busca_cpf
+                )
+            ";
+
+            $cpfSomenteNumeros = preg_replace('/\D+/', '', $busca) ?? '';
+
+            $params['busca_nome'] = '%' . $busca . '%';
+            $params['busca_email'] = '%' . $busca . '%';
+            $params['busca_cpf'] = '%' . (
+                $cpfSomenteNumeros !== ''
+                    ? $cpfSomenteNumeros
+                    : $busca
+            ) . '%';
+        }
+
+        if (in_array($status, ['ativo', 'inativo', 'bloqueado'], true)) {
+            $sql .= " AND status = :status";
+            $params['status'] = $status;
+        }
+
+        $sql .= " ORDER BY id DESC";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute($params);
+
+        $clientes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return is_array($clientes) ? $clientes : [];
+    }
+
+    public function buscarClientePorId(int $id): ?array
+    {
+        $sql = "SELECT * FROM clientes WHERE id = :id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->execute(['id' => $id]);
+
+        $cliente = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return $cliente ?: null;
+    }
+
+    public function inativarCliente(int $id): bool
+    {
+        $sql = "
+            UPDATE clientes
+            SET
+                status = 'inativo',
+                atualizado_em = CURRENT_TIMESTAMP
+            WHERE id = :id
+              AND status <> 'inativo'
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+
+        return $stmt->rowCount() > 0;
+    }
+
+
+    public function ativarCliente(int $id): bool
+{
+    $sql = "
+        UPDATE clientes
+        SET
+            status = 'ativo',
+            atualizado_em = CURRENT_TIMESTAMP
+        WHERE id = :id
+          AND status = 'inativo'
+    ";
+
+    $stmt = $this->pdo->prepare($sql);
+
+    return $stmt->execute([
+        'id' => $id,
+    ]);
+}
 }
