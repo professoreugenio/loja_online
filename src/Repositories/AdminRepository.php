@@ -281,22 +281,172 @@ final class AdminRepository
         return $stmt->rowCount() > 0;
     }
 
-
     public function ativarCliente(int $id): bool
-{
-    $sql = "
-        UPDATE clientes
-        SET
-            status = 'ativo',
-            atualizado_em = CURRENT_TIMESTAMP
-        WHERE id = :id
-          AND status = 'inativo'
-    ";
+    {
+        $sql = "
+            UPDATE clientes
+            SET
+                status = 'ativo',
+                atualizado_em = CURRENT_TIMESTAMP
+            WHERE id = :id
+              AND status = 'inativo'
+        ";
 
-    $stmt = $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
 
-    return $stmt->execute([
-        'id' => $id,
-    ]);
-}
+        return $stmt->rowCount() > 0;
+    }
+
+    public function listarEnderecosCliente(int $clienteId): array
+    {
+        $sql = "
+            SELECT
+                id,
+                identificacao,
+                destinatario,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                principal,
+                criado_em,
+                atualizado_em
+            FROM enderecos
+            WHERE cliente_id = :cliente_id
+            ORDER BY principal DESC, id DESC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return is_array($dados) ? $dados : [];
+    }
+
+    public function listarPedidosCliente(int $clienteId): array
+    {
+        $sql = "
+            SELECT
+                id,
+                codigo,
+                status,
+                subtotal,
+                frete,
+                desconto,
+                total,
+                observacao,
+                criado_em,
+                atualizado_em
+            FROM pedidos
+            WHERE cliente_id = :cliente_id
+            ORDER BY criado_em DESC, id DESC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return is_array($dados) ? $dados : [];
+    }
+
+    public function listarCarrinhosAbertosCliente(int $clienteId): array
+    {
+        $sql = "
+            SELECT
+                c.id,
+                c.status,
+                c.criado_em,
+                c.atualizado_em,
+                COALESCE(SUM(ci.quantidade), 0) AS total_unidades,
+                COALESCE(SUM(ci.quantidade * ci.preco_unitario), 0) AS total_carrinho
+            FROM carrinhos AS c
+            LEFT JOIN carrinho_itens AS ci
+                ON ci.carrinho_id = c.id
+            WHERE c.cliente_id = :cliente_id
+              AND c.status = 'aberto'
+            GROUP BY
+                c.id,
+                c.status,
+                c.criado_em,
+                c.atualizado_em
+            ORDER BY c.atualizado_em DESC, c.id DESC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':cliente_id', $clienteId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return is_array($dados) ? $dados : [];
+    }
+
+    public function buscarCarrinhoAbertoPorId(int $carrinhoId): ?array
+    {
+        $sql = "
+            SELECT
+                c.id,
+                c.cliente_id,
+                c.status,
+                c.criado_em,
+                c.atualizado_em,
+                cl.nome AS cliente_nome,
+                cl.email AS cliente_email,
+                cl.cpf AS cliente_cpf
+            FROM carrinhos AS c
+            INNER JOIN clientes AS cl
+                ON cl.id = c.cliente_id
+            WHERE c.id = :carrinho_id
+              AND c.status = 'aberto'
+            LIMIT 1
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':carrinho_id', $carrinhoId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $carrinho = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        return is_array($carrinho) ? $carrinho : null;
+    }
+
+    public function listarItensCarrinho(int $carrinhoId): array
+    {
+        $sql = "
+            SELECT
+                ci.id,
+                ci.produto_id,
+                ci.quantidade,
+                ci.preco_unitario,
+                (ci.quantidade * ci.preco_unitario) AS subtotal,
+                p.nome AS produto_nome,
+                p.status AS produto_status,
+                p.estoque,
+                cat.nome AS categoria_nome
+            FROM carrinho_itens AS ci
+            INNER JOIN produtos AS p
+                ON p.id = ci.produto_id
+            LEFT JOIN categorias AS cat
+                ON cat.id = p.categoria_id
+            WHERE ci.carrinho_id = :carrinho_id
+            ORDER BY ci.criado_em ASC, ci.id ASC
+        ";
+
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':carrinho_id', $carrinhoId, PDO::PARAM_INT);
+        $stmt->execute();
+
+        $dados = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        return is_array($dados) ? $dados : [];
+    }
 }

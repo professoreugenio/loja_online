@@ -107,7 +107,7 @@ $csrfToken = (string) ($csrfToken ?? '');
                                             <tr>
                                                 <td><?= $c['id'] ?></td>
                                                 <td>
-                                                    <a href="admin/cliente/view?id=<?= $c['id'] ?>" class="fw-bold text-decoration-none">
+                                                    <a href="admin/cliente/view?id=<?= rawurlencode((string) ($c['id_seguro'] ?? '')) ?>" class="fw-bold text-decoration-none">
                                                         <?= htmlspecialchars($c['nome']) ?>
                                                     </a>
                                                 </td>

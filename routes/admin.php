@@ -316,6 +316,14 @@ return [
         ],
     ],
     [
+        'method' => 'GET',
+        'path' => '/admin/cliente/carrinho',
+        'action' => [
+            ModuloAdminController::class,
+            'clienteCarrinho',
+        ],
+    ],
+    [
     'method' => 'POST',
     'path' => '/admin/cliente/ativar',
     'action' => [

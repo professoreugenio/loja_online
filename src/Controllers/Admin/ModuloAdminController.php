@@ -884,6 +884,113 @@ public function clienteAtivar(): void
     */
     $this->redirecionarClientes();
 }
+
+    public function clienteView(): void
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Carrega conexão / .env / APP_KEY antes de usar IdSeguro
+        |--------------------------------------------------------------------------
+        */
+        $repository = $this->adminRepository();
+
+        $token = trim((string) ($_GET['id'] ?? ''));
+
+        if ($token === '') {
+            http_response_code(400);
+            throw new RuntimeException('Cliente não informado.');
+        }
+
+        $clienteId = IdSeguro::descriptografar($token);
+
+        if ($clienteId === null || $clienteId < 1) {
+            http_response_code(400);
+            throw new RuntimeException('Identificador do cliente inválido.');
+        }
+
+        $cliente = $repository->buscarClientePorId($clienteId);
+
+        if ($cliente === null) {
+            http_response_code(404);
+            throw new RuntimeException('Cliente não encontrado.');
+        }
+
+        $enderecos = $repository->listarEnderecosCliente($clienteId);
+        $pedidos = $repository->listarPedidosCliente($clienteId);
+        $carrinhosAbertos = $repository->listarCarrinhosAbertosCliente($clienteId);
+
+        foreach ($carrinhosAbertos as &$carrinho) {
+            $carrinho['id_seguro'] = IdSeguro::criptografar(
+                (int) $carrinho['id']
+            );
+        }
+        unset($carrinho);
+
+        $cliente['id_seguro'] = $token;
+
+        $this->carregarView('cliente_view', [
+            'cliente' => $cliente,
+            'enderecos' => $enderecos,
+            'pedidos' => $pedidos,
+            'carrinhosAbertos' => $carrinhosAbertos,
+        ]);
+    }
+
+    public function clienteCarrinho(): void
+    {
+        /*
+        |--------------------------------------------------------------------------
+        | Carrega conexão / .env / APP_KEY antes de usar IdSeguro
+        |--------------------------------------------------------------------------
+        */
+        $repository = $this->adminRepository();
+
+        $token = trim((string) ($_GET['id'] ?? ''));
+
+        if ($token === '') {
+            http_response_code(400);
+            throw new RuntimeException('Carrinho não informado.');
+        }
+
+        $carrinhoId = IdSeguro::descriptografar($token);
+
+        if ($carrinhoId === null || $carrinhoId < 1) {
+            http_response_code(400);
+            throw new RuntimeException('Identificador do carrinho inválido.');
+        }
+
+        $carrinho = $repository->buscarCarrinhoAbertoPorId($carrinhoId);
+
+        if ($carrinho === null) {
+            http_response_code(404);
+            throw new RuntimeException(
+                'Carrinho aberto não encontrado.'
+            );
+        }
+
+        $itens = $repository->listarItensCarrinho($carrinhoId);
+
+        $totalUnidades = 0;
+        $totalCarrinho = 0.0;
+
+        foreach ($itens as $item) {
+            $totalUnidades += (int) ($item['quantidade'] ?? 0);
+            $totalCarrinho += (float) ($item['subtotal'] ?? 0);
+        }
+
+        $clienteToken = IdSeguro::criptografar(
+            (int) $carrinho['cliente_id']
+        );
+
+        $this->carregarView('cliente_carrinho', [
+            'carrinho' => $carrinho,
+            'itens' => $itens,
+            'totalUnidades' => $totalUnidades,
+            'totalCarrinho' => $totalCarrinho,
+            'clienteToken' => $clienteToken,
+        ]);
+    }
+
     public function pedidos(): void { $this->carregarView('pedidos'); }
 
     public function pedidoDetalhes(): void
