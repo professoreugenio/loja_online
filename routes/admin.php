@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-use App\Controllers\Admin\DashboardController;
+use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\ModuloAdminController;
 
 return [
@@ -16,7 +16,7 @@ return [
         'method' => 'GET',
         'path' => '/admin',
         'action' => [
-            DashboardController::class,
+            AdminController::class,
             'index',
         ],
     ],

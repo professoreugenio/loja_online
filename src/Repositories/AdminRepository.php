@@ -6,7 +6,7 @@ namespace App\Repositories;
 
 use PDO;
 
-final class DashboardRepository
+final class AdminRepository
 {
     private const LIMITE_ESTOQUE_BAIXO = 10;
 

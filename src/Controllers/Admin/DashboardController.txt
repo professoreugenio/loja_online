@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
-use App\Repositories\DashboardRepository;
+use App\Repositories\AdminRepository;
 use RuntimeException;
 
-final class DashboardController
+final class AdminController
 {
     public function index(): void
     {
@@ -33,8 +33,8 @@ final class DashboardController
         | 3. Repository do dashboard
         |--------------------------------------------------------------------------
         */
-        $dashboardRepository =
-            new DashboardRepository($pdo);
+        $AdminRepository =
+            new AdminRepository($pdo);
 
         /*
         |--------------------------------------------------------------------------
@@ -42,15 +42,15 @@ final class DashboardController
         |--------------------------------------------------------------------------
         */
         $indicadores =
-            $dashboardRepository
+            $AdminRepository
                 ->obterIndicadores();
 
         $pedidosRecentes =
-            $dashboardRepository
+            $AdminRepository
                 ->listarPedidosRecentes(5);
 
         $produtosEstoqueBaixo =
-            $dashboardRepository
+            $AdminRepository
                 ->listarEstoqueBaixo(5);
 
         /*
