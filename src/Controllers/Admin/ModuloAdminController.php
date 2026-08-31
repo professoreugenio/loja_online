@@ -9,6 +9,7 @@ use App\Repositories\AdminRepository;
 use App\Repositories\ProdutoAdminRepository;
 use App\Repositories\ProdutoImagemAdminRepository;
 use App\Services\ProdutoImagemService;
+use App\Repositories\AdminCategoriasRepository;
 use DateTime;
 use RuntimeException;
 use Throwable;
@@ -179,12 +180,11 @@ final class ModuloAdminController
 
             $_SESSION['admin_produto_imagem_sucesso'] = count($arquivos) . (
                 count($arquivos) === 1
-                    ? ' imagem enviada com sucesso.'
-                    : ' imagens enviadas com sucesso.'
+                ? ' imagem enviada com sucesso.'
+                : ' imagens enviadas com sucesso.'
             );
 
             $this->redirecionarProdutoImagens($token);
-
         } catch (Throwable $erro) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
@@ -251,7 +251,6 @@ final class ModuloAdminController
 
             $_SESSION['admin_produto_imagem_sucesso'] = 'Imagem principal alterada com sucesso.';
             $this->redirecionarProdutoImagens($produtoToken);
-
         } catch (Throwable $erro) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
@@ -324,7 +323,6 @@ final class ModuloAdminController
                 : 'Registro excluído, mas o arquivo físico não pôde ser removido.';
 
             $this->redirecionarProdutoImagens($produtoToken);
-
         } catch (Throwable $erro) {
             if ($pdo->inTransaction()) {
                 $pdo->rollBack();
@@ -476,7 +474,6 @@ final class ModuloAdminController
             $_SESSION['admin_produto_sucesso'] = 'Produto atualizado com sucesso.';
             header('Location: ' . $this->baseUrl() . '/admin/produto/editar?id=' . rawurlencode($token));
             exit;
-
         } catch (Throwable $erro) {
             error_log('[ADMIN PRODUTO ATUALIZAR] ' . $erro->getMessage());
             $this->redirecionarProdutoEditar(
@@ -487,7 +484,10 @@ final class ModuloAdminController
         }
     }
 
-    public function categorias(): void { $this->carregarView('categorias'); }
+    public function categorias(): void
+    {
+        $this->carregarView('categorias');
+    }
 
     public function clientes(): void
     {
@@ -530,8 +530,8 @@ final class ModuloAdminController
     }
 
     public function clienteInativar(): void
-{
-    /*
+    {
+        /*
     |--------------------------------------------------------------------------
     | 1. Carrega conexão / .env / APP_KEY
     |--------------------------------------------------------------------------
@@ -540,56 +540,56 @@ final class ModuloAdminController
     | Isso precisa acontecer ANTES de usar IdSeguro.
     |
     */
-    $repository = $this->adminRepository();
+        $repository = $this->adminRepository();
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 2. Recebe dados do formulário
     |--------------------------------------------------------------------------
     */
-    $token = trim(
-        (string) ($_POST['id'] ?? '')
-    );
+        $token = trim(
+            (string) ($_POST['id'] ?? '')
+        );
 
-    $csrfToken = (string) (
-        $_POST['csrf_token']
-        ?? ''
-    );
+        $csrfToken = (string) (
+            $_POST['csrf_token']
+            ?? ''
+        );
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 3. Valida CSRF
     |--------------------------------------------------------------------------
     */
-    if (
-        !$this->validarCsrfCliente(
-            $csrfToken
-        )
-    ) {
-        $_SESSION['admin_cliente_erro'] =
-            'O formulário expirou. Atualize a página e tente novamente.';
+        if (
+            !$this->validarCsrfCliente(
+                $csrfToken
+            )
+        ) {
+            $_SESSION['admin_cliente_erro'] =
+                'O formulário expirou. Atualize a página e tente novamente.';
 
-        $this->redirecionarClientes();
-    }
+            $this->redirecionarClientes();
+        }
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 4. Verifica se recebeu o ID
     |--------------------------------------------------------------------------
     */
-    if ($token === '') {
+        if ($token === '') {
 
-        $_SESSION['admin_cliente_erro'] =
-            'Cliente não informado.';
+            $_SESSION['admin_cliente_erro'] =
+                'Cliente não informado.';
 
-        $this->redirecionarClientes();
-    }
+            $this->redirecionarClientes();
+        }
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 5. Descriptografa o ID
     |--------------------------------------------------------------------------
@@ -597,116 +597,114 @@ final class ModuloAdminController
     | Agora APP_KEY já foi carregada.
     |
     */
-    $clienteId =
-        IdSeguro::descriptografar(
-            $token
-        );
+        $clienteId =
+            IdSeguro::descriptografar(
+                $token
+            );
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 6. Valida ID descriptografado
     |--------------------------------------------------------------------------
     */
-    if (
-        $clienteId === null
-        || $clienteId < 1
-    ) {
+        if (
+            $clienteId === null
+            || $clienteId < 1
+        ) {
 
-        $_SESSION['admin_cliente_erro'] =
-            'Identificador do cliente inválido.';
+            $_SESSION['admin_cliente_erro'] =
+                'Identificador do cliente inválido.';
 
-        $this->redirecionarClientes();
-    }
+            $this->redirecionarClientes();
+        }
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 7. Busca cliente
     |--------------------------------------------------------------------------
     */
-    $cliente =
-        $repository->buscarClientePorId(
-            $clienteId
-        );
-
-
-    if ($cliente === null) {
-
-        $_SESSION['admin_cliente_erro'] =
-            'Cliente não encontrado.';
-
-        $this->redirecionarClientes();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Verifica se já está inativo
-    |--------------------------------------------------------------------------
-    */
-    if (
-        ($cliente['status'] ?? '')
-        === 'inativo'
-    ) {
-
-        $_SESSION['admin_cliente_sucesso'] =
-            'O cliente já está inativo.';
-
-        $this->redirecionarClientes();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 9. Inativa cliente
-    |--------------------------------------------------------------------------
-    */
-    try {
-
-        $resultado =
-            $repository->inativarCliente(
+        $cliente =
+            $repository->buscarClientePorId(
                 $clienteId
             );
 
 
-        if (!$resultado) {
+        if ($cliente === null) {
 
-            throw new RuntimeException(
-                'Não foi possível alterar o status do cliente.'
-            );
+            $_SESSION['admin_cliente_erro'] =
+                'Cliente não encontrado.';
+
+            $this->redirecionarClientes();
         }
 
 
-        $_SESSION['admin_cliente_sucesso'] =
-            'Cliente inativado com sucesso.';
+        /*
+    |--------------------------------------------------------------------------
+    | 8. Verifica se já está inativo
+    |--------------------------------------------------------------------------
+    */
+        if (
+            ($cliente['status'] ?? '')
+            === 'inativo'
+        ) {
+
+            $_SESSION['admin_cliente_sucesso'] =
+                'O cliente já está inativo.';
+
+            $this->redirecionarClientes();
+        }
 
 
-    } catch (Throwable $erro) {
+        /*
+    |--------------------------------------------------------------------------
+    | 9. Inativa cliente
+    |--------------------------------------------------------------------------
+    */
+        try {
 
-        error_log(
-            '[ADMIN CLIENTE INATIVAR] '
-            . $erro->getMessage()
-        );
+            $resultado =
+                $repository->inativarCliente(
+                    $clienteId
+                );
 
 
-        $_SESSION['admin_cliente_erro'] =
-            'Não foi possível inativar o cliente.';
-    }
+            if (!$resultado) {
+
+                throw new RuntimeException(
+                    'Não foi possível alterar o status do cliente.'
+                );
+            }
 
 
-    /*
+            $_SESSION['admin_cliente_sucesso'] =
+                'Cliente inativado com sucesso.';
+        } catch (Throwable $erro) {
+
+            error_log(
+                '[ADMIN CLIENTE INATIVAR] '
+                    . $erro->getMessage()
+            );
+
+
+            $_SESSION['admin_cliente_erro'] =
+                'Não foi possível inativar o cliente.';
+        }
+
+
+        /*
     |--------------------------------------------------------------------------
     | 10. Retorna para clientes
     |--------------------------------------------------------------------------
     */
-    $this->redirecionarClientes();
-}
+        $this->redirecionarClientes();
+    }
 
 
-public function clienteAtivar(): void
-{
-    /*
+    public function clienteAtivar(): void
+    {
+        /*
     |--------------------------------------------------------------------------
     | 1. Carrega conexão / .env / APP_KEY
     |--------------------------------------------------------------------------
@@ -714,176 +712,174 @@ public function clienteAtivar(): void
     | Precisa acontecer antes de IdSeguro::descriptografar().
     |
     */
-    $repository = $this->adminRepository();
+        $repository = $this->adminRepository();
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 2. Recebe formulário
     |--------------------------------------------------------------------------
     */
-    $token = trim(
-        (string) ($_POST['id'] ?? '')
-    );
+        $token = trim(
+            (string) ($_POST['id'] ?? '')
+        );
 
-    $csrfToken = (string) (
-        $_POST['csrf_token']
-        ?? ''
-    );
+        $csrfToken = (string) (
+            $_POST['csrf_token']
+            ?? ''
+        );
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 3. Valida CSRF
     |--------------------------------------------------------------------------
     */
-    if (
-        !$this->validarCsrfCliente(
-            $csrfToken
-        )
-    ) {
-        $_SESSION['admin_cliente_erro'] =
-            'O formulário expirou. Atualize a página e tente novamente.';
+        if (
+            !$this->validarCsrfCliente(
+                $csrfToken
+            )
+        ) {
+            $_SESSION['admin_cliente_erro'] =
+                'O formulário expirou. Atualize a página e tente novamente.';
 
-        $this->redirecionarClientes();
-    }
+            $this->redirecionarClientes();
+        }
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 4. Verifica ID
     |--------------------------------------------------------------------------
     */
-    if ($token === '') {
+        if ($token === '') {
 
-        $_SESSION['admin_cliente_erro'] =
-            'Cliente não informado.';
+            $_SESSION['admin_cliente_erro'] =
+                'Cliente não informado.';
 
-        $this->redirecionarClientes();
-    }
+            $this->redirecionarClientes();
+        }
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 5. Descriptografa ID
     |--------------------------------------------------------------------------
     */
-    $clienteId =
-        IdSeguro::descriptografar(
-            $token
-        );
+        $clienteId =
+            IdSeguro::descriptografar(
+                $token
+            );
 
 
-    if (
-        $clienteId === null
-        || $clienteId < 1
-    ) {
+        if (
+            $clienteId === null
+            || $clienteId < 1
+        ) {
 
-        $_SESSION['admin_cliente_erro'] =
-            'Identificador do cliente inválido.';
+            $_SESSION['admin_cliente_erro'] =
+                'Identificador do cliente inválido.';
 
-        $this->redirecionarClientes();
-    }
+            $this->redirecionarClientes();
+        }
 
 
-    /*
+        /*
     |--------------------------------------------------------------------------
     | 6. Busca cliente
     |--------------------------------------------------------------------------
     */
-    $cliente =
-        $repository->buscarClientePorId(
-            $clienteId
-        );
-
-
-    if ($cliente === null) {
-
-        $_SESSION['admin_cliente_erro'] =
-            'Cliente não encontrado.';
-
-        $this->redirecionarClientes();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 7. Verifica status
-    |--------------------------------------------------------------------------
-    */
-    if (
-        ($cliente['status'] ?? '')
-        === 'ativo'
-    ) {
-
-        $_SESSION['admin_cliente_sucesso'] =
-            'O cliente já está ativo.';
-
-        $this->redirecionarClientes();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 8. Somente cliente INATIVO pode ser ativado
-    |--------------------------------------------------------------------------
-    */
-    if (
-        ($cliente['status'] ?? '')
-        !== 'inativo'
-    ) {
-
-        $_SESSION['admin_cliente_erro'] =
-            'Somente clientes inativos podem ser ativados.';
-
-        $this->redirecionarClientes();
-    }
-
-
-    /*
-    |--------------------------------------------------------------------------
-    | 9. Ativa cliente
-    |--------------------------------------------------------------------------
-    */
-    try {
-
-        $resultado =
-            $repository->ativarCliente(
+        $cliente =
+            $repository->buscarClientePorId(
                 $clienteId
             );
 
 
-        if (!$resultado) {
+        if ($cliente === null) {
 
-            throw new RuntimeException(
-                'Não foi possível ativar o cliente.'
-            );
+            $_SESSION['admin_cliente_erro'] =
+                'Cliente não encontrado.';
+
+            $this->redirecionarClientes();
         }
 
 
-        $_SESSION['admin_cliente_sucesso'] =
-            'Cliente ativado com sucesso.';
+        /*
+    |--------------------------------------------------------------------------
+    | 7. Verifica status
+    |--------------------------------------------------------------------------
+    */
+        if (
+            ($cliente['status'] ?? '')
+            === 'ativo'
+        ) {
+
+            $_SESSION['admin_cliente_sucesso'] =
+                'O cliente já está ativo.';
+
+            $this->redirecionarClientes();
+        }
 
 
-    } catch (Throwable $erro) {
+        /*
+    |--------------------------------------------------------------------------
+    | 8. Somente cliente INATIVO pode ser ativado
+    |--------------------------------------------------------------------------
+    */
+        if (
+            ($cliente['status'] ?? '')
+            !== 'inativo'
+        ) {
 
-        error_log(
-            '[ADMIN CLIENTE ATIVAR] '
-            . $erro->getMessage()
-        );
+            $_SESSION['admin_cliente_erro'] =
+                'Somente clientes inativos podem ser ativados.';
+
+            $this->redirecionarClientes();
+        }
 
 
-        $_SESSION['admin_cliente_erro'] =
-            'Não foi possível ativar o cliente.';
-    }
+        /*
+    |--------------------------------------------------------------------------
+    | 9. Ativa cliente
+    |--------------------------------------------------------------------------
+    */
+        try {
 
-    /*
+            $resultado =
+                $repository->ativarCliente(
+                    $clienteId
+                );
+
+
+            if (!$resultado) {
+
+                throw new RuntimeException(
+                    'Não foi possível ativar o cliente.'
+                );
+            }
+
+
+            $_SESSION['admin_cliente_sucesso'] =
+                'Cliente ativado com sucesso.';
+        } catch (Throwable $erro) {
+
+            error_log(
+                '[ADMIN CLIENTE ATIVAR] '
+                    . $erro->getMessage()
+            );
+
+
+            $_SESSION['admin_cliente_erro'] =
+                'Não foi possível ativar o cliente.';
+        }
+
+        /*
     |--------------------------------------------------------------------------
     | 10. Volta para listagem
     |--------------------------------------------------------------------------
     */
-    $this->redirecionarClientes();
-}
+        $this->redirecionarClientes();
+    }
 
     public function clienteView(): void
     {
@@ -991,7 +987,10 @@ public function clienteAtivar(): void
         ]);
     }
 
-    public function pedidos(): void { $this->carregarView('pedidos'); }
+    public function pedidos(): void
+    {
+        $this->carregarView('pedidos');
+    }
 
     public function pedidoDetalhes(): void
     {
@@ -1005,8 +1004,14 @@ public function clienteAtivar(): void
         $this->carregarView('pedidos/detalhes', ['pedidoId' => (int) $pedidoId]);
     }
 
-    public function pagamentos(): void { $this->carregarView('pagamentos'); }
-    public function carrinhos(): void { $this->carregarView('carrinhos'); }
+    public function pagamentos(): void
+    {
+        $this->carregarView('pagamentos');
+    }
+    public function carrinhos(): void
+    {
+        $this->carregarView('carrinhos');
+    }
 
     public function estoque(): void
     {
@@ -1014,12 +1019,30 @@ public function clienteAtivar(): void
         $this->carregarView('estoque', ['filtro' => $filtro]);
     }
 
-    public function notificacoes(): void { $this->carregarView('notificacoes'); }
-    public function contatos(): void { $this->carregarView('contatos'); }
-    public function configuracoes(): void { $this->carregarView('configuracoes'); }
-    public function perfil(): void { $this->carregarView('perfil'); }
-    public function perfilNovo(): void { $this->carregarView('perfil_novo'); }
-    public function perfilLista(): void { $this->carregarView('perfil_lista'); }
+    public function notificacoes(): void
+    {
+        $this->carregarView('notificacoes');
+    }
+    public function contatos(): void
+    {
+        $this->carregarView('contatos');
+    }
+    public function configuracoes(): void
+    {
+        $this->carregarView('configuracoes');
+    }
+    public function perfil(): void
+    {
+        $this->carregarView('perfil');
+    }
+    public function perfilNovo(): void
+    {
+        $this->carregarView('perfil_novo');
+    }
+    public function perfilLista(): void
+    {
+        $this->carregarView('perfil_lista');
+    }
 
     public function buscar(): void
     {
@@ -1214,5 +1237,588 @@ public function clienteAtivar(): void
         $protocolo = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
         $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
         return "{$protocolo}://{$host}";
+    }
+    public function categoriasadmin(): void
+    {
+        $repository = $this->categoriaRepository();
+
+        $busca = trim(
+            (string) ($_GET['q'] ?? '')
+        );
+
+        $status = trim(
+            (string) ($_GET['status'] ?? '')
+        );
+
+        if (
+            !in_array(
+                $status,
+                ['', 'ativo', 'inativo'],
+                true
+            )
+        ) {
+            $status = '';
+        }
+
+        $categorias = $repository->listar(
+            $busca,
+            $status
+        );
+
+        foreach ($categorias as &$categoria) {
+            $categoria['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int) $categoria['id']
+                );
+        }
+
+        unset($categoria);
+
+        $sucesso =
+            $_SESSION['admin_categoria_sucesso']
+            ?? null;
+
+        $erro =
+            $_SESSION['admin_categoria_erro']
+            ?? null;
+
+        unset(
+            $_SESSION['admin_categoria_sucesso'],
+            $_SESSION['admin_categoria_erro']
+        );
+
+        $this->carregarView(
+            'categorias',
+            [
+                'categorias' => $categorias,
+
+                'filtros' => [
+                    'q' => $busca,
+                    'status' => $status,
+                ],
+
+                'csrfToken' =>
+                $this->gerarCsrfCategoria(),
+
+                'sucesso' => $sucesso,
+                'erro' => $erro,
+            ]
+        );
+    }
+
+    public function categoriaCadastrar(): void
+    {
+        $repository =
+            $this->categoriaRepository();
+
+        $csrfToken = (string) (
+            $_POST['csrf_token']
+            ?? ''
+        );
+
+        if (
+            !$this->validarCsrfCategoria(
+                $csrfToken
+            )
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'O formulário expirou. Atualize a página e tente novamente.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $nome = trim(
+            (string) ($_POST['nome'] ?? '')
+        );
+
+        $slugRecebido = trim(
+            (string) ($_POST['slug'] ?? '')
+        );
+
+        $descricao = trim(
+            (string) ($_POST['descricao'] ?? '')
+        );
+
+        $imgcategoria = trim(
+            (string) ($_POST['imgcategoria'] ?? '')
+        );
+
+        $slug = $this->gerarSlug(
+            $slugRecebido !== ''
+                ? $slugRecebido
+                : $nome
+        );
+
+        $erros = [];
+
+        if ($nome === '') {
+            $erros[] =
+                'Informe o nome da categoria.';
+        } elseif (mb_strlen($nome) > 100) {
+            $erros[] =
+                'O nome deve possuir no máximo 100 caracteres.';
+        }
+
+        if ($slug === '') {
+            $erros[] =
+                'Não foi possível gerar um slug válido.';
+        } elseif (mb_strlen($slug) > 120) {
+            $erros[] =
+                'O slug deve possuir no máximo 120 caracteres.';
+        }
+
+        if (mb_strlen($descricao) > 255) {
+            $erros[] =
+                'A descrição deve possuir no máximo 255 caracteres.';
+        }
+
+        if (mb_strlen($imgcategoria) > 150) {
+            $erros[] =
+                'O nome/caminho da imagem deve possuir no máximo 150 caracteres.';
+        }
+
+        if (
+            $nome !== ''
+            && $repository->nomeExiste($nome)
+        ) {
+            $erros[] =
+                'Já existe uma categoria com este nome.';
+        }
+
+        if (
+            $slug !== ''
+            && $repository->slugExiste($slug)
+        ) {
+            $erros[] =
+                'Já existe uma categoria com este slug.';
+        }
+
+        if ($erros !== []) {
+            $_SESSION['admin_categoria_erro'] =
+                implode(' ', $erros);
+
+            $this->redirecionarCategorias();
+        }
+
+        try {
+            $repository->cadastrar([
+                'nome' => $nome,
+                'slug' => $slug,
+                'descricao' =>
+                $descricao !== ''
+                    ? $descricao
+                    : null,
+                'imgcategoria' =>
+                $imgcategoria !== ''
+                    ? $imgcategoria
+                    : null,
+            ]);
+
+            $_SESSION['admin_categoria_sucesso'] =
+                'Categoria cadastrada com sucesso.';
+        } catch (Throwable $erro) {
+            error_log(
+                '[ADMIN CATEGORIA CADASTRAR] '
+                    . $erro->getMessage()
+            );
+
+            $_SESSION['admin_categoria_erro'] =
+                'Não foi possível cadastrar a categoria.';
+        }
+
+        $this->redirecionarCategorias();
+    }
+
+    public function categoriaAtualizar(): void
+    {
+        /*
+     * Carrega conexão/.env/APP_KEY antes do IdSeguro.
+     */
+        $repository =
+            $this->categoriaRepository();
+
+        if (
+            !$this->validarCsrfCategoria(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'O formulário expirou. Atualize a página e tente novamente.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $token = trim(
+            (string) ($_POST['id'] ?? '')
+        );
+
+        if ($token === '') {
+            $_SESSION['admin_categoria_erro'] =
+                'Categoria não informada.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $categoriaId =
+            IdSeguro::descriptografar($token);
+
+        if (
+            $categoriaId === null
+            || $categoriaId < 1
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'Identificador da categoria inválido.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $categoria =
+            $repository->buscarPorId(
+                $categoriaId
+            );
+
+        if ($categoria === null) {
+            $_SESSION['admin_categoria_erro'] =
+                'Categoria não encontrada.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $nome = trim(
+            (string) ($_POST['nome'] ?? '')
+        );
+
+        $slugRecebido = trim(
+            (string) ($_POST['slug'] ?? '')
+        );
+
+        $descricao = trim(
+            (string) ($_POST['descricao'] ?? '')
+        );
+
+        $imgcategoria = trim(
+            (string) ($_POST['imgcategoria'] ?? '')
+        );
+
+        $slug = $this->gerarSlug(
+            $slugRecebido !== ''
+                ? $slugRecebido
+                : $nome
+        );
+
+        $erros = [];
+
+        if ($nome === '') {
+            $erros[] =
+                'Informe o nome da categoria.';
+        } elseif (mb_strlen($nome) > 100) {
+            $erros[] =
+                'O nome deve possuir no máximo 100 caracteres.';
+        }
+
+        if ($slug === '') {
+            $erros[] =
+                'Não foi possível gerar um slug válido.';
+        } elseif (mb_strlen($slug) > 120) {
+            $erros[] =
+                'O slug deve possuir no máximo 120 caracteres.';
+        }
+
+        if (mb_strlen($descricao) > 255) {
+            $erros[] =
+                'A descrição deve possuir no máximo 255 caracteres.';
+        }
+
+        if (mb_strlen($imgcategoria) > 150) {
+            $erros[] =
+                'O nome/caminho da imagem deve possuir no máximo 150 caracteres.';
+        }
+
+        if (
+            $nome !== ''
+            && $repository->nomeExiste(
+                $nome,
+                $categoriaId
+            )
+        ) {
+            $erros[] =
+                'Já existe outra categoria com este nome.';
+        }
+
+        if (
+            $slug !== ''
+            && $repository->slugExiste(
+                $slug,
+                $categoriaId
+            )
+        ) {
+            $erros[] =
+                'Já existe outra categoria com este slug.';
+        }
+
+        if ($erros !== []) {
+            $_SESSION['admin_categoria_erro'] =
+                implode(' ', $erros);
+
+            $this->redirecionarCategorias();
+        }
+
+        try {
+            $repository->atualizar(
+                $categoriaId,
+                [
+                    'nome' => $nome,
+                    'slug' => $slug,
+                    'descricao' =>
+                    $descricao !== ''
+                        ? $descricao
+                        : null,
+                    'imgcategoria' =>
+                    $imgcategoria !== ''
+                        ? $imgcategoria
+                        : null,
+                ]
+            );
+
+            $_SESSION['admin_categoria_sucesso'] =
+                'Categoria atualizada com sucesso.';
+        } catch (Throwable $erro) {
+            error_log(
+                '[ADMIN CATEGORIA ATUALIZAR] '
+                    . $erro->getMessage()
+            );
+
+            $_SESSION['admin_categoria_erro'] =
+                'Não foi possível atualizar a categoria.';
+        }
+
+        $this->redirecionarCategorias();
+    }
+
+    public function categoriaDesativar(): void
+    {
+        $repository =
+            $this->categoriaRepository();
+
+        if (
+            !$this->validarCsrfCategoria(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'O formulário expirou. Atualize a página e tente novamente.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $token = trim(
+            (string) ($_POST['id'] ?? '')
+        );
+
+        $categoriaId =
+            IdSeguro::descriptografar($token);
+
+        if (
+            $categoriaId === null
+            || $categoriaId < 1
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'Identificador da categoria inválido.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $categoria =
+            $repository->buscarPorId(
+                $categoriaId
+            );
+
+        if ($categoria === null) {
+            $_SESSION['admin_categoria_erro'] =
+                'Categoria não encontrada.';
+
+            $this->redirecionarCategorias();
+        }
+
+        if ((int) $categoria['ativo'] === 0) {
+            $_SESSION['admin_categoria_sucesso'] =
+                'A categoria já está desativada.';
+
+            $this->redirecionarCategorias();
+        }
+
+        try {
+            $repository->desativar(
+                $categoriaId
+            );
+
+            $_SESSION['admin_categoria_sucesso'] =
+                'Categoria desativada com sucesso.';
+        } catch (Throwable $erro) {
+            error_log(
+                '[ADMIN CATEGORIA DESATIVAR] '
+                    . $erro->getMessage()
+            );
+
+            $_SESSION['admin_categoria_erro'] =
+                'Não foi possível desativar a categoria.';
+        }
+
+        $this->redirecionarCategorias();
+    }
+
+    public function categoriaAtivar(): void
+    {
+        $repository =
+            $this->categoriaRepository();
+
+        if (
+            !$this->validarCsrfCategoria(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'O formulário expirou. Atualize a página e tente novamente.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $token = trim(
+            (string) ($_POST['id'] ?? '')
+        );
+
+        $categoriaId =
+            IdSeguro::descriptografar($token);
+
+        if (
+            $categoriaId === null
+            || $categoriaId < 1
+        ) {
+            $_SESSION['admin_categoria_erro'] =
+                'Identificador da categoria inválido.';
+
+            $this->redirecionarCategorias();
+        }
+
+        $categoria =
+            $repository->buscarPorId(
+                $categoriaId
+            );
+
+        if ($categoria === null) {
+            $_SESSION['admin_categoria_erro'] =
+                'Categoria não encontrada.';
+
+            $this->redirecionarCategorias();
+        }
+
+        if ((int) $categoria['ativo'] === 1) {
+            $_SESSION['admin_categoria_sucesso'] =
+                'A categoria já está ativa.';
+
+            $this->redirecionarCategorias();
+        }
+
+        try {
+            $repository->ativar(
+                $categoriaId
+            );
+
+            $_SESSION['admin_categoria_sucesso'] =
+                'Categoria ativada com sucesso.';
+        } catch (Throwable $erro) {
+            error_log(
+                '[ADMIN CATEGORIA ATIVAR] '
+                    . $erro->getMessage()
+            );
+
+            $_SESSION['admin_categoria_erro'] =
+                'Não foi possível ativar a categoria.';
+        }
+
+        $this->redirecionarCategorias();
+    }
+
+
+    /*
+|--------------------------------------------------------------------------
+| MÉTODOS PRIVADOS
+|--------------------------------------------------------------------------
+|
+| Adicione estes métodos na área dos métodos private do controller.
+|
+*/
+
+    private function categoriaRepository(): AdminCategoriasRepository
+    {
+        $raizProjeto =
+            dirname(__DIR__, 3);
+
+        require_once
+            $raizProjeto
+            . '/database/conexao.php';
+
+        $pdo = \Config::connect();
+
+        return new AdminCategoriasRepository(
+            $pdo
+        );
+    }
+
+    private function gerarCsrfCategoria(): string
+    {
+        if (
+            empty($_SESSION['admin_categoria_csrf'])
+        ) {
+            $_SESSION['admin_categoria_csrf'] =
+                bin2hex(
+                    random_bytes(32)
+                );
+        }
+
+        return (string) $_SESSION['admin_categoria_csrf'];
+    }
+
+    private function validarCsrfCategoria(
+        string $token
+    ): bool {
+        $salvo = (string) (
+            $_SESSION['admin_categoria_csrf']
+            ?? ''
+        );
+
+        return $token !== ''
+            && $salvo !== ''
+            && hash_equals(
+                $salvo,
+                $token
+            );
+    }
+
+    private function redirecionarCategorias(): never
+    {
+        $base = defined('BASE_URL')
+            ? rtrim(
+                (string) BASE_URL,
+                '/'
+            )
+            : $this->baseUrl();
+
+        header(
+            'Location: '
+                . $base
+                . '/admin/categorias'
+        );
+
+        exit;
     }
 }

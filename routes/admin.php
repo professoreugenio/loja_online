@@ -73,7 +73,7 @@ return [
             'produtoAtualizar',
         ],
     ],
-    
+
     [
         'method' => 'GET',
         'path' => '/admin/produto/imagens',
@@ -112,14 +112,14 @@ return [
     | Categorias
     |--------------------------------------------------------------------------
     */
-    [
-        'method' => 'GET',
-        'path' => '/admin/categorias',
-        'action' => [
-            ModuloAdminController::class,
-            'categorias',
-        ],
-    ],
+    // [
+    //     'method' => 'GET',
+    //     'path' => '/admin/categorias',
+    //     'action' => [
+    //         ModuloAdminController::class,
+    //         'categorias',
+    //     ],
+    // ],
 
     /*
     |--------------------------------------------------------------------------
@@ -254,7 +254,7 @@ return [
             'perfil',
         ],
     ],
-       [
+    [
         'method' => 'GET',
         'path' => '/admin/perfil/novo',
         'action' => [
@@ -324,11 +324,55 @@ return [
         ],
     ],
     [
-    'method' => 'POST',
-    'path' => '/admin/cliente/ativar',
-    'action' => [
-        ModuloAdminController::class,
-        'clienteAtivar',
+        'method' => 'POST',
+        'path' => '/admin/cliente/ativar',
+        'action' => [
+            ModuloAdminController::class,
+            'clienteAtivar',
+        ],
     ],
-],
+    [
+        'method' => 'GET',
+        'path' => '/admin/categorias',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriasadmin',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/cadastrar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaCadastrar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaAtualizar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/desativar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaDesativar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/categoria/ativar',
+        'action' => [
+            ModuloAdminController::class,
+            'categoriaAtivar',
+        ],
+    ],
 ];
