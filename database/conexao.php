@@ -12,41 +12,105 @@ final class Config
     {
     }
 
+    /**
+     * Retorna uma única conexão PDO com o banco de dados.
+     */
     public static function connect(): PDO
     {
+        /*
+        |--------------------------------------------------------------------------
+        | 1. Reutiliza conexão existente
+        |--------------------------------------------------------------------------
+        */
         if (self::$conexao instanceof PDO) {
             return self::$conexao;
         }
 
+        /*
+        |--------------------------------------------------------------------------
+        | 2. Localiza a raiz do projeto
+        |--------------------------------------------------------------------------
+        |
+        | Estrutura esperada:
+        |
+        | projeto/
+        | ├── database/
+        | │   └── conexao.php
+        | ├── vendor/
+        | ├── .env
+        | └── index.php
+        |
+        */
         $raizProjeto = dirname(__DIR__);
 
-        require_once $raizProjeto
+        /*
+        |--------------------------------------------------------------------------
+        | 3. Carrega o Composer
+        |--------------------------------------------------------------------------
+        */
+        $autoload = $raizProjeto
             . '/vendor/autoload.php';
 
+        if (!is_file($autoload)) {
+            throw new RuntimeException(
+                'O autoload do Composer não foi encontrado.'
+            );
+        }
+
+        require_once $autoload;
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4. Carrega o arquivo .env
+        |--------------------------------------------------------------------------
+        */
         $dotenv = Dotenv::createImmutable(
             $raizProjeto
         );
 
         $dotenv->safeLoad();
 
-        $host = (string) (
-            $_ENV['DB_HOST']
-                ?? 'localhost'
+        /*
+        |--------------------------------------------------------------------------
+        | 5. Ambiente da aplicação
+        |--------------------------------------------------------------------------
+        */
+        $ambiente = (string) (
+            $_ENV['APP_ENV']
+                ?? 'production'
         );
 
-        $porta = (string) (
-            $_ENV['DB_PORT']
-                ?? '3307'
+        /*
+        |--------------------------------------------------------------------------
+        | 6. Configurações do banco
+        |--------------------------------------------------------------------------
+        */
+        $host = trim(
+            (string) (
+                $_ENV['DB_HOST']
+                    ?? 'localhost'
+            )
         );
 
-        $banco = (string) (
-            $_ENV['DB_DATABASE']
-                ?? ''
+        $porta = trim(
+            (string) (
+                $_ENV['DB_PORT']
+                    ?? '3306'
+            )
         );
 
-        $usuario = (string) (
-            $_ENV['DB_USERNAME']
-                ?? 'root'
+        $banco = trim(
+            (string) (
+                $_ENV['DB_DATABASE']
+                    ?? ''
+            )
+        );
+
+        $usuario = trim(
+            (string) (
+                $_ENV['DB_USERNAME']
+                    ?? ''
+            )
         );
 
         $senha = (string) (
@@ -54,12 +118,40 @@ final class Config
                 ?? ''
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | 7. Validação das configurações
+        |--------------------------------------------------------------------------
+        */
+        if ($host === '') {
+            throw new RuntimeException(
+                'A variável DB_HOST não foi configurada.'
+            );
+        }
+
+        if ($porta === '') {
+            throw new RuntimeException(
+                'A variável DB_PORT não foi configurada.'
+            );
+        }
+
         if ($banco === '') {
             throw new RuntimeException(
                 'A variável DB_DATABASE não foi configurada.'
             );
         }
 
+        if ($usuario === '') {
+            throw new RuntimeException(
+                'A variável DB_USERNAME não foi configurada.'
+            );
+        }
+
+        /*
+        |--------------------------------------------------------------------------
+        | 8. Monta o DSN
+        |--------------------------------------------------------------------------
+        */
         $dsn = sprintf(
             'mysql:host=%s;port=%s;dbname=%s;charset=utf8mb4',
             $host,
@@ -67,7 +159,13 @@ final class Config
             $banco
         );
 
+        /*
+        |--------------------------------------------------------------------------
+        | 9. Realiza a conexão
+        |--------------------------------------------------------------------------
+        */
         try {
+
             self::$conexao = new PDO(
                 $dsn,
                 $usuario,
@@ -81,6 +179,9 @@ final class Config
 
                     PDO::ATTR_EMULATE_PREPARES =>
                         false,
+
+                    PDO::ATTR_STRINGIFY_FETCHES =>
+                        false,
                 ]
             );
 
@@ -88,11 +189,41 @@ final class Config
 
         } catch (PDOException $erro) {
 
+            /*
+            |--------------------------------------------------------------------------
+            | Registra o erro real apenas no log do servidor
+            |--------------------------------------------------------------------------
+            */
             error_log(
-                '[CONEXÃO COM O BANCO] '
+                '[CONEXÃO MYSQL] '
                 . $erro->getMessage()
             );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Ambiente local
+            |--------------------------------------------------------------------------
+            |
+            | Podemos apresentar informações adicionais durante o
+            | desenvolvimento.
+            */
+            if ($ambiente === 'local') {
+
+                throw new RuntimeException(
+                    'Erro ao conectar ao banco: '
+                    . $erro->getMessage(),
+                    0,
+                    $erro
+                );
+            }
+
+            /*
+            |--------------------------------------------------------------------------
+            | Ambiente de produção
+            |--------------------------------------------------------------------------
+            |
+            | Não revela host, banco, usuário ou detalhes internos.
+            */
             throw new RuntimeException(
                 'Não foi possível conectar ao banco de dados.',
                 0,

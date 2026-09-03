@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3307
--- Tempo de geração: 02/09/2026 às 17:58
+-- Tempo de geração: 03/09/2026 às 19:02
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.0.30
 
@@ -45,7 +45,11 @@ INSERT INTO `carrinhos` (`id`, `cliente_id`, `token_sessao`, `status`, `criado_e
 (8, 1, '8f3529ad975864adee429d55e0bae7b6c06dd6d04d19b6885ae6be434cc92a76', 'aberto', '2026-08-26 17:29:56', '2026-08-26 19:23:12'),
 (9, 1, '1c8b4202445bf1279b13c0865c33837baca4b55763c962587eddecf02cfd4af4', 'aberto', '2026-08-27 16:07:59', '2026-08-27 17:38:54'),
 (10, NULL, '4652836c38949bd28daea21b2bb92e9405e6d0d58a7867881ff6b643a830b10b', 'aberto', '2026-08-28 16:07:52', '2026-08-28 16:07:52'),
-(11, NULL, 'da8d0fdbf5aa023b6e0fba901fc204c8bd9f02c3c7a16449a5ba8b362e12f038', 'aberto', '2026-08-31 16:08:34', '2026-08-31 16:08:34');
+(11, NULL, 'da8d0fdbf5aa023b6e0fba901fc204c8bd9f02c3c7a16449a5ba8b362e12f038', 'aberto', '2026-08-31 16:08:34', '2026-08-31 16:08:34'),
+(12, NULL, '7fcc33b345b59dadddca9dec0a071db4d032b7bf1be2ac25a2fcbb40c27008f7', 'aberto', '2026-09-02 17:32:24', '2026-09-02 17:32:24'),
+(13, NULL, 'fe6cd7778501a5f9fda28b756d80af82a4c787cee51783bccdabc5154c9b7f00', 'aberto', '2026-09-02 18:26:57', '2026-09-02 18:26:57'),
+(14, NULL, 'a172888ef44ecac684df8ec1f0288fe12dd3230412c0fa79a4cdd9b360cf5521', 'aberto', '2026-09-02 19:14:59', '2026-09-02 19:14:59'),
+(15, NULL, '48b78a90296b8afd7a414f550b4ed550628b8bec59f012a8775721a590d0163d', 'aberto', '2026-09-03 16:04:42', '2026-09-03 16:04:42');
 
 -- --------------------------------------------------------
 
@@ -434,7 +438,7 @@ CREATE TABLE `usuarios_admin` (
 --
 
 INSERT INTO `usuarios_admin` (`id`, `nome`, `email`, `senha_hash`, `status`, `ultimo_acesso`, `criado_em`, `atualizado_em`) VALUES
-(1, 'Professor Eugênio', 'professoreugeniomls@gmail.com', '$2y$10$Vx407iuQ2RkUqqBd3I07..iOu.zWW2jnwareqYRcntXV7r/QiYtyK', 'ativo', '2026-08-24 13:45:26', '2026-07-30 15:43:30', '2026-08-24 16:45:26'),
+(1, 'Professor Eugênio', 'professoreugeniomls@gmail.com', '$2y$10$Vx407iuQ2RkUqqBd3I07..iOu.zWW2jnwareqYRcntXV7r/QiYtyK', 'ativo', '2026-09-02 16:14:35', '2026-07-30 15:43:30', '2026-09-02 19:14:35'),
 (2, 'Admin', 'admin@admin.com', '$2y$10$lJz5JNpabVU.92I/OK2Ry.O9fpr6v0xs0eJvwUbgjW6cm30mv55CW', 'ativo', '2026-08-10 13:13:38', '2026-08-03 16:15:18', '2026-08-10 16:13:38');
 
 -- --------------------------------------------------------
@@ -603,7 +607,7 @@ ALTER TABLE `webhook_logs`
 -- AUTO_INCREMENT de tabela `carrinhos`
 --
 ALTER TABLE `carrinhos`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de tabela `carrinho_itens`
