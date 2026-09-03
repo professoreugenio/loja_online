@@ -29,7 +29,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
         Quando o projeto funcionar sem /public, altere para:
         <base href="/loja_online/">
     -->
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
     <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/site.css', ENT_QUOTES, 'UTF-8') ?>">

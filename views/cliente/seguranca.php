@@ -193,7 +193,7 @@ $statusClasse =
         Segurança | Loja Online
     </title>
 
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"

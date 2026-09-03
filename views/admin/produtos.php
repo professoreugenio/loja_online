@@ -28,7 +28,7 @@ $destaqueSelecionado = (string) ($filtros['destaque'] ?? '');
         content="Gerenciamento de produtos da loja online."
     >
 
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link rel="icon" href="assets/img/favicon.ico">
 
@@ -504,7 +504,7 @@ $destaqueSelecionado = (string) ($filtros['destaque'] ?? '');
 
             const caminhoAtual =
                 window.location.pathname
-                    .replace('/loja_online/public/', '')
+                    .replace('<?= BASE_URL ?>/', '')
                     .replace(/^\/+|\/+$/g, '');
 
             document

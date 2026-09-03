@@ -107,7 +107,7 @@ $formatarDataInput =
         content="Editar produto no painel administrativo."
     >
 
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link
         rel="icon"

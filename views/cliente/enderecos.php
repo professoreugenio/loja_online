@@ -13,7 +13,7 @@ use App\Helpers\View;
         name="description"
         content="Gerenciamento de endereços do cliente da Loja Online.">
     <title>Meus Endereços | Loja Online</title>
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
     <!-- Bootstrap -->
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"

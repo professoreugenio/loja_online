@@ -53,7 +53,7 @@ $sucesso =
         content="Gerenciamento das imagens do produto."
     >
 
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link
         rel="icon"

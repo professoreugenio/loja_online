@@ -12,7 +12,7 @@ use App\Helpers\View;
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Painel da área do cliente da Loja Online.">
     <title>Painel | Loja Online</title>
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
     <!-- Bootstrap -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Bootstrap Icons -->

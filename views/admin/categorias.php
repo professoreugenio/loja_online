@@ -48,7 +48,7 @@ $erro = (string) ($erro ?? '');
         content="Gerenciamento de categorias da loja online."
     >
 
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link
         rel="icon"
@@ -1223,7 +1223,7 @@ $erro = (string) ($erro ?? '');
                 const caminhoAtual =
                     window.location.pathname
                         .replace(
-                            '/loja_online/public/',
+                            '<?= BASE_URL ?>/',
                             ''
                         )
                         .replace(

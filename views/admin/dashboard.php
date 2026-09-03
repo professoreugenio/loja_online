@@ -64,7 +64,7 @@ $statusPedidos = [
     <meta name="description" content="Painel administrativo para gerenciamento da loja online.">
 
     <!-- Caminho-base do projeto no XAMPP -->
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
 
     <link rel="icon" href="assets/img/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -531,7 +531,7 @@ $statusPedidos = [
             document.getElementById('anoAtual').textContent = new Date().getFullYear();
 
             const caminhoAtual = window.location.pathname
-                .replace('/loja_online/public/', '')
+                .replace('<?= BASE_URL ?>/', '')
                 .replace(/^\/+|\/+$/g, '');
 
             document.querySelectorAll('.sidebar-link[data-route]').forEach(function (link) {

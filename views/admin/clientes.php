@@ -16,7 +16,7 @@ $csrfToken = (string) ($csrfToken ?? '');
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Gerenciamento de Clientes | Loja Online</title>
-    <base href="/loja_online/public/">
+    <base href="<?= BASE_URL ?>/">
     <link rel="icon" href="assets/img/favicon.ico">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
