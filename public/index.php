@@ -3,22 +3,121 @@
 declare(strict_types=1);
 require_once dirname(__DIR__) . '/vendor/autoload.php';
 $raizProjeto = dirname(__DIR__);
-define('APP_ROOT', $raizProjeto);
-$scriptName = $_SERVER['SCRIPT_NAME'] ?? '/index.php';
-$caminhoBase = str_replace(
+
+define(
+    'APP_ROOT',
+    $raizProjeto
+);
+
+/*
+|--------------------------------------------------------------------------
+| Identificação automática da URL base
+|--------------------------------------------------------------------------
+|
+| LOCAL:
+|
+| C:/xampp/htdocs/loja_online
+|
+| Resultado:
+|
+| /loja_online
+|
+|--------------------------------------------------------------------------
+|
+| PRODUÇÃO:
+|
+| Se o projeto estiver diretamente na raiz do domínio:
+|
+| https://professor.sysalunos.com/
+|
+| Resultado:
+|
+| BASE_URL = ''
+|
+*/
+
+$documentRoot = $_SERVER['DOCUMENT_ROOT'] ?? '';
+
+$documentRootReal = realpath(
+    $documentRoot
+);
+
+$projetoReal = realpath(
+    $raizProjeto
+);
+
+$documentRootReal = str_replace(
     '\\',
     '/',
-    dirname($scriptName)
+    $documentRootReal ?: $documentRoot
 );
+
+$projetoReal = str_replace(
+    '\\',
+    '/',
+    $projetoReal ?: $raizProjeto
+);
+
+$documentRootReal = rtrim(
+    $documentRootReal,
+    '/'
+);
+
+$caminhoBase = '';
+
+/*
+|--------------------------------------------------------------------------
+| Projeto diretamente no DocumentRoot
+|--------------------------------------------------------------------------
+*/
+
 if (
-    $caminhoBase === '/'
-    || $caminhoBase === '.'
+    $projetoReal === $documentRootReal
 ) {
+
     $caminhoBase = '';
-} else {
-    $caminhoBase = rtrim($caminhoBase, '/');
 }
-define('BASE_URL', $caminhoBase);
+
+/*
+|--------------------------------------------------------------------------
+| Projeto dentro de uma pasta
+|--------------------------------------------------------------------------
+|
+| Exemplo:
+|
+| DOCUMENT_ROOT
+| C:/xampp/htdocs
+|
+| PROJETO
+| C:/xampp/htdocs/loja_online
+|
+| Resultado:
+| /loja_online
+|
+*/ elseif (
+    $documentRootReal !== ''
+    && str_starts_with(
+        $projetoReal,
+        $documentRootReal . '/'
+    )
+) {
+
+    $relativo = substr(
+        $projetoReal,
+        strlen($documentRootReal)
+    );
+
+    $caminhoBase = '/'
+        . trim(
+            $relativo,
+            '/'
+        );
+}
+
+define(
+    'BASE_URL',
+    $caminhoBase
+);
 /*
 |--------------------------------------------------------------------------
 | Configuração da sessão
