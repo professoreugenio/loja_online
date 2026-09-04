@@ -257,8 +257,9 @@ $sucesso =
                     </div>
 
                     <div class="card-body">
+                        
                         <form
-                            action="admin/produto/imagens/upload"
+                            action="<?= BASE_URL ?>/admin/produto/imagens/upload"
                             method="post"
                             enctype="multipart/form-data"
                         >
@@ -404,7 +405,7 @@ $sucesso =
                                                     'UTF-8'
                                                 ); ?>"
                                                 style="height: 240px; object-fit: contain;"
-                                                onerror="this.onerror=null;this.src='assets/img/sem-imagem.jpg';"
+                                                onerror="this.onerror=null;this.src='<?= BASE_URL ?>/assets/img/sem-imagem.jpg';"
                                             >
 
                                             <?php if ($principal): ?>
@@ -433,7 +434,7 @@ $sucesso =
 
                                                 <?php if (!$principal): ?>
                                                     <form
-                                                        action="admin/produto/imagens/principal"
+                                                        action="<?= BASE_URL ?>/admin/produto/imagens/principal"
                                                         method="post"
                                                     >
                                                         <input
@@ -486,7 +487,7 @@ $sucesso =
                                                 <?php endif; ?>
 
                                                 <form
-                                                    action="admin/produto/imagens/excluir"
+                                                    action="<?= BASE_URL ?>/admin/produto/imagens/excluir"
                                                     method="post"
                                                     onsubmit="return confirm('Deseja realmente excluir esta imagem?');"
                                                 >

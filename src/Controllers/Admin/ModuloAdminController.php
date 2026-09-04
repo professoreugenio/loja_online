@@ -1234,9 +1234,9 @@ final class ModuloAdminController
 
     private function baseUrl(): string
     {
-        $protocolo = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? 'https' : 'http';
-        $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
-        return "{$protocolo}://{$host}";
+        return defined('BASE_URL')
+            ? rtrim((string) BASE_URL, '/')
+            : '';
     }
     public function categoriasadmin(): void
     {

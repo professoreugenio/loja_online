@@ -307,7 +307,7 @@ $formatarDataInput =
                      FORMULÁRIO
                 =================================================== -->
                 <form
-                    action="admin/produto/atualizar"
+                    action="<?= BASE_URL ?>/admin/produto/atualizar"
                     method="post"
                     autocomplete="off"
                 >

@@ -144,7 +144,7 @@ $destaqueSelecionado = (string) ($filtros['destaque'] ?? '');
                         <div class="card-body">
 
                             <form
-                                action="admin/produtos"
+                                action="<?= BASE_URL ?>/admin/produtos"
                                 method="get"
                             >
                                 <div class="row g-3 align-items-end">

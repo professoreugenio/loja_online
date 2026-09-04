@@ -190,9 +190,7 @@ $statusPedidos = [
                             <a class="btn btn-outline-primary" href="" target="_blank">
                                 <i class="bi bi-eye me-1"></i> Ver loja
                             </a>
-                            <a class="btn btn-primary" href="admin/produtos/novo">
-                                <i class="bi bi-plus-lg me-1"></i> Novo produto
-                            </a>
+                           
                         </div>
                     </div>
                 </section>

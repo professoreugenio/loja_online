@@ -60,3 +60,12 @@
             </div>
         </div>
     </footer>
+
+    <a
+    href="admin"
+    class="linkadmin"
+    title="Painel administrativo"
+    aria-label="Acessar painel administrativo"
+>
+    <i class="bi bi-person-gear"></i>
+</a>

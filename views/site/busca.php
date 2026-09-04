@@ -327,7 +327,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                         $imagemPadrao =
                             $baseUrl
-                            . '/assets/img/produtos/'
+                            . '/assets/img/'
                             . 'sem-imagem.png';
 
 
@@ -354,7 +354,7 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
 
                             $imagem =
                                 $baseUrl
-                                . '/assets/img/produtos/'
+                                . '/imagens/produtos/'
                                 . $imagem;
                         }
 

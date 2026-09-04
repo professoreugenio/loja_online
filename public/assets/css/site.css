@@ -3,26 +3,21 @@
     --loja-cor-escura: #172033;
     --loja-cor-suave: #f4f7fb;
 }
-
 html {
     scroll-behavior: smooth;
 }
-
 body {
     background-color: #ffffff;
     color: #212529;
 }
-
 .barra-superior {
     background-color: var(--loja-cor-escura);
     color: #ffffff;
     font-size: 0.875rem;
 }
-
 .navbar-brand {
     letter-spacing: -0.03em;
 }
-
 .hero-loja {
     background:
         radial-gradient(circle at top right, rgba(13, 110, 253, 0.22), transparent 36%),
@@ -31,7 +26,6 @@ body {
     display: flex;
     align-items: center;
 }
-
 .hero-ilustracao {
     min-height: 360px;
     border-radius: 2rem;
@@ -44,7 +38,6 @@ body {
     position: relative;
     overflow: hidden;
 }
-
 .hero-ilustracao::before,
 .hero-ilustracao::after {
     content: "";
@@ -52,45 +45,38 @@ body {
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.14);
 }
-
 .hero-ilustracao::before {
     width: 220px;
     height: 220px;
     top: -70px;
     right: -40px;
 }
-
 .hero-ilustracao::after {
     width: 170px;
     height: 170px;
     bottom: -55px;
     left: -35px;
 }
-
 .hero-emoji {
     font-size: clamp(7rem, 18vw, 11rem);
     filter: drop-shadow(0 1rem 1rem rgba(0, 0, 0, 0.18));
     position: relative;
     z-index: 1;
 }
-
 .secao-suave {
     background-color: var(--loja-cor-suave);
 }
-
 .categoria-card,
 .produto-card,
 .beneficio-card {
     transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .categoria-card:hover,
 .produto-card:hover,
 .beneficio-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 1rem 2.25rem rgba(23, 32, 51, 0.10) !important;
 }
-
 .categoria-icone {
     width: 72px;
     height: 72px;
@@ -101,7 +87,6 @@ body {
     background-color: rgba(13, 110, 253, 0.10);
     font-size: 2rem;
 }
-
 .produto-imagem {
     min-height: 210px;
     display: grid;
@@ -109,28 +94,45 @@ body {
     background: linear-gradient(145deg, #eef4ff, #f8f9fa);
     font-size: 5rem;
 }
-
 .preco-anterior {
     color: #6c757d;
     font-size: 0.9rem;
     text-decoration: line-through;
 }
-
 .preco-atual {
     color: #198754;
     font-size: 1.45rem;
     font-weight: 700;
 }
-
 .newsletter {
     background: linear-gradient(135deg, #0d6efd, #6f42c1);
 }
-
 footer a {
     color: rgba(255, 255, 255, 0.76);
 }
-
 footer a:hover,
 footer a:focus {
     color: #ffffff;
 }
+ a.linkadmin {
+        text-decoration: none;
+        opacity: 0.8;
+        width: 40px;
+        height: 40px;
+        position: fixed;
+        left: 0px;
+        bottom: 0px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        /* border-radius: 50%; */
+        font-size: 24px;
+        z-index: 1000;
+        transition:
+            transform 0.2s ease,
+            background-color 0.2s ease;
+    }
+    a.linkadmin:hover {
+        opacity: 0.9;
+        transform: scale(1.08);
+    }

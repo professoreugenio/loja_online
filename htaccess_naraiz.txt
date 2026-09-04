@@ -54,7 +54,7 @@ RewriteRule ^(?:database|routes|src|tabelas|vendor|views)(?:/|$) - [F,L,NC]
 # =========================================================
 
 RewriteRule ^assets/(.*)$ public/assets/$1 [L,NC]
-RewriteRule ^imagens/(.*)$ public/imagens/$1 [L,NC]
+
 
 # =========================================================
 # ROTA PRINCIPAL
