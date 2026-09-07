@@ -2,25 +2,34 @@
 
 declare(strict_types=1);
 
-namespace Aluno\LojaOnline\Controllers\Admin;
+namespace App\Controllers\Admin;
 
-use Aluno\LojaOnline\Controllers\Controller;
-use Aluno\LojaOnline\Helpers\Csrf;
-use Aluno\LojaOnline\Helpers\SessaoAdmin;
-use Aluno\LojaOnline\Repositories\UsuarioAdminRepository;
-use Aluno\LojaOnline\Services\AutenticacaoAdminService;
+use App\Controllers\Controller;
+use App\Helpers\Csrf;
+use App\Helpers\SessaoAdmin;
+use App\Repositories\UsuarioAdminRepository;
+use App\Services\AutenticacaoAdminService;
 
 final class AuthController extends Controller
 {
-    private AutenticacaoAdminService $autenticacao;
+    private AutenticacaoAdminService
+        $autenticacao;
 
     public function __construct()
     {
-        $pdo = require APP_ROOT
+        $raizProjeto =
+            dirname(__DIR__, 3);
+
+        require_once
+            $raizProjeto
             . '/database/conexao.php';
 
+        $pdo = \Config::connect();
+
         $repository =
-            new UsuarioAdminRepository($pdo);
+            new UsuarioAdminRepository(
+                $pdo
+            );
 
         $this->autenticacao =
             new AutenticacaoAdminService(
@@ -31,58 +40,74 @@ final class AuthController extends Controller
     public function formulario(): void
     {
         if (SessaoAdmin::autenticado()) {
-            $this->redirecionar('/admin');
+            $this->redirecionar(
+                '/admin'
+            );
         }
 
         $erro =
-            $_SESSION['login_erro'] ?? null;
+            $_SESSION['login_admin_erro']
+            ?? null;
 
         $email =
-            $_SESSION['login_email'] ?? '';
+            $_SESSION['login_admin_email']
+            ?? '';
 
         unset(
-            $_SESSION['login_erro'],
-            $_SESSION['login_email']
+            $_SESSION['login_admin_erro'],
+            $_SESSION['login_admin_email']
         );
 
         $this->view(
             'site/loginadmin',
             [
                 'tituloPagina' =>
-                    'Login administrativo',
+                'Login administrativo',
 
-                'erro' => $erro,
+                'erro' =>
+                $erro,
 
-                'email' => $email,
+                'email' =>
+                $email,
 
                 'csrfToken' =>
-                    Csrf::gerar(),
+                Csrf::gerar(),
             ]
         );
     }
 
     public function autenticar(): void
     {
-        $token = isset($_POST['_token'])
-            ? (string) $_POST['_token']
+        $token = isset(
+            $_POST['_token']
+        )
+            ? (string)
+            $_POST['_token']
             : null;
 
         if (!Csrf::validar($token)) {
             $this->falhar(
                 'O formulário expirou. '
-                . 'Atualize a página e tente novamente.'
+                    . 'Atualize a página '
+                    . 'e tente novamente.'
             );
         }
 
-        $email = mb_strtolower(
-            trim(
-                (string) ($_POST['email'] ?? '')
-            )
-        );
+        $email =
+            mb_strtolower(
+                trim(
+                    (string) (
+                        $_POST['email']
+                        ?? ''
+                    )
+                )
+            );
 
-        $senha = (string) (
-            $_POST['senha'] ?? ''
-        );
+        $senha =
+            (string) (
+                $_POST['senha']
+                ?? ''
+            );
 
         if (
             filter_var(
@@ -92,12 +117,14 @@ final class AuthController extends Controller
             || $senha === ''
         ) {
             $this->falhar(
-                'Informe um e-mail e uma senha válidos.',
+                'Informe um e-mail '
+                    . 'e uma senha válidos.',
                 $email
             );
         }
 
-        $usuario = $this->autenticacao
+        $usuario =
+            $this->autenticacao
             ->autenticar(
                 $email,
                 $senha
@@ -110,25 +137,30 @@ final class AuthController extends Controller
             );
         }
 
-        SessaoAdmin::entrar($usuario);
+        SessaoAdmin::entrar(
+            $usuario
+        );
 
         Csrf::renovar();
 
-        $this->redirecionar('/admin');
+        $this->redirecionar(
+            '/admin'
+        );
     }
 
     public function sair(): void
     {
-        $token = isset($_POST['_token'])
-            ? (string) $_POST['_token']
+        $token = isset(
+            $_POST['_token']
+        )
+            ? (string)
+            $_POST['_token']
             : null;
 
         if (!Csrf::validar($token)) {
             http_response_code(403);
 
-            exit(
-                'Solicitação de logout inválida.'
-            );
+            exit('Solicitação de logout inválida.');
         }
 
         SessaoAdmin::sair();
@@ -142,11 +174,9 @@ final class AuthController extends Controller
         string $mensagem,
         string $email = ''
     ): never {
-        $_SESSION['login_erro'] =
-            $mensagem;
+        $_SESSION['login_admin_erro'] = $mensagem;
 
-        $_SESSION['login_email'] =
-            $email;
+        $_SESSION['login_admin_email'] = $email;
 
         $this->redirecionar(
             '/loginadmin'

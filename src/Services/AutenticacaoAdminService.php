@@ -2,37 +2,55 @@
 
 declare(strict_types=1);
 
-namespace Aluno\LojaOnline\Services;
+namespace App\Services;
 
-use Aluno\LojaOnline\Models\UsuarioAdmin;
-use Aluno\LojaOnline\Repositories\UsuarioAdminRepository;
+use App\Repositories\UsuarioAdminRepository;
 
 final class AutenticacaoAdminService
 {
     public function __construct(
         private readonly UsuarioAdminRepository $usuarios
-    ) {
-    }
+    ) {}
 
     public function autenticar(
         string $email,
         string $senha
-    ): ?UsuarioAdmin {
-        $usuario = $this->usuarios
-            ->buscarPorEmail($email);
+    ): ?array {
+        $email = mb_strtolower(
+            trim($email)
+        );
+
+        if (
+            filter_var(
+                $email,
+                FILTER_VALIDATE_EMAIL
+            ) === false
+            || $senha === ''
+        ) {
+            return null;
+        }
+
+        $usuario =
+            $this->usuarios
+            ->buscarAtivoPorEmail(
+                $email
+            );
 
         if ($usuario === null) {
             return null;
         }
 
-        if (!$usuario->estaAtivo()) {
-            return null;
-        }
+        $senhaHash =
+            (string) (
+                $usuario['senha_hash']
+                ?? ''
+            );
 
         if (
-            !password_verify(
+            $senhaHash === ''
+            || !password_verify(
                 $senha,
-                $usuario->getSenhaHash()
+                $senhaHash
             )
         ) {
             return null;
@@ -40,25 +58,29 @@ final class AutenticacaoAdminService
 
         if (
             password_needs_rehash(
-                $usuario->getSenhaHash(),
+                $senhaHash,
                 PASSWORD_DEFAULT
             )
         ) {
-            $novoHash = password_hash(
-                $senha,
-                PASSWORD_DEFAULT
-            );
+            $novoHash =
+                password_hash(
+                    $senha,
+                    PASSWORD_DEFAULT
+                );
 
             $this->usuarios
                 ->atualizarHashSenha(
-                    $usuario->getId(),
+                    (int) $usuario['id'],
                     $novoHash
                 );
+
+            $usuario['senha_hash'] =
+                $novoHash;
         }
 
         $this->usuarios
             ->registrarUltimoAcesso(
-                $usuario->getId()
+                (int) $usuario['id']
             );
 
         return $usuario;

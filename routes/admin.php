@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\ModuloAdminController;
-
+use App\Controllers\Admin\AuthController;
 return [
 
     /*
@@ -294,7 +294,7 @@ return [
         'method' => 'POST',
         'path' => '/admin/sair',
         'action' => [
-            ModuloAdminController::class,
+            AuthController::class,
             'sair',
         ],
     ],

@@ -4,13 +4,20 @@ declare(strict_types=1);
 
 namespace App\Controllers\Admin;
 
+use App\Helpers\SessaoAdmin;
 use App\Repositories\AdminRepository;
 use RuntimeException;
 
 final class AdminController
 {
+    public function __construct()
+    {
+        SessaoAdmin::exigirLogin();
+    }
     public function index(): void
     {
+
+
         /*
         |--------------------------------------------------------------------------
         | 1. Raiz do projeto
@@ -43,15 +50,15 @@ final class AdminController
         */
         $indicadores =
             $AdminRepository
-                ->obterIndicadores();
+            ->obterIndicadores();
 
         $pedidosRecentes =
             $AdminRepository
-                ->listarPedidosRecentes(5);
+            ->listarPedidosRecentes(5);
 
         $produtosEstoqueBaixo =
             $AdminRepository
-                ->listarEstoqueBaixo(5);
+            ->listarEstoqueBaixo(5);
 
         /*
         |--------------------------------------------------------------------------

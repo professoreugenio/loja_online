@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Controllers\Admin;
 
 use App\Helpers\IdSeguro;
+use App\Helpers\SessaoAdmin;
 use App\Repositories\AdminRepository;
 use App\Repositories\ProdutoAdminRepository;
 use App\Repositories\ProdutoImagemAdminRepository;
@@ -16,6 +17,11 @@ use Throwable;
 
 final class ModuloAdminController
 {
+
+    public function __construct()
+    {
+        SessaoAdmin::exigirLogin();
+    }
     public function relatorios(): void
     {
         $this->carregarView('relatorios');
@@ -1050,19 +1056,6 @@ final class ModuloAdminController
         $this->carregarView('buscar', ['termo' => $termo]);
     }
 
-    public function sair(): void
-    {
-        unset(
-            $_SESSION['admin_id'],
-            $_SESSION['admin_nome'],
-            $_SESSION['admin_email'],
-            $_SESSION['usuario_admin']
-        );
-
-        session_regenerate_id(true);
-        header('Location: ' . $this->baseUrl() . '/loginadmin');
-        exit;
-    }
 
     private function adminRepository(): AdminRepository
     {
