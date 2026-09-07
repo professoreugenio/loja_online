@@ -5,6 +5,7 @@ declare(strict_types=1);
 use App\Controllers\Admin\AdminController;
 use App\Controllers\Admin\ModuloAdminController;
 use App\Controllers\Admin\AuthController;
+
 return [
 
     /*
@@ -268,6 +269,37 @@ return [
         'action' => [
             ModuloAdminController::class,
             'perfilLista',
+        ],
+    ],
+    [
+        'method' => 'POST',
+        'path' => '/admin/perfil/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'perfilAtualizar',
+        ],
+    ],
+
+    /*
+|--------------------------------------------------------------------------
+| Master atualiza outro administrador
+|--------------------------------------------------------------------------
+*/
+    [
+        'method' => 'POST',
+        'path' => '/admin/perfil/admin/atualizar',
+        'action' => [
+            ModuloAdminController::class,
+            'adminAtualizar',
+        ],
+    ],
+
+    [
+        'method' => 'POST',
+        'path' => '/admin/perfil/cadastrar',
+        'action' => [
+            ModuloAdminController::class,
+            'perfilCadastrar',
         ],
     ],
 

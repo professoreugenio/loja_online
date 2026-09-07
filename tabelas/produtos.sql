@@ -2,10 +2,10 @@
 -- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: 127.0.0.1:3307
--- Tempo de geração: 27/08/2026 às 21:19
+-- Host: 127.0.0.1
+-- Tempo de geração: 07/09/2026 às 19:32
 -- Versão do servidor: 10.4.32-MariaDB
--- Versão do PHP: 8.0.30
+-- Versão do PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -34,13 +34,13 @@ CREATE TABLE `produtos` (
   `slug` varchar(180) NOT NULL,
   `descricao` text DEFAULT NULL,
   `preco` decimal(10,2) UNSIGNED NOT NULL,
-  `oferta_ativa` tinyint(1) NOT NULL DEFAULT 0,
-  `percentual_oferta` decimal(5,2) DEFAULT NULL,
-  `oferta_inicio` datetime DEFAULT NULL,
-  `oferta_fim` datetime DEFAULT NULL,
   `estoque` int(10) UNSIGNED NOT NULL DEFAULT 0,
   `status` enum('ativo','inativo') NOT NULL DEFAULT 'ativo',
   `destaque` tinyint(1) NOT NULL DEFAULT 0,
+  `oferta_ativa` tinyint(1) NOT NULL DEFAULT 0,
+  `percentual_oferta` decimal(5,2) UNSIGNED DEFAULT NULL,
+  `oferta_inicio` datetime DEFAULT NULL,
+  `oferta_fim` datetime DEFAULT NULL,
   `criado_em` timestamp NOT NULL DEFAULT current_timestamp(),
   `atualizado_em` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
