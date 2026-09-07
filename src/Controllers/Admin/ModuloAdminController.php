@@ -13,6 +13,7 @@ use App\Services\ProdutoImagemService;
 use App\Repositories\AdminCategoriasRepository;
 use App\Helpers\Csrf;
 use App\Repositories\UsuarioAdminRepository;
+use App\Repositories\ConfiguracoesRepository;
 use DateTime;
 use RuntimeException;
 use Throwable;
@@ -1037,10 +1038,7 @@ final class ModuloAdminController
     {
         $this->carregarView('contatos');
     }
-    public function configuracoes(): void
-    {
-        $this->carregarView('configuracoes');
-    }
+    
     public function perfil(): void
     {
         $adminId = SessaoAdmin::id();
@@ -2532,5 +2530,431 @@ final class ModuloAdminController
         return new UsuarioAdminRepository(
             \Config::connect()
         );
+    }
+
+    private function configuracoesRepository(): ConfiguracoesRepository
+    {
+        $raizProjeto =
+            dirname(__DIR__, 3);
+
+        require_once
+            $raizProjeto
+            . '/database/conexao.php';
+
+        return new ConfiguracoesRepository(
+            \Config::connect()
+        );
+    }
+
+    public function configuracoes(): void
+    {
+        /*
+    |--------------------------------------------------------------------------
+    | Somente Master altera configurações globais
+    |--------------------------------------------------------------------------
+    */
+        SessaoAdmin::exigirMaster();
+
+        $repository =
+            $this->configuracoesRepository();
+
+        $configuracoes =
+            $repository->buscar();
+
+        if ($configuracoes === null) {
+
+            throw new RuntimeException(
+                'Configurações do site '
+                    . 'não encontradas.'
+            );
+        }
+
+        $sucesso =
+            $_SESSION['admin_config_sucesso'] ?? null;
+
+        $erro =
+            $_SESSION['admin_config_erro'] ?? null;
+
+        unset(
+            $_SESSION['admin_config_sucesso'],
+            $_SESSION['admin_config_erro']
+        );
+
+        $this->carregarView(
+            'configuracoes',
+            [
+                'configuracoes' =>
+                $configuracoes,
+
+                'csrfToken' =>
+                Csrf::gerar(),
+
+                'sucesso' =>
+                $sucesso,
+
+                'erro' =>
+                $erro,
+            ]
+        );
+    }
+
+
+    public function configuracoesAtualizar(): void
+    {
+        SessaoAdmin::exigirMaster();
+
+        if (
+            !Csrf::validar(
+                (string) (
+                    $_POST['_token']
+                    ?? ''
+                )
+            )
+        ) {
+            http_response_code(403);
+
+            exit('Token CSRF inválido.');
+        }
+
+        $id = filter_input(
+            INPUT_POST,
+            'id',
+            FILTER_VALIDATE_INT
+        );
+
+        if (
+            $id === false
+            || $id === null
+            || $id < 1
+        ) {
+            $_SESSION['admin_config_erro'] =
+                'Configuração inválida.';
+
+            $this->redirecionarConfiguracoes();
+        }
+
+
+        $nomedosite =
+            trim(
+                (string) (
+                    $_POST['nomedosite']
+                    ?? ''
+                )
+            );
+
+        $descricao =
+            trim(
+                (string) (
+                    $_POST['descricao']
+                    ?? ''
+                )
+            );
+
+        $keywords =
+            trim(
+                (string) (
+                    $_POST['keywords']
+                    ?? ''
+                )
+            );
+
+        $slogan =
+            trim(
+                (string) (
+                    $_POST['slogan']
+                    ?? ''
+                )
+            );
+
+        $logo =
+            trim(
+                (string) (
+                    $_POST['logo']
+                    ?? ''
+                )
+            );
+
+        $favicon =
+            trim(
+                (string) (
+                    $_POST['favicon']
+                    ?? ''
+                )
+            );
+
+        $email =
+            mb_strtolower(
+                trim(
+                    (string) (
+                        $_POST['email']
+                        ?? ''
+                    )
+                )
+            );
+
+        $whatsapp =
+            trim(
+                (string) (
+                    $_POST['whatsapp']
+                    ?? ''
+                )
+            );
+
+        $tituloSeo =
+            trim(
+                (string) (
+                    $_POST['titulo_seo']
+                    ?? ''
+                )
+            );
+
+        $descricaoSeo =
+            trim(
+                (string) (
+                    $_POST['descricao_seo']
+                    ?? ''
+                )
+            );
+
+        $mensagemManutencao =
+            trim(
+                (string) (
+                    $_POST['mensagemmanutencao']
+                    ?? ''
+                )
+            );
+
+        $mensagemStandby =
+            trim(
+                (string) (
+                    $_POST['mensagemstandby']
+                    ?? ''
+                )
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Checkboxes
+    |--------------------------------------------------------------------------
+    */
+        $siteManutencao =
+            isset(
+                $_POST['sitemanutencao']
+            )
+            ? 1
+            : 0;
+
+        $siteStandby =
+            isset(
+                $_POST['sitestandby']
+            )
+            ? 1
+            : 0;
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Frete grátis
+    |--------------------------------------------------------------------------
+    */
+        $freteTexto =
+            str_replace(
+                ',',
+                '.',
+                trim(
+                    (string) (
+                        $_POST['frete_gratis_valor']
+                        ?? ''
+                    )
+                )
+            );
+
+        $freteGratis = null;
+
+        if ($freteTexto !== '') {
+
+            if (
+                !is_numeric($freteTexto)
+                || (float) $freteTexto < 0
+            ) {
+
+                $_SESSION['admin_config_erro'] =
+                    'Informe um valor válido '
+                    . 'para frete grátis.';
+
+                $this->redirecionarConfiguracoes();
+            }
+
+            $freteGratis =
+                number_format(
+                    (float) $freteTexto,
+                    2,
+                    '.',
+                    ''
+                );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Validações
+    |--------------------------------------------------------------------------
+    */
+        $erros = [];
+
+        if ($nomedosite === '') {
+            $erros[] =
+                'Informe o nome do site.';
+        }
+
+        if (
+            mb_strlen($nomedosite)
+            > 150
+        ) {
+            $erros[] =
+                'O nome do site deve possuir '
+                . 'no máximo 150 caracteres.';
+        }
+
+        if (
+            $email !== ''
+            && filter_var(
+                $email,
+                FILTER_VALIDATE_EMAIL
+            ) === false
+        ) {
+            $erros[] =
+                'Informe um e-mail válido.';
+        }
+
+        if (
+            mb_strlen($descricaoSeo)
+            > 320
+        ) {
+            $erros[] =
+                'A descrição SEO deve possuir '
+                . 'no máximo 320 caracteres.';
+        }
+
+
+        if ($erros !== []) {
+
+            $_SESSION['admin_config_erro'] = implode(
+                ' ',
+                $erros
+            );
+
+            $this->redirecionarConfiguracoes();
+        }
+
+
+        $repository =
+            $this->configuracoesRepository();
+
+
+        try {
+
+            $repository->atualizar(
+                (int) $id,
+                [
+                    'nomedosite' =>
+                    $nomedosite,
+
+                    'descricao' =>
+                    $descricao !== ''
+                        ? $descricao
+                        : null,
+
+                    'keywords' =>
+                    $keywords !== ''
+                        ? $keywords
+                        : null,
+
+                    'slogan' =>
+                    $slogan !== ''
+                        ? $slogan
+                        : null,
+
+                    'logo' =>
+                    $logo !== ''
+                        ? $logo
+                        : null,
+
+                    'favicon' =>
+                    $favicon !== ''
+                        ? $favicon
+                        : null,
+
+                    'email' =>
+                    $email !== ''
+                        ? $email
+                        : null,
+
+                    'whatsapp' =>
+                    $whatsapp !== ''
+                        ? $whatsapp
+                        : null,
+
+                    'sitemanutencao' =>
+                    $siteManutencao,
+
+                    'sitestandby' =>
+                    $siteStandby,
+
+                    'mensagemmanutencao' =>
+                    $mensagemManutencao
+                        !== ''
+                        ? $mensagemManutencao
+                        : null,
+
+                    'mensagemstandby' =>
+                    $mensagemStandby
+                        !== ''
+                        ? $mensagemStandby
+                        : null,
+
+                    'titulo_seo' =>
+                    $tituloSeo !== ''
+                        ? $tituloSeo
+                        : null,
+
+                    'descricao_seo' =>
+                    $descricaoSeo !== ''
+                        ? $descricaoSeo
+                        : null,
+
+                    'frete_gratis_valor' =>
+                    $freteGratis,
+                ]
+            );
+
+            $_SESSION['admin_config_sucesso'] =
+                'Configurações atualizadas '
+                . 'com sucesso.';
+        } catch (Throwable $erro) {
+
+            error_log(
+                '[ADMIN CONFIGURACOES] '
+                    . $erro->getMessage()
+            );
+
+            $_SESSION['admin_config_erro'] =
+                'Não foi possível atualizar '
+                . 'as configurações.';
+        }
+
+        $this->redirecionarConfiguracoes();
+    }
+
+    private function redirecionarConfiguracoes(): never
+    {
+        header(
+            'Location: '
+                . $this->baseUrl()
+                . '/admin/configuracoes'
+        );
+
+        exit;
     }
 }

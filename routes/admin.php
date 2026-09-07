@@ -242,6 +242,17 @@ return [
         ],
     ],
 
+    [
+        'method' => 'POST',
+        'path' =>
+        '/admin/configuracoes/atualizar',
+
+        'action' => [
+            ModuloAdminController::class,
+            'configuracoesAtualizar',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Perfil administrativo
