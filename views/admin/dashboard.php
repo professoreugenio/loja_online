@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Helpers\View;
+
 $baseUrl = defined('BASE_URL') ? BASE_URL : '';
 
 $indicadores = is_array($indicadores ?? null)
@@ -15,8 +16,8 @@ $pedidosRecentes = is_array($pedidosRecentes ?? null)
 
 $produtosEstoqueBaixo =
     is_array($produtosEstoqueBaixo ?? null)
-        ? $produtosEstoqueBaixo
-        : [];
+    ? $produtosEstoqueBaixo
+    : [];
 
 $notificacoesNaoLidas =
     (int) ($notificacoesNaoLidas ?? 0);
@@ -57,6 +58,7 @@ $statusPedidos = [
 ?>
 <!doctype html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -70,14 +72,14 @@ $statusPedidos = [
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css" rel="stylesheet">
 
-  
+
     <link rel="stylesheet" href="<?= htmlspecialchars($baseUrl . '/assets/css/admin.css', ENT_QUOTES, 'UTF-8') ?>">
 </head>
 
 <body>
     <?php View::componenteAdmin('aside', [
-    'notificacoesNaoLidas' => $notificacoesNaoLidas,
-]); ?>
+        'notificacoesNaoLidas' => $notificacoesNaoLidas,
+    ]); ?>
 
     <div class="offcanvas offcanvas-start offcanvas-dashboard" tabindex="-1" id="menuMobile">
         <div class="offcanvas-header border-bottom border-secondary">
@@ -105,75 +107,7 @@ $statusPedidos = [
     </div>
 
     <div class="main-wrapper">
-        <header class="topbar">
-            <div class="container-fluid px-3 px-lg-4">
-                <div class="d-flex align-items-center gap-3">
-                    <button class="btn btn-outline-secondary d-lg-none" type="button"
-                            data-bs-toggle="offcanvas" data-bs-target="#menuMobile"
-                            aria-label="Abrir menu">
-                        <i class="bi bi-list fs-5"></i>
-                    </button>
-
-                    <form class="d-none d-md-block flex-grow-1" style="max-width:420px"
-                          action="admin/buscar" method="get" role="search">
-                        <label class="visually-hidden" for="buscaDashboard">Pesquisar no painel</label>
-                        <div class="input-group">
-                            <span class="input-group-text bg-body border-end-0">
-                                <i class="bi bi-search text-secondary"></i>
-                            </span>
-                            <input class="form-control border-start-0" id="buscaDashboard"
-                                   type="search" name="q"
-                                   placeholder="Pesquisar produtos, clientes ou pedidos">
-                        </div>
-                    </form>
-
-                    <div class="ms-auto d-flex align-items-center gap-2">
-                        <a class="btn btn-light position-relative" href="admin/notificacoes"
-                           aria-label="Abrir notificações">
-                            <i class="bi bi-bell"></i>
-                            <?php if ($notificacoesNaoLidas > 0): ?>
-                                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill text-bg-danger">
-                                    <?= number_format($notificacoesNaoLidas, 0, ',', '.'); ?>
-                                </span>
-                            <?php endif; ?>
-                        </a>
-
-                        <div class="dropdown">
-                            <button class="btn btn-light d-flex align-items-center gap-2"
-                                    type="button" data-bs-toggle="dropdown">
-                                <span class="avatar">AD</span>
-                                <span class="d-none d-sm-block text-start">
-                                    <strong class="d-block small">Administrador</strong>
-                                    <small class="text-secondary">Conta administrativa</small>
-                                </span>
-                                <i class="bi bi-chevron-down small"></i>
-                            </button>
-
-                            <ul class="dropdown-menu dropdown-menu-end shadow border-0">
-                                <li>
-                                    <a class="dropdown-item" href="admin/perfil">
-                                        <i class="bi bi-person me-2"></i> Meu perfil
-                                    </a>
-                                </li>
-                                <li>
-                                    <a class="dropdown-item" href="admin/configuracoes">
-                                        <i class="bi bi-gear me-2"></i> Configurações
-                                    </a>
-                                </li>
-                                <li><hr class="dropdown-divider"></li>
-                                <li class="px-2">
-                                    <form action="admin/sair" method="post">
-                                        <button class="dropdown-item text-danger" type="submit">
-                                            <i class="bi bi-box-arrow-left me-2"></i> Sair
-                                        </button>
-                                    </form>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </header>
+        <?php View::componenteAdmin('header'); ?>
 
         <main class="content-area">
             <div class="container-fluid p-0">
@@ -190,7 +124,7 @@ $statusPedidos = [
                             <a class="btn btn-outline-primary" href="" target="_blank">
                                 <i class="bi bi-eye me-1"></i> Ver loja
                             </a>
-                           
+
                         </div>
                     </div>
                 </section>
@@ -408,61 +342,60 @@ $statusPedidos = [
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    <?php if ($pedidosRecentes === []): ?>
-                                        <tr>
-                                            <td colspan="6" class="text-center text-secondary py-4">
-                                                Nenhum pedido registrado até o momento.
-                                            </td>
-                                        </tr>
-                                    <?php else: ?>
-                                        <?php foreach ($pedidosRecentes as $pedido): ?>
-                                            <?php
-                                            $pedidoId = (int) ($pedido['id'] ?? 0);
-                                            $codigoPedido = trim((string) ($pedido['codigo'] ?? ''));
-
-                                            if ($codigoPedido === '') {
-                                                $codigoPedido = '#' . $pedidoId;
-                                            }
-
-                                            $statusPedido = (string) ($pedido['status'] ?? '');
-                                            $statusInfo = $statusPedidos[$statusPedido] ?? [
-                                                'texto' => ucfirst(str_replace('_', ' ', $statusPedido)),
-                                                'classe' => 'text-bg-secondary',
-                                            ];
-
-                                            $dataPedido = !empty($pedido['criado_em'])
-                                                ? date('d/m/Y H:i', strtotime((string) $pedido['criado_em']))
-                                                : '-';
-                                            ?>
+                                        <?php if ($pedidosRecentes === []): ?>
                                             <tr>
-                                                <td class="fw-semibold">
-                                                    <?= htmlspecialchars($codigoPedido, ENT_QUOTES, 'UTF-8'); ?>
-                                                </td>
-                                                <td>
-                                                    <?= htmlspecialchars((string) ($pedido['cliente_nome'] ?? 'Cliente'), ENT_QUOTES, 'UTF-8'); ?>
-                                                </td>
-                                                <td><?= htmlspecialchars($dataPedido, ENT_QUOTES, 'UTF-8'); ?></td>
-                                                <td>
-                                                    R$ <?= number_format((float) ($pedido['total'] ?? 0), 2, ',', '.'); ?>
-                                                </td>
-                                                <td>
-                                                    <span class="badge <?= htmlspecialchars($statusInfo['classe'], ENT_QUOTES, 'UTF-8'); ?>">
-                                                        <?= htmlspecialchars($statusInfo['texto'], ENT_QUOTES, 'UTF-8'); ?>
-                                                    </span>
-                                                </td>
-                                                <td class="text-end">
-                                                    <a
-                                                        class="btn btn-sm btn-light"
-                                                        href="admin/pedidos/detalhes?id=<?= $pedidoId; ?>"
-                                                        aria-label="Ver pedido <?= $pedidoId; ?>"
-                                                    >
-                                                        <i class="bi bi-eye"></i>
-                                                    </a>
+                                                <td colspan="6" class="text-center text-secondary py-4">
+                                                    Nenhum pedido registrado até o momento.
                                                 </td>
                                             </tr>
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-</tbody>
+                                        <?php else: ?>
+                                            <?php foreach ($pedidosRecentes as $pedido): ?>
+                                                <?php
+                                                $pedidoId = (int) ($pedido['id'] ?? 0);
+                                                $codigoPedido = trim((string) ($pedido['codigo'] ?? ''));
+
+                                                if ($codigoPedido === '') {
+                                                    $codigoPedido = '#' . $pedidoId;
+                                                }
+
+                                                $statusPedido = (string) ($pedido['status'] ?? '');
+                                                $statusInfo = $statusPedidos[$statusPedido] ?? [
+                                                    'texto' => ucfirst(str_replace('_', ' ', $statusPedido)),
+                                                    'classe' => 'text-bg-secondary',
+                                                ];
+
+                                                $dataPedido = !empty($pedido['criado_em'])
+                                                    ? date('d/m/Y H:i', strtotime((string) $pedido['criado_em']))
+                                                    : '-';
+                                                ?>
+                                                <tr>
+                                                    <td class="fw-semibold">
+                                                        <?= htmlspecialchars($codigoPedido, ENT_QUOTES, 'UTF-8'); ?>
+                                                    </td>
+                                                    <td>
+                                                        <?= htmlspecialchars((string) ($pedido['cliente_nome'] ?? 'Cliente'), ENT_QUOTES, 'UTF-8'); ?>
+                                                    </td>
+                                                    <td><?= htmlspecialchars($dataPedido, ENT_QUOTES, 'UTF-8'); ?></td>
+                                                    <td>
+                                                        R$ <?= number_format((float) ($pedido['total'] ?? 0), 2, ',', '.'); ?>
+                                                    </td>
+                                                    <td>
+                                                        <span class="badge <?= htmlspecialchars($statusInfo['classe'], ENT_QUOTES, 'UTF-8'); ?>">
+                                                            <?= htmlspecialchars($statusInfo['texto'], ENT_QUOTES, 'UTF-8'); ?>
+                                                        </span>
+                                                    </td>
+                                                    <td class="text-end">
+                                                        <a
+                                                            class="btn btn-sm btn-light"
+                                                            href="admin/pedidos/detalhes?id=<?= $pedidoId; ?>"
+                                                            aria-label="Ver pedido <?= $pedidoId; ?>">
+                                                            <i class="bi bi-eye"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </tbody>
                                 </table>
                             </div>
                         </article>
@@ -493,8 +426,8 @@ $statusPedidos = [
 
                                         $classeBorda =
                                             $index < count($produtosEstoqueBaixo) - 1
-                                                ? 'border-bottom'
-                                                : '';
+                                            ? 'border-bottom'
+                                            : '';
                                         ?>
                                         <div class="d-flex justify-content-between align-items-center gap-3 <?= $classeBorda; ?> py-3">
                                             <span>
@@ -507,7 +440,7 @@ $statusPedidos = [
                                         </div>
                                     <?php endforeach; ?>
                                 <?php endif; ?>
-</div>
+                            </div>
                         </article>
                     </section>
                 </div>
@@ -525,14 +458,14 @@ $statusPedidos = [
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('anoAtual').textContent = new Date().getFullYear();
 
             const caminhoAtual = window.location.pathname
                 .replace('<?= BASE_URL ?>/', '')
                 .replace(/^\/+|\/+$/g, '');
 
-            document.querySelectorAll('.sidebar-link[data-route]').forEach(function (link) {
+            document.querySelectorAll('.sidebar-link[data-route]').forEach(function(link) {
                 const rota = link.dataset.route || '';
                 link.classList.remove('active');
 
@@ -543,4 +476,5 @@ $statusPedidos = [
         });
     </script>
 </body>
+
 </html>
