@@ -1,0 +1,211 @@
+<?php
+
+declare(strict_types=1);
+
+namespace App\Repositories;
+
+use PDO;
+
+final class EstoqueAdminRepository
+{
+    public function __construct(
+        private readonly PDO $pdo
+    ) {}
+
+
+    public function listar(
+        string $busca = '',
+        string $filtro = ''
+    ): array {
+
+        $sql = "
+            SELECT
+                p.id,
+                p.nome,
+                p.slug,
+                p.estoque,
+                p.limite_estoque,
+                p.status,
+                p.atualizado_em,
+                c.nome AS categoria
+            FROM produtos p
+
+            INNER JOIN categorias c
+                ON c.id = p.categoria_id
+
+            WHERE 1 = 1
+        ";
+
+        $parametros = [];
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Pesquisa
+        |--------------------------------------------------------------------------
+        */
+        if ($busca !== '') {
+
+            $sql .= "
+                AND p.nome LIKE :busca
+            ";
+
+            $parametros[':busca'] =
+                '%' . $busca . '%';
+        }
+
+
+        /*
+        |--------------------------------------------------------------------------
+        | Filtros
+        |--------------------------------------------------------------------------
+        */
+        if ($filtro === 'baixo') {
+
+            $sql .= "
+                AND p.estoque > 0
+                AND p.estoque
+                    <= p.limite_estoque
+            ";
+        } elseif ($filtro === 'zerado') {
+
+            $sql .= "
+                AND p.estoque = 0
+            ";
+        } elseif ($filtro === 'normal') {
+
+            $sql .= "
+                AND p.estoque
+                    > p.limite_estoque
+            ";
+        }
+
+
+        $sql .= "
+            ORDER BY
+                p.estoque ASC,
+                p.nome ASC
+        ";
+
+
+        $stmt =
+            $this->pdo->prepare($sql);
+
+        $stmt->execute(
+            $parametros
+        );
+
+        $dados =
+            $stmt->fetchAll(
+                PDO::FETCH_ASSOC
+            );
+
+        return is_array($dados)
+            ? $dados
+            : [];
+    }
+
+
+    public function indicadores(): array
+    {
+        $sql = "
+            SELECT
+
+                COUNT(*) AS total_produtos,
+
+                COALESCE(
+                    SUM(estoque),
+                    0
+                ) AS total_unidades,
+
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN estoque = 0
+                            THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    0
+                ) AS zerados,
+
+                COALESCE(
+                    SUM(
+                        CASE
+                            WHEN estoque > 0
+                             AND estoque
+                                <= limite_estoque
+                            THEN 1
+                            ELSE 0
+                        END
+                    ),
+                    0
+                ) AS baixos
+
+            FROM produtos
+        ";
+
+        $dados =
+            $this->pdo
+            ->query($sql)
+            ->fetch(PDO::FETCH_ASSOC);
+
+        return is_array($dados)
+            ? $dados
+            : [];
+    }
+
+
+    public function buscarPorId(
+        int $id
+    ): ?array {
+
+        $sql = "
+            SELECT
+                id,
+                nome,
+                estoque,
+                limite_estoque
+            FROM produtos
+            WHERE id = :id
+            LIMIT 1
+        ";
+
+        $stmt =
+            $this->pdo->prepare($sql);
+
+        $stmt->execute([
+            ':id' => $id,
+        ]);
+
+        $produto =
+            $stmt->fetch(
+                PDO::FETCH_ASSOC
+            );
+
+        return is_array($produto)
+            ? $produto
+            : null;
+    }
+
+
+    public function atualizarLimite(
+        int $id,
+        int $limite
+    ): bool {
+
+        $sql = "
+            UPDATE produtos
+            SET limite_estoque = :limite
+            WHERE id = :id
+        ";
+
+        $stmt =
+            $this->pdo->prepare($sql);
+
+        return $stmt->execute([
+            ':id' => $id,
+            ':limite' => $limite,
+        ]);
+    }
+}

@@ -14,6 +14,7 @@ use App\Repositories\AdminCategoriasRepository;
 use App\Helpers\Csrf;
 use App\Repositories\UsuarioAdminRepository;
 use App\Repositories\ConfiguracoesRepository;
+use App\Repositories\EstoqueAdminRepository;
 use DateTime;
 use RuntimeException;
 use Throwable;
@@ -1024,12 +1025,7 @@ final class ModuloAdminController
         $this->carregarView('carrinhos');
     }
 
-    public function estoque(): void
-    {
-        $filtro = trim((string) ($_GET['filtro'] ?? ''));
-        $this->carregarView('estoque', ['filtro' => $filtro]);
-    }
-
+    
     public function notificacoes(): void
     {
         $this->carregarView('notificacoes');
@@ -2953,6 +2949,337 @@ final class ModuloAdminController
             'Location: '
                 . $this->baseUrl()
                 . '/admin/configuracoes'
+        );
+
+        exit;
+    }
+
+    private function estoqueRepository(): EstoqueAdminRepository
+    {
+        $raizProjeto =
+            dirname(__DIR__, 3);
+
+        require_once
+            $raizProjeto
+            . '/database/conexao.php';
+
+        return new EstoqueAdminRepository(
+            \Config::connect()
+        );
+    }
+
+    public function estoque(): void
+    {
+        $repository =
+            $this->estoqueRepository();
+
+        $busca =
+            trim(
+                (string) (
+                    $_GET['q']
+                    ?? ''
+                )
+            );
+
+        $filtro =
+            trim(
+                (string) (
+                    $_GET['filtro']
+                    ?? ''
+                )
+            );
+
+        if (
+            !in_array(
+                $filtro,
+                [
+                    '',
+                    'baixo',
+                    'zerado',
+                    'normal',
+                ],
+                true
+            )
+        ) {
+            $filtro = '';
+        }
+
+
+        $produtos =
+            $repository->listar(
+                $busca,
+                $filtro
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Cria ID seguro
+    |--------------------------------------------------------------------------
+    */
+        foreach ($produtos as &$produto) {
+
+            $produto['id_seguro'] =
+                IdSeguro::criptografar(
+                    (int)
+                    $produto['id']
+                );
+        }
+
+        unset($produto);
+
+
+        $indicadores =
+            $repository->indicadores();
+
+
+        $sucesso =
+            $_SESSION['admin_estoque_sucesso'] ?? null;
+
+        $erro =
+            $_SESSION['admin_estoque_erro'] ?? null;
+
+
+        unset(
+            $_SESSION['admin_estoque_sucesso'],
+            $_SESSION['admin_estoque_erro']
+        );
+
+
+        $this->carregarView(
+            'estoque',
+            [
+                'produtos' =>
+                $produtos,
+
+                'indicadores' =>
+                $indicadores,
+
+                'filtros' => [
+                    'q' =>
+                    $busca,
+
+                    'filtro' =>
+                    $filtro,
+                ],
+
+                'csrfToken' =>
+                Csrf::gerar(),
+
+                'sucesso' =>
+                $sucesso,
+
+                'erro' =>
+                $erro,
+            ]
+        );
+    }
+
+    public function estoqueLimiteAtualizar(): void
+    {
+        /*
+    |--------------------------------------------------------------------------
+    | 1. Carrega conexão / .env / APP_KEY
+    |--------------------------------------------------------------------------
+    |
+    | IMPORTANTE:
+    | estoqueRepository() carrega database/conexao.php.
+    |
+    | Isso deve acontecer ANTES de:
+    |
+    | IdSeguro::descriptografar()
+    |
+    */
+        $repository =
+            $this->estoqueRepository();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 2. Valida CSRF
+    |--------------------------------------------------------------------------
+    */
+        if (
+            !Csrf::validar(
+                (string) (
+                    $_POST['_token']
+                    ?? ''
+                )
+            )
+        ) {
+            http_response_code(403);
+
+            exit('Token CSRF inválido.');
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 3. Recebe o ID criptografado
+    |--------------------------------------------------------------------------
+    */
+        $token =
+            trim(
+                (string) (
+                    $_POST['id']
+                    ?? ''
+                )
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 4. Verifica se recebeu o token
+    |--------------------------------------------------------------------------
+    */
+        if ($token === '') {
+
+            $_SESSION['admin_estoque_erro'] =
+                'Produto não informado.';
+
+            $this->redirecionarEstoque();
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 5. Descriptografa o ID
+    |--------------------------------------------------------------------------
+    |
+    | Neste momento o .env e APP_KEY
+    | já foram carregados.
+    |
+    */
+        $produtoId =
+            IdSeguro::descriptografar(
+                $token
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 6. Valida o ID
+    |--------------------------------------------------------------------------
+    */
+        if (
+            $produtoId === null
+            || $produtoId < 1
+        ) {
+
+            $_SESSION['admin_estoque_erro'] =
+                'Identificador do produto '
+                . 'inválido.';
+
+            $this->redirecionarEstoque();
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 7. Recebe o novo limite
+    |--------------------------------------------------------------------------
+    */
+        $limite =
+            filter_input(
+                INPUT_POST,
+                'limite_estoque',
+                FILTER_VALIDATE_INT
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 8. Valida o limite
+    |--------------------------------------------------------------------------
+    */
+        if (
+            $limite === false
+            || $limite === null
+            || $limite < 0
+        ) {
+
+            $_SESSION['admin_estoque_erro'] =
+                'Informe um limite '
+                . 'de estoque válido.';
+
+            $this->redirecionarEstoque();
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 9. Confere se o produto existe
+    |--------------------------------------------------------------------------
+    */
+        $produto =
+            $repository->buscarPorId(
+                (int) $produtoId
+            );
+
+
+        if ($produto === null) {
+
+            $_SESSION['admin_estoque_erro'] =
+                'Produto não encontrado.';
+
+            $this->redirecionarEstoque();
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 10. Atualiza o limite
+    |--------------------------------------------------------------------------
+    */
+        try {
+
+            $resultado =
+                $repository->atualizarLimite(
+                    (int) $produtoId,
+                    (int) $limite
+                );
+
+
+            if (!$resultado) {
+
+                throw new RuntimeException(
+                    'Não foi possível atualizar '
+                        . 'o limite de estoque.'
+                );
+            }
+
+
+            $_SESSION['admin_estoque_sucesso'] =
+                'Limite de estoque '
+                . 'atualizado com sucesso.';
+        } catch (Throwable $erro) {
+
+            error_log(
+                '[ADMIN ESTOQUE LIMITE] '
+                    . $erro->getMessage()
+            );
+
+
+            $_SESSION['admin_estoque_erro'] =
+                'Não foi possível atualizar '
+                . 'o limite de estoque.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 11. Volta para a página de estoque
+    |--------------------------------------------------------------------------
+    */
+        $this->redirecionarEstoque();
+    }
+
+    private function redirecionarEstoque(): never
+    {
+        header(
+            'Location: '
+                . $this->baseUrl()
+                . '/admin/estoque'
         );
 
         exit;

@@ -200,6 +200,18 @@ return [
         ],
     ],
 
+    [
+        'method' => 'POST',
+
+        'path' =>
+        '/admin/estoque/limite',
+
+        'action' => [
+            ModuloAdminController::class,
+            'estoqueLimiteAtualizar',
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Notificações
