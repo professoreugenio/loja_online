@@ -57,6 +57,18 @@ return [
             'produtoNovo',
         ],
     ],
+
+    [
+        'method' => 'POST',
+
+        'path' =>
+        '/admin/produto/cadastrar',
+
+        'action' => [
+            ModuloAdminController::class,
+            'produtoCadastrar',
+        ],
+    ],
     [
         'method' => 'GET',
         'path' => '/admin/produto/editar',

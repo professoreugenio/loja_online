@@ -10,8 +10,7 @@ final class ProdutoAdminRepository
 {
     public function __construct(
         private PDO $pdo
-    ) {
-    }
+    ) {}
 
     public function listarCategorias(): array
     {
@@ -325,5 +324,246 @@ final class ProdutoAdminRepository
         );
 
         return $stmt->execute();
+    }
+
+    public function categoriaAtivaExiste(
+        int $categoriaId
+    ): bool {
+
+        $sql = "
+        SELECT 1
+        FROM categorias
+        WHERE id = :id
+          AND ativo = 1
+        LIMIT 1
+    ";
+
+        $stmt =
+            $this->pdo->prepare($sql);
+
+        $stmt->bindValue(
+            ':id',
+            $categoriaId,
+            PDO::PARAM_INT
+        );
+
+        $stmt->execute();
+
+        return
+            $stmt->fetchColumn()
+            !== false;
+    }
+
+    public function slugExiste(
+        string $slug
+    ): bool {
+
+        $sql = "
+        SELECT 1
+        FROM produtos
+        WHERE slug = :slug
+        LIMIT 1
+    ";
+
+        $stmt =
+            $this->pdo->prepare($sql);
+
+        $stmt->bindValue(
+            ':slug',
+            $slug,
+            PDO::PARAM_STR
+        );
+
+        $stmt->execute();
+
+        return
+            $stmt->fetchColumn()
+            !== false;
+    }
+
+    public function cadastrar(
+        array $dados
+    ): int {
+
+        $sql = "
+        INSERT INTO produtos
+        (
+            categoria_id,
+            nome,
+            slug,
+            descricao,
+            preco,
+            oferta_ativa,
+            percentual_oferta,
+            oferta_inicio,
+            oferta_fim,
+            estoque,
+            limite_estoque,
+            status,
+            destaque
+        )
+        VALUES
+        (
+            :categoria_id,
+            :nome,
+            :slug,
+            :descricao,
+            :preco,
+            :oferta_ativa,
+            :percentual_oferta,
+            :oferta_inicio,
+            :oferta_fim,
+            :estoque,
+            :limite_estoque,
+            :status,
+            :destaque
+        )
+    ";
+
+        $stmt =
+            $this->pdo->prepare($sql);
+
+
+        $stmt->bindValue(
+            ':categoria_id',
+            (int) $dados['categoria_id'],
+            PDO::PARAM_INT
+        );
+
+        $stmt->bindValue(
+            ':nome',
+            (string) $dados['nome'],
+            PDO::PARAM_STR
+        );
+
+        $stmt->bindValue(
+            ':slug',
+            (string) $dados['slug'],
+            PDO::PARAM_STR
+        );
+
+
+        if (
+            $dados['descricao']
+            === null
+        ) {
+            $stmt->bindValue(
+                ':descricao',
+                null,
+                PDO::PARAM_NULL
+            );
+        } else {
+            $stmt->bindValue(
+                ':descricao',
+                (string)
+                $dados['descricao'],
+                PDO::PARAM_STR
+            );
+        }
+
+
+        $stmt->bindValue(
+            ':preco',
+            (string) $dados['preco'],
+            PDO::PARAM_STR
+        );
+
+        $stmt->bindValue(
+            ':oferta_ativa',
+            (int) $dados['oferta_ativa'],
+            PDO::PARAM_INT
+        );
+
+
+        if (
+            $dados['percentual_oferta']
+            === null
+        ) {
+            $stmt->bindValue(
+                ':percentual_oferta',
+                null,
+                PDO::PARAM_NULL
+            );
+        } else {
+            $stmt->bindValue(
+                ':percentual_oferta',
+                (string)
+                $dados['percentual_oferta'],
+                PDO::PARAM_STR
+            );
+        }
+
+
+        if (
+            $dados['oferta_inicio']
+            === null
+        ) {
+            $stmt->bindValue(
+                ':oferta_inicio',
+                null,
+                PDO::PARAM_NULL
+            );
+        } else {
+            $stmt->bindValue(
+                ':oferta_inicio',
+                (string)
+                $dados['oferta_inicio'],
+                PDO::PARAM_STR
+            );
+        }
+
+
+        if (
+            $dados['oferta_fim']
+            === null
+        ) {
+            $stmt->bindValue(
+                ':oferta_fim',
+                null,
+                PDO::PARAM_NULL
+            );
+        } else {
+            $stmt->bindValue(
+                ':oferta_fim',
+                (string)
+                $dados['oferta_fim'],
+                PDO::PARAM_STR
+            );
+        }
+
+
+        $stmt->bindValue(
+            ':estoque',
+            (int) $dados['estoque'],
+            PDO::PARAM_INT
+        );
+
+        $stmt->bindValue(
+            ':limite_estoque',
+            (int)
+            $dados['limite_estoque'],
+            PDO::PARAM_INT
+        );
+
+        $stmt->bindValue(
+            ':status',
+            (string) $dados['status'],
+            PDO::PARAM_STR
+        );
+
+        $stmt->bindValue(
+            ':destaque',
+            (int) $dados['destaque'],
+            PDO::PARAM_INT
+        );
+
+
+        $stmt->execute();
+
+
+        return
+            (int)
+            $this->pdo
+                ->lastInsertId();
     }
 }

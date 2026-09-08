@@ -24,13 +24,13 @@ $csrfToken =
 
 $erro =
     isset($erro)
-        ? (string) $erro
-        : '';
+    ? (string) $erro
+    : '';
 
 $sucesso =
     isset($sucesso)
-        ? (string) $sucesso
-        : '';
+    ? (string) $sucesso
+    : '';
 
 ?>
 <!doctype html>
@@ -41,8 +41,7 @@ $sucesso =
 
     <meta
         name="viewport"
-        content="width=device-width, initial-scale=1"
-    >
+        content="width=device-width, initial-scale=1">
 
     <title>
         Imagens do Produto | Loja Online
@@ -50,34 +49,29 @@ $sucesso =
 
     <meta
         name="description"
-        content="Gerenciamento das imagens do produto."
-    >
+        content="Gerenciamento das imagens do produto.">
 
     <base href="<?= BASE_URL ?>/">
 
     <link
         rel="icon"
-        href="assets/img/favicon.ico"
-    >
+        href="assets/img/favicon.ico">
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css"
-        rel="stylesheet"
-    >
+        rel="stylesheet">
 
     <link
         rel="stylesheet"
         href="<?= htmlspecialchars(
-            $baseUrl . '/assets/css/admin.css',
-            ENT_QUOTES,
-            'UTF-8'
-        ); ?>"
-    >
+                    $baseUrl . '/assets/css/admin.css',
+                    ENT_QUOTES,
+                    'UTF-8'
+                ); ?>">
 </head>
 
 <body>
@@ -87,8 +81,7 @@ $sucesso =
     <div
         class="offcanvas offcanvas-start offcanvas-dashboard"
         tabindex="-1"
-        id="menuMobile"
-    >
+        id="menuMobile">
         <div class="offcanvas-header border-bottom border-secondary">
             <div>
                 <h2 class="offcanvas-title h5 mb-0">
@@ -104,35 +97,30 @@ $sucesso =
                 class="btn-close"
                 type="button"
                 data-bs-dismiss="offcanvas"
-                aria-label="Fechar menu"
-            ></button>
+                aria-label="Fechar menu"></button>
         </div>
 
         <div class="offcanvas-body">
             <nav
                 class="sidebar-nav p-0"
-                aria-label="Menu móvel"
-            >
+                aria-label="Menu móvel">
                 <a
                     class="sidebar-link"
-                    href="admin"
-                >
+                    href="admin">
                     <i class="bi bi-grid-1x2-fill"></i>
                     Dashboard
                 </a>
 
                 <a
                     class="sidebar-link active"
-                    href="admin/produtos"
-                >
+                    href="admin/produtos">
                     <i class="bi bi-box-seam-fill"></i>
                     Produtos
                 </a>
 
                 <a
                     class="sidebar-link"
-                    href="admin/categorias"
-                >
+                    href="admin/categorias">
                     <i class="bi bi-tags-fill"></i>
                     Categorias
                 </a>
@@ -154,16 +142,14 @@ $sucesso =
                                flex-md-row
                                justify-content-between
                                align-items-md-center
-                               gap-3"
-                    >
+                               gap-3">
                         <div>
                             <div class="mb-2">
                                 <a
                                     href="admin/produto/editar?id=<?= rawurlencode(
-                                        $produtoToken
-                                    ); ?>"
-                                    class="text-decoration-none"
-                                >
+                                                                        $produtoToken
+                                                                    ); ?>"
+                                    class="text-decoration-none">
                                     <i class="bi bi-arrow-left me-1"></i>
                                     Voltar para editar produto
                                 </a>
@@ -203,8 +189,7 @@ $sucesso =
                 <?php if ($erro !== ''): ?>
                     <div
                         class="alert alert-danger alert-dismissible fade show"
-                        role="alert"
-                    >
+                        role="alert">
                         <i class="bi bi-exclamation-triangle-fill me-2"></i>
 
                         <?= htmlspecialchars(
@@ -217,16 +202,14 @@ $sucesso =
                             type="button"
                             class="btn-close"
                             data-bs-dismiss="alert"
-                            aria-label="Fechar"
-                        ></button>
+                            aria-label="Fechar"></button>
                     </div>
                 <?php endif; ?>
 
                 <?php if ($sucesso !== ''): ?>
                     <div
                         class="alert alert-success alert-dismissible fade show"
-                        role="alert"
-                    >
+                        role="alert">
                         <i class="bi bi-check-circle-fill me-2"></i>
 
                         <?= htmlspecialchars(
@@ -239,8 +222,7 @@ $sucesso =
                             type="button"
                             class="btn-close"
                             data-bs-dismiss="alert"
-                            aria-label="Fechar"
-                        ></button>
+                            aria-label="Fechar"></button>
                     </div>
                 <?php endif; ?>
 
@@ -257,39 +239,35 @@ $sucesso =
                     </div>
 
                     <div class="card-body">
-                        
+
                         <form
                             action="<?= BASE_URL ?>/admin/produto/imagens/upload"
                             method="post"
-                            enctype="multipart/form-data"
-                        >
+                            enctype="multipart/form-data">
                             <input
                                 type="hidden"
                                 name="id"
                                 value="<?= htmlspecialchars(
-                                    $produtoToken,
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ); ?>"
-                            >
+                                            $produtoToken,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ); ?>">
 
                             <input
                                 type="hidden"
                                 name="csrf_token"
                                 value="<?= htmlspecialchars(
-                                    $csrfToken,
-                                    ENT_QUOTES,
-                                    'UTF-8'
-                                ); ?>"
-                            >
+                                            $csrfToken,
+                                            ENT_QUOTES,
+                                            'UTF-8'
+                                        ); ?>">
 
                             <div class="row g-3 align-items-end">
 
                                 <div class="col-12 col-lg-9">
                                     <label
                                         for="imagens"
-                                        class="form-label fw-semibold"
-                                    >
+                                        class="form-label fw-semibold">
                                         Imagens
                                     </label>
 
@@ -300,8 +278,7 @@ $sucesso =
                                         name="imagens[]"
                                         accept="image/jpeg,image/png,image/webp"
                                         multiple
-                                        required
-                                    >
+                                        required>
 
                                     <div class="form-text">
                                         Formatos: JPG, PNG ou WebP.
@@ -317,8 +294,7 @@ $sucesso =
                                     <div class="d-grid">
                                         <button
                                             type="submit"
-                                            class="btn btn-primary"
-                                        >
+                                            class="btn btn-primary">
                                             <i class="bi bi-cloud-arrow-up me-1"></i>
                                             Enviar imagens
                                         </button>
@@ -371,10 +347,65 @@ $sucesso =
                                         ?? ''
                                     );
 
+                                // $urlImagem =
+                                //     (string) (
+                                //         $imagem['url_imagem']
+                                //         ?? ''
+                                //     );
+
+                                /*
+|--------------------------------------------------------------------------
+| Caminho público da imagem
+|--------------------------------------------------------------------------
+|
+| Arquivo físico:
+|
+| public/imagens/produtos/arquivo.webp
+|
+| URL:
+|
+| LOCAL:
+| /loja_online/imagens/produtos/arquivo.webp
+|
+| ONLINE:
+| /imagens/produtos/arquivo.webp
+|
+*/
+
+                                $caminhoImagemBanco =
+                                    trim(
+                                        (string) (
+                                            $imagem['url_imagem']
+                                            ?? ''
+                                        )
+                                    );
+
+
+                                /*
+|--------------------------------------------------------------------------
+| Obtém somente o nome do arquivo
+|--------------------------------------------------------------------------
+*/
+                                $nomeArquivo =
+                                    basename(
+                                        str_replace(
+                                            '\\',
+                                            '/',
+                                            $caminhoImagemBanco
+                                        )
+                                    );
+
+
+                                /*
+|--------------------------------------------------------------------------
+| Monta a URL pública
+|--------------------------------------------------------------------------
+*/
                                 $urlImagem =
-                                    (string) (
-                                        $imagem['url_imagem']
-                                        ?? ''
+                                    $baseUrl
+                                    . '/imagens/produtos/'
+                                    . rawurlencode(
+                                        $nomeArquivo
                                     );
 
                                 $principal =
@@ -390,29 +421,38 @@ $sucesso =
                                         <div class="position-relative">
                                             <img
                                                 src="<?= htmlspecialchars(
-                                                    $urlImagem,
-                                                    ENT_QUOTES,
-                                                    'UTF-8'
-                                                ); ?>"
+                                                            $urlImagem,
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        ); ?>"
                                                 class="card-img-top border-bottom"
                                                 alt="<?= htmlspecialchars(
-                                                    (string) (
-                                                        $imagem['texto_alternativo']
-                                                        ?? $produto['nome']
-                                                        ?? 'Imagem do produto'
-                                                    ),
-                                                    ENT_QUOTES,
-                                                    'UTF-8'
-                                                ); ?>"
-                                                style="height: 240px; object-fit: contain;"
-                                                onerror="this.onerror=null;this.src='<?= BASE_URL ?>/assets/img/sem-imagem.jpg';"
-                                            >
+                                                            (string) (
+                                                                $imagem['texto_alternativo']
+                                                                ?? $produto['nome']
+                                                                ?? 'Imagem do produto'
+                                                            ),
+                                                            ENT_QUOTES,
+                                                            'UTF-8'
+                                                        ); ?>"
+                                                style="
+        height: 240px;
+        object-fit: contain;
+    "
+                                                onerror="
+        this.onerror=null;
+        this.src='<?= htmlspecialchars(
+                                    $baseUrl
+                                        . '/assets/img/sem-imagem.jpg',
+                                    ENT_QUOTES,
+                                    'UTF-8'
+                                ); ?>';
+    ">
 
                                             <?php if ($principal): ?>
                                                 <span
                                                     class="position-absolute top-0 start-0
-                                                           m-2 badge text-bg-success"
-                                                >
+                                                           m-2 badge text-bg-success">
                                                     <i class="bi bi-star-fill me-1"></i>
                                                     Principal
                                                 </span>
@@ -435,42 +475,37 @@ $sucesso =
                                                 <?php if (!$principal): ?>
                                                     <form
                                                         action="<?= BASE_URL ?>/admin/produto/imagens/principal"
-                                                        method="post"
-                                                    >
+                                                        method="post">
                                                         <input
                                                             type="hidden"
                                                             name="id"
                                                             value="<?= htmlspecialchars(
-                                                                $produtoToken,
-                                                                ENT_QUOTES,
-                                                                'UTF-8'
-                                                            ); ?>"
-                                                        >
+                                                                        $produtoToken,
+                                                                        ENT_QUOTES,
+                                                                        'UTF-8'
+                                                                    ); ?>">
 
                                                         <input
                                                             type="hidden"
                                                             name="imagem_id"
                                                             value="<?= htmlspecialchars(
-                                                                $imagemToken,
-                                                                ENT_QUOTES,
-                                                                'UTF-8'
-                                                            ); ?>"
-                                                        >
+                                                                        $imagemToken,
+                                                                        ENT_QUOTES,
+                                                                        'UTF-8'
+                                                                    ); ?>">
 
                                                         <input
                                                             type="hidden"
                                                             name="csrf_token"
                                                             value="<?= htmlspecialchars(
-                                                                $csrfToken,
-                                                                ENT_QUOTES,
-                                                                'UTF-8'
-                                                            ); ?>"
-                                                        >
+                                                                        $csrfToken,
+                                                                        ENT_QUOTES,
+                                                                        'UTF-8'
+                                                                    ); ?>">
 
                                                         <button
                                                             type="submit"
-                                                            class="btn btn-outline-success w-100"
-                                                        >
+                                                            class="btn btn-outline-success w-100">
                                                             <i class="bi bi-star me-1"></i>
                                                             Tornar principal
                                                         </button>
@@ -479,8 +514,7 @@ $sucesso =
                                                     <button
                                                         type="button"
                                                         class="btn btn-success"
-                                                        disabled
-                                                    >
+                                                        disabled>
                                                         <i class="bi bi-star-fill me-1"></i>
                                                         Imagem principal
                                                     </button>
@@ -489,42 +523,37 @@ $sucesso =
                                                 <form
                                                     action="<?= BASE_URL ?>/admin/produto/imagens/excluir"
                                                     method="post"
-                                                    onsubmit="return confirm('Deseja realmente excluir esta imagem?');"
-                                                >
+                                                    onsubmit="return confirm('Deseja realmente excluir esta imagem?');">
                                                     <input
                                                         type="hidden"
                                                         name="id"
                                                         value="<?= htmlspecialchars(
-                                                            $produtoToken,
-                                                            ENT_QUOTES,
-                                                            'UTF-8'
-                                                        ); ?>"
-                                                    >
+                                                                    $produtoToken,
+                                                                    ENT_QUOTES,
+                                                                    'UTF-8'
+                                                                ); ?>">
 
                                                     <input
                                                         type="hidden"
                                                         name="imagem_id"
                                                         value="<?= htmlspecialchars(
-                                                            $imagemToken,
-                                                            ENT_QUOTES,
-                                                            'UTF-8'
-                                                        ); ?>"
-                                                    >
+                                                                    $imagemToken,
+                                                                    ENT_QUOTES,
+                                                                    'UTF-8'
+                                                                ); ?>">
 
                                                     <input
                                                         type="hidden"
                                                         name="csrf_token"
                                                         value="<?= htmlspecialchars(
-                                                            $csrfToken,
-                                                            ENT_QUOTES,
-                                                            'UTF-8'
-                                                        ); ?>"
-                                                    >
+                                                                    $csrfToken,
+                                                                    ENT_QUOTES,
+                                                                    'UTF-8'
+                                                                ); ?>">
 
                                                     <button
                                                         type="submit"
-                                                        class="btn btn-outline-danger w-100"
-                                                    >
+                                                        class="btn btn-outline-danger w-100">
                                                         <i class="bi bi-trash me-1"></i>
                                                         Excluir
                                                     </button>
@@ -550,11 +579,10 @@ $sucesso =
     </div>
 
     <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-    ></script>
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const anoAtual =
                 document.getElementById('anoAtual');
 
@@ -567,7 +595,7 @@ $sucesso =
                 document.getElementById('imagens');
 
             if (input) {
-                input.addEventListener('change', function () {
+                input.addEventListener('change', function() {
                     if (this.files.length > 20) {
                         alert(
                             'Selecione no máximo 20 imagens por envio.'
@@ -581,4 +609,5 @@ $sucesso =
     </script>
 
 </body>
+
 </html>

@@ -79,11 +79,7 @@ final class ModuloAdminController
         ]);
     }
 
-    public function produtoNovo(): void
-    {
-        $this->carregarView('produto_novo');
-    }
-
+    
     public function produtoImagens(): void
     {
         [$pdo, $produtoRepository] = $this->produtoRepository();
@@ -1025,7 +1021,7 @@ final class ModuloAdminController
         $this->carregarView('carrinhos');
     }
 
-    
+
     public function notificacoes(): void
     {
         $this->carregarView('notificacoes');
@@ -1034,7 +1030,7 @@ final class ModuloAdminController
     {
         $this->carregarView('contatos');
     }
-    
+
     public function perfil(): void
     {
         $adminId = SessaoAdmin::id();
@@ -1584,7 +1580,7 @@ final class ModuloAdminController
     */
         $this->redirecionarListaAdmins();
     }
-        private function redirecionarListaAdmins(): never
+    private function redirecionarListaAdmins(): never
     {
         header(
             'Location: '
@@ -3280,6 +3276,706 @@ final class ModuloAdminController
             'Location: '
                 . $this->baseUrl()
                 . '/admin/estoque'
+        );
+
+        exit;
+    }
+
+    public function produtoNovo(): void
+    {
+        /*
+    |--------------------------------------------------------------------------
+    | Conexão e Repository
+    |--------------------------------------------------------------------------
+    */
+        [$pdo, $repository] =
+            $this->produtoRepository();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Categorias
+    |--------------------------------------------------------------------------
+    */
+        $categorias =
+            $repository
+            ->listarCategorias();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Mensagem de erro
+    |--------------------------------------------------------------------------
+    */
+        $erro =
+            $_SESSION['admin_produto_novo_erro']
+            ?? null;
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Dados anteriores
+    |--------------------------------------------------------------------------
+    |
+    | Se ocorrer uma validação, os dados digitados
+    | voltam para o formulário.
+    |
+    */
+        $dadosFormulario =
+            $_SESSION['admin_produto_novo_dados']
+            ?? [];
+
+
+        unset(
+            $_SESSION['admin_produto_novo_erro'],
+            $_SESSION['admin_produto_novo_dados']
+        );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | View
+    |--------------------------------------------------------------------------
+    */
+        $this->carregarView(
+            'produto_novo',
+            [
+                'categorias' =>
+                $categorias,
+
+                'dadosFormulario' =>
+                $dadosFormulario,
+
+                'csrfToken' =>
+                $this
+                    ->gerarCsrfProduto(),
+
+                'erro' =>
+                $erro,
+            ]
+        );
+    }
+
+    public function produtoCadastrar(): void
+    {
+        /*
+    |--------------------------------------------------------------------------
+    | 1. Conexão / Repository
+    |--------------------------------------------------------------------------
+    |
+    | Também garante que .env e APP_KEY
+    | estejam carregados antes de IdSeguro.
+    |
+    */
+        [$pdo, $repository] =
+            $this->produtoRepository();
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 2. Validação CSRF
+    |--------------------------------------------------------------------------
+    */
+        if (
+            !$this->validarCsrfProduto(
+                (string) (
+                    $_POST['csrf_token']
+                    ?? ''
+                )
+            )
+        ) {
+
+            $this->redirecionarProdutoNovo(
+                'O formulário expirou. '
+                    . 'Atualize a página '
+                    . 'e tente novamente.',
+                $_POST
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 3. Dados básicos
+    |--------------------------------------------------------------------------
+    */
+        $categoriaId =
+            filter_input(
+                INPUT_POST,
+                'categoria_id',
+                FILTER_VALIDATE_INT
+            );
+
+        $nome =
+            trim(
+                (string) (
+                    $_POST['nome']
+                    ?? ''
+                )
+            );
+
+        $slug =
+            trim(
+                (string) (
+                    $_POST['slug']
+                    ?? ''
+                )
+            );
+
+        $descricao =
+            trim(
+                (string) (
+                    $_POST['descricao']
+                    ?? ''
+                )
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 4. Preço
+    |--------------------------------------------------------------------------
+    */
+        $precoTexto =
+            str_replace(
+                ',',
+                '.',
+                trim(
+                    (string) (
+                        $_POST['preco']
+                        ?? ''
+                    )
+                )
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 5. Estoque
+    |--------------------------------------------------------------------------
+    */
+        $estoque =
+            filter_input(
+                INPUT_POST,
+                'estoque',
+                FILTER_VALIDATE_INT
+            );
+
+        $limiteEstoque =
+            filter_input(
+                INPUT_POST,
+                'limite_estoque',
+                FILTER_VALIDATE_INT
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 6. Status
+    |--------------------------------------------------------------------------
+    */
+        $status =
+            trim(
+                (string) (
+                    $_POST['status']
+                    ?? ''
+                )
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 7. Checkboxes
+    |--------------------------------------------------------------------------
+    */
+        $destaque =
+            isset($_POST['destaque'])
+            ? 1
+            : 0;
+
+        $ofertaAtiva =
+            isset($_POST['oferta_ativa'])
+            ? 1
+            : 0;
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 8. Oferta
+    |--------------------------------------------------------------------------
+    */
+        $percentualTexto =
+            str_replace(
+                ',',
+                '.',
+                trim(
+                    (string) (
+                        $_POST['percentual_oferta']
+                        ?? ''
+                    )
+                )
+            );
+
+        $ofertaInicioTexto =
+            trim(
+                (string) (
+                    $_POST['oferta_inicio']
+                    ?? ''
+                )
+            );
+
+        $ofertaFimTexto =
+            trim(
+                (string) (
+                    $_POST['oferta_fim']
+                    ?? ''
+                )
+            );
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 9. Validações
+    |--------------------------------------------------------------------------
+    */
+        $erros = [];
+
+
+        if (
+            !$categoriaId
+            || $categoriaId < 1
+        ) {
+            $erros[] =
+                'Selecione uma categoria.';
+        }
+
+
+        if ($nome === '') {
+
+            $erros[] =
+                'Informe o nome do produto.';
+        } elseif (
+            mb_strlen($nome) > 150
+        ) {
+
+            $erros[] =
+                'O nome deve possuir '
+                . 'no máximo 150 caracteres.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Slug automático
+    |--------------------------------------------------------------------------
+    */
+        if ($slug === '') {
+
+            $slug =
+                $this->gerarSlug(
+                    $nome
+                );
+        } else {
+
+            $slug =
+                $this->gerarSlug(
+                    $slug
+                );
+        }
+
+
+        if ($slug === '') {
+
+            $erros[] =
+                'Não foi possível gerar '
+                . 'um slug válido.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Preço
+    |--------------------------------------------------------------------------
+    */
+        if (
+            $precoTexto === ''
+            || !is_numeric(
+                $precoTexto
+            )
+            || (float) $precoTexto < 0
+        ) {
+
+            $erros[] =
+                'Informe um preço válido.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Estoque
+    |--------------------------------------------------------------------------
+    */
+        if (
+            $estoque === false
+            || $estoque === null
+            || $estoque < 0
+        ) {
+
+            $erros[] =
+                'Informe um estoque válido.';
+        }
+
+
+        if (
+            $limiteEstoque === false
+            || $limiteEstoque === null
+            || $limiteEstoque < 0
+        ) {
+
+            $erros[] =
+                'Informe um limite '
+                . 'de estoque válido.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Status
+    |--------------------------------------------------------------------------
+    */
+        if (
+            !in_array(
+                $status,
+                [
+                    'ativo',
+                    'inativo',
+                ],
+                true
+            )
+        ) {
+
+            $erros[] =
+                'Status inválido.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Categoria existente e ativa
+    |--------------------------------------------------------------------------
+    */
+        if (
+            $categoriaId
+            && $categoriaId > 0
+            && !$repository
+                ->categoriaAtivaExiste(
+                    (int) $categoriaId
+                )
+        ) {
+
+            $erros[] =
+                'A categoria selecionada '
+                . 'não está disponível.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Slug duplicado
+    |--------------------------------------------------------------------------
+    */
+        if (
+            $slug !== ''
+            && $repository
+            ->slugExiste($slug)
+        ) {
+
+            $erros[] =
+                'Já existe um produto '
+                . 'com este slug.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Percentual da oferta
+    |--------------------------------------------------------------------------
+    */
+        $percentualOferta = null;
+
+        if ($percentualTexto !== '') {
+
+            if (
+                !is_numeric(
+                    $percentualTexto
+                )
+                || (float)
+                $percentualTexto < 0
+                || (float)
+                $percentualTexto > 100
+            ) {
+
+                $erros[] =
+                    'O percentual da oferta '
+                    . 'deve estar entre '
+                    . '0 e 100.';
+            } else {
+
+                $percentualOferta =
+                    number_format(
+                        (float)
+                        $percentualTexto,
+                        2,
+                        '.',
+                        ''
+                    );
+            }
+        }
+
+
+        if (
+            $ofertaAtiva === 1
+            && (
+                $percentualOferta
+                === null
+                || (float)
+                $percentualOferta
+                <= 0
+            )
+        ) {
+
+            $erros[] =
+                'Informe um percentual '
+                . 'maior que zero '
+                . 'para ativar a oferta.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | Datas
+    |--------------------------------------------------------------------------
+    */
+        $ofertaInicio =
+            $this->converterDataHora(
+                $ofertaInicioTexto
+            );
+
+        $ofertaFim =
+            $this->converterDataHora(
+                $ofertaFimTexto
+            );
+
+
+        if (
+            $ofertaInicioTexto !== ''
+            && $ofertaInicio === null
+        ) {
+
+            $erros[] =
+                'Data inicial '
+                . 'da oferta inválida.';
+        }
+
+
+        if (
+            $ofertaFimTexto !== ''
+            && $ofertaFim === null
+        ) {
+
+            $erros[] =
+                'Data final '
+                . 'da oferta inválida.';
+        }
+
+
+        if (
+            $ofertaInicio !== null
+            && $ofertaFim !== null
+            && strtotime(
+                $ofertaFim
+            ) <= strtotime(
+                $ofertaInicio
+            )
+        ) {
+
+            $erros[] =
+                'A data final da oferta '
+                . 'deve ser posterior '
+                . 'à data inicial.';
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 10. Retorna erros
+    |--------------------------------------------------------------------------
+    */
+        if ($erros !== []) {
+
+            $this->redirecionarProdutoNovo(
+                implode(
+                    ' ',
+                    $erros
+                ),
+                $_POST
+            );
+        }
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 11. Monta dados
+    |--------------------------------------------------------------------------
+    */
+        $dados = [
+
+            'categoria_id' =>
+            (int) $categoriaId,
+
+            'nome' =>
+            $nome,
+
+            'slug' =>
+            $slug,
+
+            'descricao' =>
+            $descricao !== ''
+                ? $descricao
+                : null,
+
+            'preco' =>
+            number_format(
+                (float) $precoTexto,
+                2,
+                '.',
+                ''
+            ),
+
+            'oferta_ativa' =>
+            $ofertaAtiva,
+
+            'percentual_oferta' =>
+            $ofertaAtiva === 1
+                ? $percentualOferta
+                : null,
+
+            'oferta_inicio' =>
+            $ofertaAtiva === 1
+                ? $ofertaInicio
+                : null,
+
+            'oferta_fim' =>
+            $ofertaAtiva === 1
+                ? $ofertaFim
+                : null,
+
+            'estoque' =>
+            (int) $estoque,
+
+            'limite_estoque' =>
+            (int) $limiteEstoque,
+
+            'status' =>
+            $status,
+
+            'destaque' =>
+            $destaque,
+        ];
+
+
+        /*
+    |--------------------------------------------------------------------------
+    | 12. Cadastro
+    |--------------------------------------------------------------------------
+    */
+        try {
+
+            $produtoId =
+                $repository->cadastrar(
+                    $dados
+                );
+
+
+            if ($produtoId < 1) {
+
+                throw new RuntimeException(
+                    'Não foi possível obter '
+                        . 'o ID do produto.'
+                );
+            }
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 13. Criptografa ID
+        |--------------------------------------------------------------------------
+        */
+            $produtoToken =
+                IdSeguro::criptografar(
+                    $produtoId
+                );
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 14. Mensagem para página de imagens
+        |--------------------------------------------------------------------------
+        */
+            $_SESSION['admin_produto_imagem_sucesso'] =
+                'Produto cadastrado '
+                . 'com sucesso. '
+                . 'Agora adicione '
+                . 'as imagens.';
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | 15. Redireciona
+        |--------------------------------------------------------------------------
+        */
+            header(
+                'Location: '
+                    . $this->baseUrl()
+                    . '/admin/produto/imagens?id='
+                    . rawurlencode(
+                        $produtoToken
+                    )
+            );
+
+            exit;
+        } catch (Throwable $erro) {
+
+            error_log(
+                '[ADMIN PRODUTO CADASTRAR] '
+                    . $erro->getMessage()
+            );
+
+
+            $this->redirecionarProdutoNovo(
+                'Não foi possível cadastrar '
+                    . 'o produto. '
+                    . 'Verifique os dados '
+                    . 'e tente novamente.',
+                $_POST
+            );
+        }
+    }
+
+    private function redirecionarProdutoNovo(
+        string $erro,
+        array $dados = []
+    ): never {
+
+        $_SESSION['admin_produto_novo_erro'] = $erro;
+
+        $_SESSION['admin_produto_novo_dados'] = $dados;
+
+
+        header(
+            'Location: '
+                . $this->baseUrl()
+                . '/admin/produto/novo'
         );
 
         exit;
