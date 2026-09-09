@@ -8,9 +8,12 @@ use PDO;
 
 final class ConfiguracoesRepository
 {
-    public function __construct(
-        private readonly PDO $pdo
-    ) {}
+    private PDO $pdo;
+
+    public function __construct(PDO $pdo)
+    {
+        $this->pdo = $pdo;
+    }
 
     public function buscar(): ?array
     {
@@ -39,8 +42,7 @@ final class ConfiguracoesRepository
             LIMIT 1
         ";
 
-        $dados =
-            $this->pdo
+        $dados = $this->pdo
             ->query($sql)
             ->fetch(PDO::FETCH_ASSOC);
 
@@ -49,12 +51,10 @@ final class ConfiguracoesRepository
             : null;
     }
 
-
     public function atualizar(
         int $id,
         array $dados
     ): bool {
-
         $sql = "
             UPDATE configuracoes
             SET
@@ -76,56 +76,55 @@ final class ConfiguracoesRepository
             WHERE id = :id
         ";
 
-        $stmt =
-            $this->pdo->prepare($sql);
+        $stmt = $this->pdo->prepare($sql);
 
         return $stmt->execute([
             ':id' => $id,
 
             ':nomedosite' =>
-            $dados['nomedosite'],
+                $dados['nomedosite'],
 
             ':descricao' =>
-            $dados['descricao'],
+                $dados['descricao'],
 
             ':keywords' =>
-            $dados['keywords'],
+                $dados['keywords'],
 
             ':slogan' =>
-            $dados['slogan'],
+                $dados['slogan'],
 
             ':logo' =>
-            $dados['logo'],
+                $dados['logo'],
 
             ':favicon' =>
-            $dados['favicon'],
+                $dados['favicon'],
 
             ':email' =>
-            $dados['email'],
+                $dados['email'],
 
             ':whatsapp' =>
-            $dados['whatsapp'],
+                $dados['whatsapp'],
 
             ':sitemanutencao' =>
-            $dados['sitemanutencao'],
+                $dados['sitemanutencao'],
 
             ':sitestandby' =>
-            $dados['sitestandby'],
+                $dados['sitestandby'],
 
             ':mensagemmanutencao' =>
-            $dados['mensagemmanutencao'],
+                $dados['mensagemmanutencao'],
 
             ':mensagemstandby' =>
-            $dados['mensagemstandby'],
+                $dados['mensagemstandby'],
 
             ':titulo_seo' =>
-            $dados['titulo_seo'],
+                $dados['titulo_seo'],
 
             ':descricao_seo' =>
-            $dados['descricao_seo'],
+                $dados['descricao_seo'],
 
             ':frete_gratis_valor' =>
-            $dados['frete_gratis_valor'],
+                $dados['frete_gratis_valor'],
         ]);
     }
 }

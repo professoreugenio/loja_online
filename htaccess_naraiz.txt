@@ -54,7 +54,7 @@ RewriteRule ^(?:database|routes|src|tabelas|vendor|views)(?:/|$) - [F,L,NC]
 # =========================================================
 
 RewriteRule ^assets/(.*)$ public/assets/$1 [L,NC]
-
+RewriteRule ^imagens/(.*)$ public/imagens/$1 [L,NC]
 
 # =========================================================
 # ROTA PRINCIPAL
@@ -85,3 +85,13 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
 RewriteRule ^ public/index.php [QSA,L]
+
+
+RewriteEngine On
+
+# ---------------------------------------------------------
+# Arquivos estáticos existentes dentro de /public
+# ---------------------------------------------------------
+
+RewriteRule ^assets/(.*)$ public/assets/$1 [L]
+RewriteRule ^imagens/(.*)$ public/imagens/$1 [L]

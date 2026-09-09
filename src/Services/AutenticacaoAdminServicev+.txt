@@ -8,13 +8,9 @@ use App\Repositories\UsuarioAdminRepository;
 
 final class AutenticacaoAdminService
 {
-    private UsuarioAdminRepository $usuarios;
-
     public function __construct(
-        UsuarioAdminRepository $usuarios
-    ) {
-        $this->usuarios = $usuarios;
-    }
+        private readonly UsuarioAdminRepository $usuarios
+    ) {}
 
     public function autenticar(
         string $email,
@@ -34,7 +30,8 @@ final class AutenticacaoAdminService
             return null;
         }
 
-        $usuario = $this->usuarios
+        $usuario =
+            $this->usuarios
             ->buscarAtivoPorEmail(
                 $email
             );
@@ -43,10 +40,11 @@ final class AutenticacaoAdminService
             return null;
         }
 
-        $senhaHash = (string) (
-            $usuario['senha_hash']
-            ?? ''
-        );
+        $senhaHash =
+            (string) (
+                $usuario['senha_hash']
+                ?? ''
+            );
 
         if (
             $senhaHash === ''
@@ -64,10 +62,11 @@ final class AutenticacaoAdminService
                 PASSWORD_DEFAULT
             )
         ) {
-            $novoHash = password_hash(
-                $senha,
-                PASSWORD_DEFAULT
-            );
+            $novoHash =
+                password_hash(
+                    $senha,
+                    PASSWORD_DEFAULT
+                );
 
             $this->usuarios
                 ->atualizarHashSenha(
