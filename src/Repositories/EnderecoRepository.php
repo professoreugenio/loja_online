@@ -186,49 +186,82 @@ final class EnderecoRepository
         int $clienteId,
         array $dados
     ): int {
+        $this->pdo->beginTransaction();
 
-        $dados['identificacao'] =
-            'Endereço principal';
+        try {
+            $this->desmarcarPrincipaisDoCliente(
+                $clienteId
+            );
 
-        $dados['principal'] =
-            true;
+            $sql = '
+            INSERT INTO enderecos (
+                cliente_id,
+                identificacao,
+                destinatario,
+                cep,
+                logradouro,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                estado,
+                principal
+            ) VALUES (
+                :cliente_id,
+                :identificacao,
+                :destinatario,
+                :cep,
+                :logradouro,
+                :numero,
+                :complemento,
+                :bairro,
+                :cidade,
+                :estado,
+                1
+            )
+        ';
 
+            $consulta =
+                $this->pdo->prepare($sql);
 
-        return $this->cadastrar(
-            $clienteId,
-            [
+            $consulta->execute([
+                'cliente_id' => $clienteId,
                 'identificacao' =>
-                $dados['identificacao'],
-
+                'Endereço principal',
                 'destinatario' =>
                 $dados['nome'],
-
                 'cep' =>
                 $dados['cep'],
-
                 'logradouro' =>
                 $dados['logradouro'],
-
                 'numero' =>
                 $dados['numero'],
-
                 'complemento' =>
-                $dados['complemento'] ?? '',
-
+                $dados['complemento'] ?? null,
                 'bairro' =>
                 $dados['bairro'],
-
                 'cidade' =>
                 $dados['cidade'],
-
                 'estado' =>
-                $dados['estado'],
+                strtoupper($dados['estado']),
+            ]);
 
-                'principal' =>
-                true,
-            ]
-        );
+            $enderecoId =
+                (int) $this->pdo
+                    ->lastInsertId();
+
+            $this->pdo->commit();
+
+            return $enderecoId;
+        } catch (\Throwable $erro) {
+            if ($this->pdo->inTransaction()) {
+                $this->pdo->rollBack();
+            }
+
+            throw $erro;
+        }
     }
+
 
 
     /**
@@ -282,15 +315,15 @@ final class EnderecoRepository
     /**
      * Exclui um endereço pertencente ao cliente.
      */
-   public function excluir(int $id, int $clienteId): bool
-{
-    $sql = "DELETE FROM enderecos WHERE id = :id AND cliente_id = :cliente_id";
-    $stmt = $this->pdo->prepare($sql);
-    $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
-    $stmt->bindValue(':cliente_id', $clienteId, \PDO::PARAM_INT);
+    public function excluir(int $id, int $clienteId): bool
+    {
+        $sql = "DELETE FROM enderecos WHERE id = :id AND cliente_id = :cliente_id";
+        $stmt = $this->pdo->prepare($sql);
+        $stmt->bindValue(':id', $id, \PDO::PARAM_INT);
+        $stmt->bindValue(':cliente_id', $clienteId, \PDO::PARAM_INT);
 
-    return $stmt->execute();
-}
+        return $stmt->execute();
+    }
 
 
     /**

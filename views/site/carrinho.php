@@ -853,11 +853,34 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
                             <!-- FINALIZAR -->
                             <div class="d-grid">
 
-                                <a
-                                    href="checkout"
-                                    class="btn btn-success btn-lg">
-                                    Finalizar Compra
-                                </a>
+                                <?php if (
+                                    $itens !== []
+                                    && $freteCalculado
+                                ): ?>
+
+                                    <a
+                                        href="<?=
+                                                htmlspecialchars(
+                                                    $baseUrl . '/checkout',
+                                                    ENT_QUOTES,
+                                                    'UTF-8'
+                                                )
+                                                ?>"
+                                        class="btn btn-success btn-lg">
+                                        Finalizar Compra
+                                    </a>
+
+                                <?php else: ?>
+
+                                    <button
+                                        type="button"
+                                        class="btn btn-secondary btn-lg"
+                                        disabled>
+                                        Calcule o frete para continuar
+                                    </button>
+
+                                <?php endif; ?>
+
 
                             </div>
 
@@ -890,35 +913,35 @@ $baseUrl = defined('BASE_URL') ? BASE_URL : ''; ?>
         integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI"
         crossorigin="anonymous"></script>
 
-        <script>
-    const campoCep =
-        document.getElementById('cep');
+    <script>
+        const campoCep =
+            document.getElementById('cep');
 
-    if (campoCep) {
-        campoCep.addEventListener(
-            'input',
-            function () {
-                let cep =
-                    this.value.replace(
-                        /\D/g,
-                        ''
-                    );
+        if (campoCep) {
+            campoCep.addEventListener(
+                'input',
+                function() {
+                    let cep =
+                        this.value.replace(
+                            /\D/g,
+                            ''
+                        );
 
-                cep =
-                    cep.substring(0, 8);
-
-                if (cep.length > 5) {
                     cep =
-                        cep.substring(0, 5)
-                        + '-'
-                        + cep.substring(5);
-                }
+                        cep.substring(0, 8);
 
-                this.value = cep;
-            }
-        );
-    }
-</script>
+                    if (cep.length > 5) {
+                        cep =
+                            cep.substring(0, 5) +
+                            '-' +
+                            cep.substring(5);
+                    }
+
+                    this.value = cep;
+                }
+            );
+        }
+    </script>
 
 </body>
 

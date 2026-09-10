@@ -148,6 +148,7 @@ $rotas = array_merge(
     require $raizProjeto . '/routes/cliente_cadastro.php',
     require $raizProjeto . '/routes/cliente.php',
     require $raizProjeto . '/routes/carrinho.php',
+    require $raizProjeto . '/routes/checkout.php',
 );
 /*
 |--------------------------------------------------------------------------
