@@ -1,7 +1,11 @@
 <?php
+
 declare(strict_types=1);
+
 namespace App\Repositories;
+
 use PDO;
+
 final class CarrinhoRepository
 {
     private PDO $pdo;
@@ -354,4 +358,119 @@ final class CarrinhoRepository
             ->fetchColumn();
     }
 
+    public function buscarResumo(
+        int $carrinhoId
+    ): ?array {
+        $sql = '
+        SELECT
+            id,
+            cliente_id,
+            status,
+            frete_faixa_id,
+            cep_frete,
+            frete,
+            prazo_entrega
+        FROM carrinhos
+        WHERE id = :id
+          AND status = :status
+        LIMIT 1
+    ';
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+        $consulta->execute([
+            'id' => $carrinhoId,
+            'status' => 'aberto',
+        ]);
+
+        $carrinho =
+            $consulta->fetch();
+
+        return is_array($carrinho)
+            ? $carrinho
+            : null;
+    }
+
+    public function salvarFrete(
+        int $carrinhoId,
+        int $freteFaixaId,
+        string $cep,
+        float $valor,
+        int $prazoDias
+    ): void {
+        $sql = '
+        UPDATE carrinhos
+        SET
+            frete_faixa_id =
+                :frete_faixa_id,
+            cep_frete =
+                :cep_frete,
+            frete =
+                :frete,
+            prazo_entrega =
+                :prazo_entrega
+        WHERE id =
+                :carrinho_id
+          AND status =
+                :status
+    ';
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+        $consulta->execute([
+            'frete_faixa_id' =>
+            $freteFaixaId,
+
+            'cep_frete' =>
+            $cep,
+
+            'frete' =>
+            number_format(
+                $valor,
+                2,
+                '.',
+                ''
+            ),
+
+            'prazo_entrega' =>
+            $prazoDias,
+
+            'carrinho_id' =>
+            $carrinhoId,
+
+            'status' =>
+            'aberto',
+        ]);
+    }
+
+    public function limparFrete(
+        int $carrinhoId
+    ): void {
+        $sql = '
+        UPDATE carrinhos
+        SET
+            frete_faixa_id = NULL,
+            cep_frete = NULL,
+            frete = 0.00,
+            prazo_entrega = NULL
+        WHERE id = :carrinho_id
+          AND status = :status
+    ';
+
+        $consulta =
+            $this->pdo
+            ->prepare($sql);
+
+        $consulta->execute([
+            'carrinho_id' =>
+            $carrinhoId,
+
+            'status' =>
+            'aberto',
+        ]);
+    }
 }
