@@ -53,8 +53,7 @@ final class CarrinhoController
         */
         require_once APP_ROOT
             . '/database/conexao.php';
-        $pdo =
-            \Config::connect();
+        $pdo = \Config::connect();
         /*
         |--------------------------------------------------------------------------
         | 2. Repositories
