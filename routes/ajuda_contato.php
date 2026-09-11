@@ -13,5 +13,12 @@ return [
             'index',
         ],
     ],
-    
+    [
+        'method' => 'POST',
+        'path' => '/ajuda/contato/enviar',
+        'action' => [
+            AjudaContatoController::class,
+            'enviar',
+        ],
+    ],
 ];
